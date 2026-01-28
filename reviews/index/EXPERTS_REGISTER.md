@@ -6,7 +6,7 @@ Este archivo mantiene el registro de todos los expertos que han evaluado la docu
 
 | ID | Nombre | Especialidad | Informes | Fecha Registro |
 |----|--------|--------------|----------|----------------|
-| EXP-001 | (pendiente) | (pendiente) | 0 | - |
+| E-00 | Test Expert (Smoke Test) | QA/Validación General | 1 | 2026-01-28 |
 
 ## Notas
 
