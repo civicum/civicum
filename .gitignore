@@ -1,0 +1,11 @@
+﻿.agent/
+.env
+.env.*
+node_modules/
+dist/
+build/
+.next/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
