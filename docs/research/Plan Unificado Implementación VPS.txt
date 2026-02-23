@@ -1,0 +1,320 @@
+Plan Unificado Implementación VPS considerando el resultado de Claude, Gemini y ChatGPT:
+
+
+According to a document from **Febrero 2026**, este plan final unificado toma como **baseline operativo** el “Análisis de Arquitectura IA Local VPS Cloud-3” (8 fases + checklist + roadmap) y le integra los aportes accionables del “Informe de Convergencia” (file-first + Arbiter NLI + tuning NUMA), además de las salvaguardas/decisiones CIVICUM (P1–P7, Regla de Oro, anti-alucinación, IA 3 pisos).
+
+A continuación va el **Plan Final Unificado (100% trazable a requisitos explícitos)**. *Nota honesta:* “100%” lo entiendo como **100% de los ítems normativos/mandatorios identificables** (principios, políticas, roadmap, checklist, componentes y técnicas listadas). Este plan incluye una **matriz de trazabilidad** al final para que puedas auditarlo.
+
+---
+
+# 0) Alcance innegociable del VPS (Cloud-3)
+
+* El VPS **solo** aloja **OpenClaw + motor IA local + servicios auxiliares**.
+* **Civia (ciudadanía) NUNCA conversa con OpenClaw**: el VPS es **plano operacional interno** y no atiende usuarios finales.
+* La única “integración” con el plano ciudadano es **READ-ONLY** vía un **Gateway** que publica **Knowledge Pack** (manifiesto + FAQs + plantillas).
+
+---
+
+# 1) Reglas y políticas que mandan todo (P1–P7 + Regla de Oro)
+
+Implementa **exactamente** estos 7 principios “enforced-by-design”:
+
+* **P1** Separación estricta Civia/OpenClaw (redes aisladas, sin ruta).
+* **P2** HITL por defecto para WRITE/UPDATE/DELETE (Aegis bloquea sin token).
+* **P3** Acceso privado: **0 puertos públicos**.
+* **P4** Firewall semántico obligatorio: **Aegis delante de OpenClaw** (denylist destructiva + SSRF guard + allowlists).
+* **P5** Aislamiento dual PROD/DEV con límites CPU/RAM + FS read-only + AppArmor/caps dropped.
+* **P6** Supply-chain controlada: pinning, **nunca `latest`**, self-update deshabilitado.
+* **P7** Trazabilidad total: registro inmutable, `trace_id` por acción, logs auditados.
+
+**Regla de Oro de Autonomía** (aplícase literalmente):
+
+* READ: autónomo (con límites + auditoría)
+* WRITE/UPDATE/DELETE: **HITL obligatorio**
+* Destructivo/irreversible: **doble aprobación + break-glass**
+
+**Lo permitido/prohibido** para auto-mejora:
+
+* Puede: medir, evaluar, proponer, preparar PR/packs, correr evaluaciones.
+* NO puede: auto-actualizarse, rotar secretos sin aprobación, borrar datos, abrir puertos públicos, ni ejecutar comandos destructivos autónomos.
+
+---
+
+# 2) Arquitectura final (vista rápida)
+
+**Acceso**: Tailscale o Cloudflare Tunnel (admin) → **Aegis** → OpenClaw (PROD/DEV) → Ollama (LLM) + Aux (embeddings/rerank/mod/NLI/OCR). Sin internet por defecto en red interna.
+Esto calza con la arquitectura “minimalista/segura” y su evolución modular.
+
+---
+
+# 3) Selección de “cerebro” (LLM) y criterio final (unifica a ambos expertos)
+
+Tus documentos dejan dos candidatos viables (ambos OSI/Apache en tu investigación interna), pero el plan **no “adivina”**: **decide por benchmark + checklist**.
+
+## 3.1 Política de modelos (PROD vs DEV)
+
+* **PROD (día 0-30):** **Mistral 7B (Clibrain LINCE) int4** como baseline por alineación explícita del documento de referencia (Stack recomendado + español + 5–9 tok/s CPU AVX2).
+* **DEV (paralelo):** **Qwen 2.5 7B q4_k_m** como candidato fuerte para tareas de operación/código/JSON y system prompts estrictos (recomendación del informe de convergencia).
+
+**Regla:** el modelo “ganador” para PROD a partir del día 31-60 se elige solo si pasa la suite: latencia, abstención, 0 PII, 0 bypass, 0 alucinación con Evidence-Only + NLI.
+
+## 3.2 Hardware tuning obligatorio (AMD EPYC)
+
+* Desactivar NUMA balancing y **anclar** el proceso con `numactl` en contenedor (mejora estimada 20–30%).
+
+---
+
+# 4) Plan de implementación paso a paso (8 fases, ejecutable por terminal)
+
+## FASE 1 (Día 1–2): Infra segura + hardening + red privada + vault cifrado
+
+### 1.1 Hardening base
+
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential git curl wget htop iotop numactl sysstat jq ufw fail2ban
+echo "kernel.numa_balancing=0" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+sudo systemctl disable snapd && sudo systemctl stop snapd
+```
+
+(Esto sigue el plan experto, incluyendo `numactl` y NUMA balancing).
+
+### 1.2 Acceso privado (P3) + firewall host
+
+Opción A (recomendada): **Tailscale** para administración.
+
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow in on tailscale0
+sudo ufw enable
+
+curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+```
+
+Cero puertos públicos: “deny incoming” + SSH solo vía red privada.
+
+> Alternativa: Cloudflare Tunnel para exponer **solo** el Gateway READ-ONLY (fase 8), manteniendo OpenClaw/Ollama 100% privados.
+
+### 1.3 Vault cifrado (P5) para secretos/logs/pack workspace
+
+Implementa un volumen cifrado tipo LUKS (imagen), con passphrase manual al boot (break-glass real).
+
+```bash
+sudo fallocate -l 10G /opt/civicum-vault.img
+sudo cryptsetup luksFormat /opt/civicum-vault.img
+sudo cryptsetup open /opt/civicum-vault.img civicum_vault
+sudo mkfs.ext4 /dev/mapper/civicum_vault
+sudo mkdir -p /mnt/civicum-secure
+sudo mount /dev/mapper/civicum_vault /mnt/civicum-secure
+
+sudo mkdir -p /mnt/civicum-secure/{config,secrets,logs,workspace}
+sudo chmod -R 700 /mnt/civicum-secure/{config,secrets,logs}
+```
+
+### 1.4 Docker: redes aisladas + límites + logs
+
+```bash
+docker network create --internal civicum-internal
+docker network create civicum-external
+```
+
+Red interna “sin salida” (para OpenClaw/LLM/auxiliares).
+
+**Política de swap:** swap existe “solo emergencia” y la meta es **swap=0MB** en operación (alerta si sube).
+
+---
+
+## FASE 2 (Día 3–4): Motor IA (Ollama dockerizado) + pinning + benchmark
+
+### 2.1 Dockerizar Ollama (aislamiento + cgroups) + NUMA
+
+El plan experto recomienda dockerizar el Ollama preinstalado y limitarlo (3 CPU, 8GB).
+
+Ejemplo de contenedor (ajusta `--cpuset-cpus` según host):
+
+```bash
+docker run -d --name civicum-ollama \
+  --cpus=3.0 --memory=8g --pids-limit=512 \
+  --network civicum-internal \
+  --read-only \
+  --tmpfs /tmp \
+  --security-opt no-new-privileges \
+  ollama/ollama:0.1.26
+```
+
+**NUMA anchoring (recomendado):** ejecuta el servicio con `numactl` dentro del contenedor (o en el entrypoint) para fijar CPU/MEM a un nodo.
+
+### 2.2 Descargar modelo(s) con pinning (P6)
+
+* PROD baseline: `mistral:7b-instruct-v0.2-q4_K_M` (o el tag exacto que uses internamente) y guardar hash SHA256 en `.env`.
+
+```bash
+docker exec civicum-ollama ollama pull mistral:7b-instruct-v0.2-q4_K_M
+echo "MISTRAL_7B_SHA256=<hash_real>" | sudo tee -a /mnt/civicum-secure/config/.env
+```
+
+* DEV candidato:
+
+```bash
+docker exec civicum-ollama ollama pull qwen2.5:7b-instruct-q4_k_m
+echo "QWEN25_7B_SHA256=<hash_real>" | sudo tee -a /mnt/civicum-secure/config/.env
+```
+
+### 2.3 Benchmark inicial + criterio de aceptación
+
+Suite mínima (corto/medio/largo) con objetivo **5–9 tok/s** y **swap=0MB**.
+
+---
+
+## FASE 3 (Día 5–6): Servicios auxiliares (file-first + embeddings/rerank/mod) + OCR planificado
+
+### 3.1 “Memoria file-first” (arranque) — *sin vector DB pesada*
+
+Adopta explícitamente la filosofía: OpenClaw lee **Markdown/JSON** directo para ahorrar RAM; embeddings/reranker se activan por fase cuando el corpus crece.
+
+### 3.2 Embeddings + reranker (día 31–60)
+
+Presupuesto y activación gradual (lazy loading) están definidos en el plan experto.
+
+### 3.3 Moderación (día 31–60)
+
+Modelo ligero BERT moderación en contenedor separado (capado).
+
+### 3.4 OCR (día 61–90)
+
+Tesseract OCR (Apache 2.0) y pipeline PDF→OCR→LLM está explícito en tu anexo técnico.
+
+---
+
+## FASE 4 (Día 7–9): Aegis (firewall semántico) + PII middleware + SSRF guard + HITL tokens
+
+Aegis debe:
+
+* Bloquear patrones destructivos (denylist).
+* Implementar **SSRF guard** y allowlist (ej. `.gob.cl`).
+* Exigir **token HITL** para WRITE/UPDATE/DELETE (P2 + P4).
+* Redactar PII (RUT/email/teléfono) **antes** de tocar el LLM.
+
+**Regex mínimo obligatorio (Chile):** RUT/email/teléfono (tu doc trae patrón de RUT explícito).
+
+---
+
+## FASE 5 (Día 10–11): OpenClaw PROD/DEV + gating por riesgo (R0–R4)
+
+### 5.1 Dos instancias
+
+* **OpenClaw-PROD-OPS**: solo skills **R0/R1** (observación, reportes, healthchecks, resúmenes).
+* **OpenClaw-DEV**: habilita **R2** (propuestas, scaffolding, runbooks) solo en ventanas de mantención; Aegis sigue bloqueando writes sin HITL.
+
+### 5.2 Mapeo inicial de tareas (mínimo viable para fundador solo)
+
+Arranca con las tareas R1/R2 más rentables del mapa (OPS triage, resumen diario, PII detector, Evidence-Only validator, generador de runbooks, scaffolding).
+
+---
+
+## FASE 6 (Día 12–14): Knowledge Pack (KP) + Evidence-Only (KP-006) + build/diff/publish
+
+### 6.1 Estructura y flujo de build (obligatorio)
+
+Estructura versionada + manifest SHA-256 + pipeline KP-003→KP-004→KP-006→HITL→KP-017 publish.
+
+Ruta base:
+
+```
+/mnt/civicum-secure/workspace/knowledge-pack/
+  faqs/       (JSON)
+  templates/  (MD/DOC templates)
+  sources/    (fuentes oficiales)
+  builds/     (packs compilados + manifests)
+```
+
+
+
+### 6.2 Evidence-Only + “no fe, evidencia”
+
+CIVICUM exige declarar cuando no hay evidencia (“aún no la tenemos”).
+
+---
+
+## FASE 7 (Día 15–16): Testing, checklist Día 30 y operación (runbooks + backups + observabilidad $0)
+
+### 7.1 Suite de tests (3 categorías) + criterios
+
+Incluye: velocidad, calidad español, sanitización PII, abstención, adversarial, recursos RAM/swap.
+
+### 7.2 Checklist de aceptación Día 30 (no se pasa a PROD sin esto)
+
+Metas clave: >80% FAQs, <5s latencia, 0 crashes 48h, 0 PII en logs, RAM<10GB, swap=0MB, 5–9 tok/s, Aegis bloquea 100% patrones peligrosos, backups OK, 0 puertos públicos, Tailscale activo, LUKS OK, runbooks probados, abstención >90%.
+
+### 7.3 Anti-alucinación (12 técnicas $0) — mínimo obligatorio
+
+Incluye Evidence-Only, abstención dura, reranker, **verificador NLI**, freshness check, contradiction detection, source attribution, etc.
+
+### 7.4 Arbiter NLI (el “juez”)
+
+El informe de convergencia exige un módulo “Arbiter” (XLM-R/Roberta) que compare respuesta vs evidencia y bloquee si no hay coherencia semántica.
+
+### 7.5 Runbooks + Backups (cifrados)
+
+Runbooks mínimos: restart, update-model, emergency-shutdown, backup-restore; backups diarios 3AM con `.tar.gpg` + checksums + retención.
+
+---
+
+## FASE 8 (Día 17–20): Integración con Civia (solo READ) mediante Gateway
+
+Publica solo:
+
+* `/manifest`
+* `/faqs`
+* `/templates`
+
+CORS restringido a tu dominio, y exposición solo vía túnel (Cloudflare o Tailscale), cumpliendo P1/P3.
+
+---
+
+# 5) Roadmap 30-60-90 (idéntico a los expertos, unificado)
+
+* **Día 0–30:** Infra segura + Ollama docker + LLM baseline + Aegis + Knowledge Pack inicial + skills R0/R1 + benchmark + 0 puertos públicos + backups.
+* **Día 31–60:** embeddings + reranker + skills R2 en DEV + moderación + Prometheus/Grafana + documentación (y aquí se decide si Qwen pasa a PROD).
+* **Día 61–90:** migración a arquitectura modular completa + pilotos + tuning + pruebas de carga + auditoría + Go-Live interno.
+
+---
+
+# 6) (Importante) Scraping e ingesta: ético, con feature-flag OFF por defecto
+
+Tu anexo técnico define: repo separado, ejecución programada, **apagado por defecto**, respeto robots.txt, rate limit 1 req/s, cache mínimo, horarios 2–6AM, TOS review, y pipeline PDF+OCR+LLM con validación de esquema.
+
+En el VPS esto se implementa como:
+
+* **OpenClaw propone** cambios/ingestas (R2) → tú apruebas → CI (GitHub Actions) ejecuta ingesta → Knowledge Pack se rebuild/publish.
+
+---
+
+# 7) Matriz de trazabilidad (validación “100% de ítems mandatorios”)
+
+✅ **P1–P7**: implementados en secciones 0–1–4–5–8 (redes aisladas, HITL tokens, 0 puertos, Aegis, PROD/DEV, pinning, auditoría).
+✅ **Regla de Oro + Prohibiciones**: aplicadas por Aegis/HITL/break-glass (sección 1 y fase 4).
+✅ **8 fases**: copiadas y ampliadas (fase 1–8) del documento experto (infra→motor→aux→Aegis→OpenClaw→KP→tests→ops→gateway).
+✅ **Roadmap 30-60-90 + checklist Día 30**: integrado literal (sección 5 y 7).
+✅ **File-first**: incorporado como Fase 3 base, antes de vector DB/embeddings. (Convergencia)
+✅ **Arbiter NLI**: middleware obligatorio (fase 7/31-60 si lo quieres gradual).
+✅ **Anti-alucinación (12 técnicas $0)**: implementado como estándar de calidad (fase 7).
+✅ **PII redaction (Chile)**: regex obligatorio, antes del LLM (fase 4).
+✅ **Ética scraping + pipeline PDF/OCR**: integrado como parte del sistema de ingesta y KP. 
+✅ **Voz/tono (no “fe”, evidencia)**: amarrado a Evidence-Only/abstención. 
+
+---
+
+## Si quieres que esto quede “copiar/pegar” directo al VPS
+
+Dímelo y en el siguiente mensaje te dejo:
+
+1. un `docker-compose.yml` completo con perfiles `prod`/`dev` (con `read_only`, `tmpfs`, `no-new-privileges`, redes internas, límites de CPU/RAM, y gateway read-only),
+2. plantillas de config para Aegis (denylist/allowlist/HITL/two-factor break-glass),
+3. scripts `benchmark.sh`, `backup.sh`, `restore.sh`, `kp_build.sh`, `kp_validate.sh` alineados al checklist Día 30.
+
+
+

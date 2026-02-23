@@ -1,0 +1,621 @@
+# CIVICUM — Catálogo Definitivo de Skills (OpenClaw + Civia)  
+**Versión:** 1.0 (Catálogo Maestro)  
+**Propósito:** Maximizar automatización **segura y aislada** para:  
+1) **Asistir a Civia** sin exponer OpenClaw a ciudadanos (solo por *artefactos internos*).  
+2) **Gestionar Civicum post-lanzamiento** (operación nacional) con la menor carga diaria para ti.  
+3) Implementar “auto-mejora” **segura** (medir → evaluar → proponer → aprobar), sin auto-update ni acciones destructivas autónomas.
+
+---
+
+## 0) Arquitectura operativa objetivo (resumen ejecutivo)
+
+### 0.1 Separación absoluta de planos
+- **Plano Ciudadano (Civia):** responde con tu stack client-first (3 pisos).  
+- **Plano Operacional (OpenClaw):** interno, aislado, nunca atiende a ciudadanos.
+
+### 0.2 Cloud-3 interno (OpenClaw)
+- **OpenClaw PROD-OPS (24/7):** operación, seguridad, datos, contenido, runbooks, incidentes.  
+- **OpenClaw DEV (on-demand):** vibe coding puro (PRs, tests, refactors, docs).  
+- **Aegis (obligatorio):** proxy/firewall semántico con *denylist destructiva*, SSRF guard, allowlists, y políticas HITL.
+- **Acceso remoto seguro:** Tailscale o Cloudflare Tunnel (sin puertos públicos).  
+- **Volúmenes cifrados:** LUKS (config/workspace/keys).  
+- **Pinning de versiones:** nada de “latest”; self-update deshabilitado.
+
+---
+
+## 1) Principios no negociables (enforced-by-design)
+
+### 1.1 Regla de oro de autonomía
+- **READ**: autónomo (con límites + auditoría).  
+- **WRITE/UPDATE/DELETE**: **HITL obligatorio**.  
+- **Acción destructiva o irreversible**: **doble aprobación (two-person rule) + break-glass**.
+
+### 1.2 “Auto-mejora” permitida (sin riesgos)
+OpenClaw puede:
+- Medir desempeño (telemetría), detectar gaps, generar propuestas, preparar PRs/packs, correr evaluaciones y *sugerir* cambios.  
+OpenClaw **NO** puede:
+- Auto-actualizarse, rotar secretos sin aprobación, “purge all”, desactivar seguridad, borrar datos, abrir accesos públicos, ni ejecutar comandos destructivos autónomos.
+
+### 1.3 Evidence-Only + Abstención Dura (para Civia y datos cívicos)
+- Si no hay evidencia interna/validada: **abstenerse** o responder con guía general + “no puedo confirmar”.  
+- Prohibido “inventar” plazos, artículos, costos, procedimientos, URLs oficiales.
+
+---
+
+## 2) Modelo de Skills: estándar, permisos, riesgos
+
+### 2.1 Niveles de riesgo (R0–R4)
+- **R0 Observación:** lectura pura (autónomo).  
+- **R1 Diagnóstico:** lectura + análisis (autónomo).  
+- **R2 Propuesta:** produce artefactos (PR/Issue/Pack Draft), no publica (HITL para merge/publish).  
+- **R3 Acción controlada:** cambios reversibles (HITL).  
+- **R4 Crítico:** irreversible / seguridad / secretos / migraciones (HITL + two-person + ventana).
+
+### 2.2 Contrato de Skill (Skill Card)
+Cada skill debe definir:
+- **ID / Nombre / Dominio / Entorno (PROD-OPS|DEV) / Riesgo**  
+- **Objetivo** + **Disparadores**  
+- **Entradas** (schema) + **Salidas** (artefactos)  
+- **Permisos mínimos** (tags Aegis)  
+- **HITL** (cuándo y cómo apruebas)  
+- **Safety checks** (allowlist/denylist, dry-run, límites)  
+- **Auditoría** (eventos + evidencia + trace_id)  
+- **Rollback** (si aplica) + **Tests** + **KPIs**
+
+---
+
+## 3) Puentes internos OpenClaw → Civia (sin conversación directa)
+
+### Puente A — Knowledge Pack (el principal)
+OpenClaw mantiene un **paquete versionado** con:
+- Plantillas JSON (Piso 0), FAQs validadas, reglas de seguridad, disclaimers, y (opcional) índices de retrieval.  
+- Publicación a Civicum mediante **endpoint admin interno** (HITL).
+
+### Puente B — Runbooks & Operación
+OpenClaw transforma incidentes/telemetría en:
+- runbooks accionables, postmortems, checklist de releases, hardening.
+
+### Puente C — Moderación asistida
+- Sugiere priorización y revisión; jamás sanciona automáticamente.
+
+---
+
+# 4) Catálogo MASIVO de Skills (Maestro)
+> Estructura: 12 dominios.  
+> Total objetivo: **100+ skills**.  
+> Nota: donde dice “(por módulo)”, aplica para cada módulo de Civicum (MVP y expandidos).
+
+---
+
+## Dominio KP — Knowledge Pack (Civia mejora sin exponer OpenClaw)
+
+### KP-001 Inventario canónico de contenido (R0, PROD-OPS)
+- Objetivo: listar plantillas/FAQs/reglas/versiones/hashes/owners.
+- Entradas: repo + storage de packs.
+- Salidas: `kp_inventory.json`.
+- Permisos: `fs:read`.
+- Safety: checksum + firma.
+- KPI: cobertura ≥ 99%.
+
+### KP-002 Linter de plantillas JSON Piso 0 (R1, PROD-OPS)
+- Objetivo: validar schema, placeholders, localización, tono.
+- Salidas: reporte + fixes sugeridos (no aplica).
+- Safety: bloquear campos peligrosos (HTML sin sanitizar).
+- Tests: render tests.
+
+### KP-003 Compilador de Knowledge Pack (R2, PROD-OPS)
+- Objetivo: construir `kp_build_vX.Y.Z` con manifiesto.
+- Salidas: artefacto + `manifest.json` + `artifact_hash` (SHA-256).
+- HITL: requerido para publish.
+- Safety: firma/hashes obligatorios. NO_OVERWRITE_POLICY: Falla si el artefacto destino ya existe. Requiere incremento de versión semántica.
+
+### KP-004 Diff semántico entre packs (R1, PROD-OPS)
+- Objetivo: detectar cambios “breaking” en respuestas.
+- Salidas: `impact_report.md` (por categoría/módulo).
+- Safety: marca “riesgo alto” si cambia disclaimers/leyes.
+
+### KP-005 Generador de “golden answers” (R2, DEV)
+- Objetivo: crear suite de regresión de respuestas (fixtures).
+- Salidas: tests + casos canónicos.
+- HITL: merge humano.
+- KPI: regresiones detectadas antes del publish.
+
+### KP-006 Validador Evidence-Only (R1, PROD-OPS)
+- Objetivo: verificar que cada claim cite fuente interna válida.
+- Salidas: lista de claims sin evidencia → *abstención obligatoria*.
+- Safety: bloqueo de publish si falla.
+
+### KP-007 Generador de disclaimers por tipo de consulta (R2, DEV)
+- Objetivo: disclaimers consistentes (legal/financiero/salud/seguridad).
+- Salidas: snippets + reglas de inserción.
+
+### KP-008 Normalizador de tono Civia (R2, DEV)
+- Objetivo: reescribir sin cambiar hechos.
+- Safety: diff factual (no cambia números, plazos, requisitos).
+
+### KP-009 Detector de contenido desactualizado (R1, PROD-OPS)
+- Objetivo: alertar piezas con “staleness” alto.
+- Salidas: issues + prioridad.
+
+### KP-010 Validador de links oficiales (R1, PROD-OPS)
+- Objetivo: verificar links allowlisted + activos + https.
+- Safety: prohíbe URLs acortadas.
+- Salidas: reporte.
+
+### KP-011 Generador de FAQs (por módulo) (R2, DEV)
+- Objetivo: proponer FAQs desde logs/tickets.
+- Salidas: PR con FAQs + tags + keywords.
+- HITL: revisión editorial humana.
+
+### KP-012 Generador de guías paso a paso (por proceso) (R2, DEV)
+- Objetivo: convertir contenido en “wizard” guiado.
+- Salidas: schema + pasos + validaciones de formulario.
+
+### KP-013 Clasificador de intención para routing (R2, DEV)
+- Objetivo: decidir Piso 0 vs Piso 1 vs Piso 2.
+- Safety: si incertidumbre → Piso 0 o abstención.
+
+### KP-014 Empaquetador Offline “LOW tier” (R2, PROD-OPS)
+- Objetivo: pack ultra-ligero.
+- KPI: tamaño bajo presupuesto + lectura fácil.
+
+### KP-015 Verificador de accesibilidad de contenido (R1, PROD-OPS)
+- Objetivo: WCAG + lectura fácil + adulto mayor.
+- Salidas: fixes sugeridos.
+
+### KP-016 Auditor de neutralidad política (R1, PROD-OPS)
+- Objetivo: detectar sesgos/juicios de valor.
+- Salidas: flags + recomendaciones.
+
+### KP-017 Publisher de Knowledge Pack (R3, PROD-OPS)
+- Objetivo: publicar pack en endpoint admin interno.
+- Entradas: Versión + `expected_hash`.
+- Logic: Verifica que el hash del archivo en storage coincida con `expected_hash` antes de actualizar el puntero.
+- HITL: aprobación explícita.
+- Rollback: KP-018.
+
+### KP-018 Rollback de Knowledge Pack (R3, PROD-OPS)
+- Objetivo: revertir a versión previa.
+- HITL: aprobación explícita.
+
+### KP-019 Canary de contenido (R3, PROD-OPS)
+- Objetivo: publicar a porcentaje/control interno antes de global.
+- HITL: sí.
+
+### KP-020 Changelog ciudadano (R2, DEV)
+- Objetivo: notas de cambios en lenguaje simple.
+- Safety: no filtra detalles internos.
+
+---
+
+## Dominio DATA — Datos cívicos (ingestión, QA, versión, cache offline)
+
+### DATA-001 Inventario de fuentes (R0, PROD-OPS)
+- Objetivo: catálogo de fuentes oficiales + estado + frescura.
+- Salidas: `sources.json`.
+
+### DATA-002 Fetch seguro (SSRF-guard) (R1, PROD-OPS)
+- Safety: allowlist dominios + bloqueo IPs privadas.
+- Salidas: snapshots con hash.
+
+### DATA-003 Parser multiformato (R1, PROD-OPS)
+- Objetivo: normalizar HTML/PDF/JSON a registros.
+- Salidas: dataset raw→staging.
+
+### DATA-004 Normalizador a schema Civicum (R1, PROD-OPS)
+- Objetivo: mapear entidades (institución/proceso/derecho/FAQ/etc.).
+- Safety: valida campos críticos.
+
+### DATA-005 Validador de consistencia (R1, PROD-OPS)
+- Objetivo: detectar contradicciones internas.
+- Salidas: reporte + severidad.
+
+### DATA-006 Detector de drift (R1, PROD-OPS)
+- Objetivo: cambios inesperados en plazos, requisitos, rutas.
+- Safety: marca “alto impacto”.
+
+### DATA-007 Deduplicación y canonicalización (R2, DEV)
+- Salidas: PR de merges propuestos.
+
+### DATA-008 Detector de PII (R1, PROD-OPS)
+- Objetivo: impedir ingestión accidental de datos personales.
+- Acción: bloquea pipeline si encuentra PII.
+
+### DATA-009 Generador de caché por tier (R2, PROD-OPS)
+- Objetivo: HIGH/MED/LOW paquetes cacheables.
+- KPI: tamaño + velocidad + completitud.
+
+### DATA-010 Generador de “delta sync” (R2, DEV)
+- Objetivo: sincronización incremental para móviles.
+- Salidas: deltas versionados.
+
+### DATA-011 Dry-run de upserts (R2, DEV)
+- Objetivo: simular carga sin tocar prod.
+- Salidas: plan + conteos.
+
+### DATA-012 Upsert controlado en PROD (R3, PROD-OPS)
+- HITL: sí.
+- Rollback: revert a snapshot anterior.
+
+### DATA-013 Auditor de licencias de datos (R1, PROD-OPS)
+- Objetivo: asegurar uso correcto de fuentes.
+
+### DATA-014 Monitor de frescura (staleness) (R1, PROD-OPS)
+- Objetivo: alertas por umbral de días.
+
+### DATA-015 Optimización de payloads (R2, DEV)
+- Objetivo: compresión + minificación sin perder significado.
+
+---
+
+## Dominio OPS — SRE/Operación nacional (incidentes, runbooks, resiliencia)
+
+### OPS-001 Healthcheck integral (R0, PROD-OPS)
+- Objetivo: uptime + latencia + errores por ruta.
+- Salidas: tablero + alertas.
+
+### OPS-002 Correlación de errores por release (R1, PROD-OPS)
+- Objetivo: detectar regresión post-deploy.
+
+### OPS-003 Triage de alertas (R1, PROD-OPS)
+- Objetivo: dedupe + priorización P0/P1/P2.
+- Salidas: cola priorizada.
+
+### OPS-004 Generador de runbooks (R2, DEV)
+- Objetivo: convertir incidentes repetidos en checklist.
+- Salidas: `runbook_*.md`.
+
+### OPS-005 Postmortem draft (R2, DEV)
+- Objetivo: timeline + impacto + RCA preliminar.
+- Safety: no culpa; enfoque sistémico.
+
+### OPS-006 Guardián de cuotas/limites (R1, PROD-OPS)
+- Objetivo: alertas preventivas por free-tier.
+
+### OPS-007 Detector de degradación offline (R1, PROD-OPS)
+- Objetivo: fallas SW/IndexedDB/sync diferido.
+
+### OPS-008 Control de degradación “Modo Piso 0” (R3, PROD-OPS)
+- Objetivo: forzar modo resiliente (solo plantillas) si crisis.
+- HITL: sí.
+- Rollback: OPS-009.
+
+### OPS-009 Volver a modo normal (R3, PROD-OPS)
+- HITL: sí.
+
+### OPS-010 Purga selectiva de cache (R3, PROD-OPS)
+- Prohibido: “purge all”.
+- HITL: sí.
+
+### OPS-011 Backups: verificación + restore en staging (R2, DEV)
+- KPI: evidencia de restore OK.
+
+### OPS-012 DR drill simulado (R2, DEV)
+- Objetivo: entrenar recuperación.
+
+### OPS-013 Resumen diario operativo (R1, PROD-OPS)
+- Salida: digest (incidentes, cuotas, regresiones, propuestas).
+
+### OPS-014 Resumen semanal ejecutivo (R1, PROD-OPS)
+- Salida: KPIs + backlog + riesgos.
+
+### OPS-015 “Problem management” (R2, DEV)
+- Objetivo: agrupar incidentes → problema raíz → plan.
+
+---
+
+## Dominio SEC — Seguridad/Abuso (WAF, hardening, supply chain, túneles)
+
+### SEC-001 Reporte diario WAF/DDoS (R1, PROD-OPS)
+- Objetivo: patrones de ataque + tendencias.
+- Salidas: recomendaciones.
+
+### SEC-002 Propuesta de reglas WAF (R2, DEV)
+- Salidas: plan JSON (no aplica).
+
+### SEC-003 Aplicación de regla WAF (R3, PROD-OPS)
+- HITL: sí.
+- Rollback: deshabilitar regla.
+
+### SEC-004 SSRF / egress guard (R1, PROD-OPS)
+- Objetivo: detectar salidas a dominios no allowlisted.
+
+### SEC-005 Scanner de secretos (R1, PROD-OPS)
+- Objetivo: detectar llaves en repo/logs.
+
+### SEC-006 Plan de rotación de secretos (R2, DEV)
+- Salidas: checklist + ventanas + validaciones.
+
+### SEC-007 Rotación de secretos (R4, PROD-OPS)
+- HITL + two-person + ventana.
+- Rollback: plan explícito.
+
+### SEC-008 Auditor de dependencias (CVE/SBOM) (R1, PROD-OPS)
+- Salidas: issues + PR sugeridos.
+
+### SEC-009 Hardening validator (R1, PROD-OPS)
+- Objetivo: read-only FS, cap_drop, pinning, túneles, cifrado.
+
+### SEC-010 Surface scan interno (R1, PROD-OPS)
+- Objetivo: verificar “0 exposición” de OpenClaw.
+
+### SEC-011 Auditor de headers (CSP/HSTS/etc.) (R1, PROD-OPS)
+
+### SEC-012 Detector credential stuffing/bots (R1, PROD-OPS)
+
+### SEC-013 Bloqueo temporal IPs (R3, PROD-OPS)
+- HITL: sí.
+- Rollback: levantar bloqueo.
+
+### SEC-014 Modo crisis de seguridad (R4, PROD-OPS)
+- Objetivo: endurecer allowlists + challenge.
+- HITL + two-person.
+
+### SEC-015 Auditoría de logs sin PII (R1, PROD-OPS)
+
+---
+
+## Dominio REL — Release/QA (calidad obligatoria + regresión mínima)
+
+### REL-001 Generador de tests unitarios (R2, DEV)
+- Objetivo: aumentar cobertura + prevenir bugs.
+
+### REL-002 Generador de tests E2E (R2, DEV)
+- Objetivo: flujos críticos offline/online.
+
+### REL-003 Gate de cobertura mínima (R1, DEV)
+- Acción: bloquear merge si falla.
+
+### REL-004 Performance budget checker (R1, DEV)
+
+### REL-005 Accessibility regression checker (R1, DEV)
+
+### REL-006 Canary plan builder (R2, DEV)
+
+### REL-007 Canary deploy (R3, PROD-OPS)
+- HITL: sí.
+
+### REL-008 Rollback deploy (R3, PROD-OPS)
+- HITL: sí.
+
+### REL-009 DB migration dry-run (R2, DEV)
+
+### REL-010 DB migration execute (R4, PROD-OPS)
+- HITL + two-person + backup probado.
+
+---
+
+## Dominio DEV — Vibe Coding (OpenClaw DEV on-demand)
+
+### DEV-001 Scaffolding de features (R2, DEV)
+- Salida: PR con estructura + tests iniciales.
+
+### DEV-002 Fix de bug con repro+test (R2, DEV)
+
+### DEV-003 Refactor seguro (types/linters) (R2, DEV)
+
+### DEV-004 Optimización offline-first (SW/IndexedDB) (R2, DEV)
+
+### DEV-005 Integración feature flags (R2, DEV)
+
+### DEV-006 Generación de documentación técnica (R2, DEV)
+
+### DEV-007 Code review companion (R1, DEV)
+
+### DEV-008 Generador de mocks/fixtures (R2, DEV)
+
+### DEV-009 Auditor de seguridad en PRs (R1, DEV)
+
+### DEV-010 “No-regression pack” (R2, DEV)
+- Objetivo: cada PR importante trae tests + evidencia.
+
+---
+
+## Dominio SUP — Soporte/Contenido/Comunidad (carga diaria ↓)
+
+### SUP-001 Triage de feedback/tickets (R1, PROD-OPS)
+
+### SUP-002 Clustering de dudas frecuentes (R1, PROD-OPS)
+
+### SUP-003 Draft de respuesta a usuario (R2, DEV)
+- Nota: jamás se envía sin tu aprobación.
+
+### SUP-004 Generador de macros de soporte (R2, DEV)
+
+### SUP-005 Detector de confusión onboarding (R1, PROD-OPS)
+
+### SUP-006 Planificador de contenidos (R2, DEV)
+
+### SUP-007 Auditor de tono institucional (R1, PROD-OPS)
+
+### SUP-008 Auditor de accesibilidad lingüística (R1, PROD-OPS)
+
+### SUP-009 Reporte mensual de valor (R1, PROD-OPS)
+
+### SUP-010 “Feedback → Backlog → Pack” (R2, DEV)
+- Objetivo: pipeline continuo hacia KP.
+
+---
+
+## Dominio GOV — Gobernanza, auditoría, cumplimiento (control total)
+
+### GOV-001 Registro de decisiones HITL (R1, PROD-OPS)
+- Objetivo: trazabilidad de cada WRITE (quién, qué, por qué).
+
+### GOV-002 Auditoría de cumplimiento HITL (R1, PROD-OPS)
+- Objetivo: detectar acciones sin aprobación (debe ser 0).
+
+### GOV-003 Política de allowlists/denylist (propuesta) (R2, DEV)
+- Salida: PR de policy.
+
+### GOV-004 Simulador de cambios de policy (dry-run) (R1, DEV)
+
+### GOV-005 Control de ventanas de mantenimiento (R2, DEV)
+
+### GOV-006 “Two-person rule” en acciones críticas (R1, PROD-OPS)
+- Objetivo: verificación de doble aprobación.
+
+### GOV-007 Gestión de roles (propuesta) (R2, DEV)
+
+### GOV-008 Auditoría de cifrado (LUKS) (R1, PROD-OPS)
+
+### GOV-009 Auditoría de exposición de endpoints admin (R1, PROD-OPS)
+
+### GOV-010 Checklist legal/ética de automatización (R1, PROD-OPS)
+
+---
+
+## Dominio FIN — FinOps Zero-Cost (no romper límites, no sorpresas)
+
+### FIN-001 Monitor de cuotas (R1, PROD-OPS)
+- Objetivo: alertas antes del límite.
+
+### FIN-002 Recomendador de optimización (cache, compresión) (R1, PROD-OPS)
+
+### FIN-003 Budget guard del fallback cloud (R1, PROD-OPS)
+- Objetivo: reducir Piso 2 si se dispara.
+
+### FIN-004 Reporte mensual de costos “$0-first” (R1, PROD-OPS)
+
+### FIN-005 Simulador de impacto por feature (R2, DEV)
+- Objetivo: estimar costo y cuota antes de implementar.
+
+---
+
+## Dominio EVAL — Auto-mejora segura (medir → evaluar → proponer)
+
+### EVAL-001 Telemetría por skill (R1, PROD-OPS)
+- Métricas: éxito/fallo, tiempo, reintentos, causa raíz.
+
+### EVAL-002 Scorecard de “carga liberada” (R1, PROD-OPS)
+- Objetivo: medir horas ahorradas/semana.
+
+### EVAL-003 Detección de degradación de calidad (R1, PROD-OPS)
+- Objetivo: comparar vs baseline.
+
+### EVAL-004 Banco de pruebas de Knowledge Pack (R2, DEV)
+- Objetivo: golden tests + gates antes de publish.
+
+### EVAL-005 Detector de gaps por abstención (R1, PROD-OPS)
+- Salida: lista priorizada → KP/DATA.
+
+### EVAL-006 Generador de nuevos skills sugeridos (R2, DEV)
+- Objetivo: detectar tareas repetidas sin skill.
+
+### EVAL-007 A/B de policies en DEV (R1, DEV)
+- Objetivo: mejorar seguridad/productividad sin riesgo.
+
+### EVAL-008 Auditor de “no auto-update” (R1, PROD-OPS)
+- Objetivo: pinning siempre.
+
+### EVAL-009 Recomendador de frecuencia de publish (R1, PROD-OPS)
+
+### EVAL-010 Reporte trimestral de madurez operativa (R1, PROD-OPS)
+
+---
+
+## Dominio INT — Integraciones internas (adaptadores seguros)
+
+> Regla: todo pasa por adaptadores con scopes mínimos y *plantillas de comandos seguras*.
+
+### INT-001 Adaptador GitHub (R1/R2, DEV)
+- READ autónomo, WRITE solo PR/Issues con HITL (merge humano).
+
+### INT-002 Adaptador Cloudflare (R1/R3, PROD-OPS)
+- READ autónomo, WRITE (WAF/rate-limit/purge selectivo) con HITL.
+
+### INT-003 Adaptador Vercel (R1/R3, PROD-OPS)
+- Deploy/rollback con HITL.
+
+### INT-004 Adaptador Neon/DB (R1/R4, PROD-OPS)
+- Consultas READ; migraciones/roles/restore con HITL + two-person.
+
+### INT-005 Adaptador Storage (R2/R3, PROD-OPS)
+- Publish de packs/datasets con HITL.
+
+---
+
+## Dominio EMG — Emergencias (nacional: picos, ataques, crisis de datos)
+
+### EMG-001 War-room checklist (R2, PROD-OPS)
+- Objetivo: protocolo P0 estandarizado.
+
+### EMG-002 Activar modo Piso 0 + rate limits (R4, PROD-OPS)
+- HITL + two-person.
+
+### EMG-003 Rollback rápido de contenido/dataset (R3, PROD-OPS)
+- HITL: sí.
+
+### EMG-004 Comunicación interna/status draft (R2, DEV)
+- Nota: tú apruebas antes de publicar.
+
+### EMG-005 Forensia ligera (sin PII) (R2, DEV)
+
+---
+
+# 5) Cómo “incorporarlo” al desarrollo y a la gestión total post-lanzamiento
+
+## 5.1 Flujo operativo diario (para quitarte carga)
+- **Mañana (10 min):** OPS-013 (digest) + SEC-001 (seguridad) + FIN-001 (cuotas).  
+- **Durante el día:** OpenClaw hace triage y te deja *colas listas* (OPS-003, SUP-001).  
+- **Cierre:** KP-002 + DATA-014 (staleness) + EVAL-001 (telemetría).
+
+## 5.2 Ciclo de mejora continua (auto-mejora segura)
+1) **Medir**: EVAL-001 + EVAL-002.  
+2) **Detectar gaps**: EVAL-005 (abstención), OPS-015 (problemas repetidos), SUP-002 (FAQ emergentes).  
+3) **Proponer**: KP-011/KP-012, DATA-007, REL-001/REL-002, GOV-003.  
+4) **Evaluar**: EVAL-004 + REL gates.  
+5) **Aprobar**: HITL (tú) + two-person si crítico.  
+6) **Publicar**: KP-017 (pack), DATA-012 (datos), REL-007 (deploy).  
+7) **Rollback automático sugerido** (no ejecutado) si regresión: KP-018 / REL-008 / DATA rollback.
+
+## 5.3 “Vibe coding puro” sin riesgo
+- OpenClaw DEV solo:
+  - lee repo → propone PRs → genera tests → deja todo listo.
+- Tú decides:
+  - merge, deploy, migraciones, cambios de seguridad.
+
+---
+
+# 6) Plantilla de manifiesto (recomendada) para implementar cada skill
+```yaml
+id: KP-003
+name: "Compilador de Knowledge Pack"
+domain: "KP"
+environment: "PROD-OPS"
+risk: "R2"
+permissions:
+  - fs:read
+  - fs:write_workspace
+hitl:
+  required_for: ["publish", "merge"]
+inputs:
+  pack_sources: "repo://civicum/knowledge-pack"
+outputs:
+  artifact: "storage://internal/kp_build_vX.Y.Z.tar.gz"
+safety:
+  allowlists:
+    domains: ["github.com", "api.cloudflare.com", "vercel.com", "neon.tech"]
+  denylists:
+    commands: ["rm -rf", "drop", "truncate", "purge_all", "disable_waf"]
+audit:
+  events: ["start", "evidence", "proposal", "hitl_request", "done"]
+rollback:
+  strategy: "revert_to_previous_semver"
+tests:
+  - "schema_validation"
+  - "golden_answers"
+  - "link_check"
+kpis:
+  - "0_regressions"
+  - "publish_time"
+
+7) Nota final (lo más importante)
+
+Este catálogo está diseñado para que OpenClaw:
+
+No “reemplace” a Civia (no conversa con ciudadanos).
+
+Te reemplace a ti en el trabajo repetitivo: triage, reportes, propuestas, PRs, packs, runbooks, checks, auditorías, evaluaciones.
+
+Aprenda sin volverse peligroso: mejora por evidencia y evaluación, pero siempre con HITL en cambios reales.

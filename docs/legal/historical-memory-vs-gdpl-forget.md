@@ -1,0 +1,14 @@
+# Derecho al Olvido (GDPR) vs. Memoria Histórica (Squad 330)
+
+**Misión:** Un político pide "borrar sus promesas antiguas" apelando a las Leyes de Privacidad para su honra personal.
+
+## 1. El Riesgo de la Extorsión Legal Europea
+Un diputado usó CIVICUM hace 1 año ("Cuando era vecino") publicando que su barrio en Las Condes le asqueaban los carabineros porque no patrullaban. 
+Hoy, convertido en Defensor Policial Nacional por conveniencia (Voltereta Política), el diputado descubre su historial en la App, y sus abogados contratan bufetes y aplican jurisprudencia invocando la Ley de "Derecho al Borrado/Derecho al Olvido" (Ley de Protección de la Vida Privada chilena/europea GDPR). Exigen formal y legalmente bajo multi que Next.js le haga `DELETE CASCADE` a todas sus intervenciones antiguas en favor de su "reinserción o privacidad actual".
+Si CIVICUM se asusta y ejecuta la Query obedeciendo la Privacidad, borramos piezas intocables del ajedrez de contradicciones políticas del país, y nos volvemos un encubridor corporativo del blanqueamiento de biografías fascistas/anarquistas del Chile de Mañana. Somos cómplices de la pérdida de memoria en favor de la salud de un Lobbista.
+
+## 2. Muralla Inmortal "Excepto de Carácter Público" (Public Figure Immunity Lock)
+
+1.  **Doble Etiquetado Relacional (Civilian vs Authority Labeling):** A cualquier mortal, sí se le consienten todos sus derechos ARCO Cívicos de Privacidad Básica (El Squad 299). Pero CIVICUM en su EndPoint de "Delete Account and History" ejecuta siempre primero un Chequeo Vectorial IA contra Wikipedia Chilena, Nóminas Transparencia Ministerial y Diarios (The Cross Check de OpenSignal).
+2.  **Negativa Forense (The "No"):** Si el usuario reclamando Cese Oculto es actualmente: Parlamentario, Alcalde, Asesor, Policía Activo o Postulante Electo Actual. La Backend Function (Lambda) revoca violenta e incondicionalmente el POST Request. La plataforma rechaza la amnesia argumentando jurídicamente: *"Su Actuar pretérito y posturas cívicas representan de interés y Fe Pública vital al cargo detentado, revistiendo un Escudo de Inmutabilidad Asamblearia y Periodística por encima del Bienestar Privado de la Vergüenza Humana."*
+3.  **Shadow Archive para la Prensa:** Si el peso Judicial de Jueces Estatales es gigantesco y obligan a la ONG a Borrar (Amenazas de congelar Cuentas de Banco con Multas del SII inminentes). Los Ingenieros de la ONG Acatan Oficialmente bajando los Post a Null. Pero Asíncronamente y paralelamente (3 microsegundos antes) el motor dispara un Clone Completo por API a *Wayback Machine* Archive.org en USA y a *WikiLeaks Sur* o Repositorios de Periodismo Ciper Externos. CIVICUM rinde el dato, pero la Humanidad Periodística lo recibe y resguarda antes de hundirlo en el mar de la censura. Democracia Hackeando Criptográficamente a los Jueces de la Verdad.
