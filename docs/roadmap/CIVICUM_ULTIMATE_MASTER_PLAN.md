@@ -99,6 +99,7 @@ Este plan está dividido en **Sprints Técnicos (4 Épocas)**. Cada paso debe ej
 - [ ] Implementar Profile Page (Renderizar nivel de verificación con candados de colores).
 - [ ] Desarrollar Dashboard (Cards de widgets: Mis Reportes, Mi Karma).
 - [ ] Escribir lógica del Sistema Karma (decay temporal, topes anti-élite de 1000 puntos máximo).
+- [ ] **[NEW] Ética Experimental (Data Over Dogma):** Implementar Feature Flags (A/B Testing) para los mandatos éticos (ej. Gamificación vs Austeridad). Medir tasa de retención vs toxicidad para prevenir el abandono de la plataforma (Apatía Psi-Beta).
 
 #### Paso 2.2: Módulo "Alza la Voz" (Reportes y Mapa) (Día 14-20)
 - [ ] Integrar `leaflet` y `react-leaflet`. Añadir soporte para markers clusterizados.
@@ -136,8 +137,9 @@ Este plan está dividido en **Sprints Técnicos (4 Épocas)**. Cada paso debe ej
 - [ ] Feed cronológico puro (Prohibido algortimo de retención F-05).
 - [ ] Generación local de PDF (`jspdf`) para descargar el Mandato Ciudadano con timestamp del navegador.
 
-#### Paso 3.4: "Civia IA" y Asesor Cívico (Día 41-45)
-- [ ] Implementar Chatbot UI.
+#### Paso 3.4: SPRINT AISLADO DE RIESGO: "Civia IA" (Localización y Graceful Degradation) (Día 41-45)
+- [ ] Implementar Chatbot UI como módulo "Plug & Play".
+- [ ] **Desacople Sistémico:** La IA es un acelerador opcional. Si falla el hardware o se agota la memoria del VPS/Cliente, el módulo de Chatbot se oculta silenciosamente sin quebrar el flujo CRUD/Reportes.
 - [ ] **WebLLM Integration ("Modo Civia Ultra"):** Cargar Llama 3 minificado en Browser (Device HIGH).
   - *Detección de Hardware:* La PWA evalúa en background `navigator.gpu` y `navigator.deviceMemory`. Si detecta **>=6GB RAM**, lanza el prompt al ciudadano: *"Tu dispositivo es lo suficientemente potente para ejecutar a Civia sin internet. ¿Deseas descargar el Motor Cívico Local (4GB)? Tu plan de datos no será un problema, pero recomendamos Wi-Fi."*
   - *Contexto de Red Local:* Aprovechando planes 5G chilenos de alto volumen/datos libres, el modelo (~4GB) se cachea agresivamente en IndexedDB la primera vez si el usuario acepta. Esto offloadea inferencia masivamente del VPS Cloud-3 a los clientes, a costo cero para CIVICUM.
@@ -168,9 +170,10 @@ Este plan está dividido en **Sprints Técnicos (4 Épocas)**. Cada paso debe ej
 - [ ] **Dominio de RAM (Zswap):** Reemplazar Swap tradicional NVMe por **Zswap dinámico con lz4**. Configurar sysctl `vm.swappiness=60` para amortiguamiento viscoelástico de picos de IA (Evita Error 137).
 - [ ] **Aislamiento Cgroups v2 (Docker Compose):** Establecer jerarquía de sobrevivencia. Límite duro para Ollama (6.5GB, `oom_score_adj: -500`), PostgreSQL Local (1GB, `oom_score_adj: -500`), y Trabajador OCR marcado explícitamente como contingencia (1.75GB, `oom_score_adj: 500` - sacrificio voluntario en crisis).
 
-#### Paso 4.3: Testing Completo (Día 51-53)
+#### Paso 4.3: Testing Completo y Chaos Engineering (Día 51-53)
 - [ ] Correr `jest-axe` en vistas principales para garantizar contraste AA de la paleta Terracota.
 - [ ] Escribir 5 flujos críticos E2E en Playwright (Login, Post Report, Swipe Voto, Ver Caja Alcalde).
+- [ ] **Chaos Engineering (Test de Choque Extremo):** Inyectar fallos reales (HTTP 503 por colapso de RAM en VPS). Validar que la SPA Vite reacciona al instante con un fallback UI de contingencia, pausando spinners y derivando solicitudes a colas de IndexedDB offline.
 - [ ] Simulación de Red: Correr Lighthouse bajo perfil "Slow 3G" para confirmar funcionamiento del fallback UI.
 
 #### Paso 4.4: Lanzamiento (Launch Sequence) (Día 54)
