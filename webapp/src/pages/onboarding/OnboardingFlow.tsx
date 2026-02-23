@@ -100,14 +100,17 @@ export default function OnboardingFlow() {
     // Helper para saber si estamos en modo oscuro localmente (incluso si theme==="system")
     const isDarkMode = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
+    const isDarkMode = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    // Force exact string class logic to avoid Tailwind conflicts
+    const globalBgClass = isDarkMode
+        ? 'bg-[#0f172a] text-white'
+        : 'bg-slate-50 text-slate-900';
+
     const isSplashPhase = splashStep < 3;
 
     return (
-        <div className={`flex min-h-screen flex-col items-center justify-center p-4 overflow-hidden relative transition-colors duration-700
-      ${isDarkMode
-                ? 'bg-gradient-to-br from-terracota-950 via-slate-950 to-azul-950 text-white'
-                : 'bg-gradient-to-br from-slate-50 via-slate-100 to-azul-50 text-slate-900'}
-    `}>
+        <div className={`flex min-h-screen flex-col items-center justify-center p-4 overflow-hidden relative transition-colors duration-700 ${globalBgClass}`}>
 
             {/* Botón Flotante Global de Tema (Visible Todo el Tiempo) */}
             <div className="absolute top-6 right-6 z-50">
@@ -119,7 +122,7 @@ export default function OnboardingFlow() {
             ${isDarkMode ? 'bg-white/10 border-white/20 text-yellow-400 hover:bg-white/20' : 'bg-white/50 border-slate-200 text-indigo-500 hover:bg-white/80'}
           `}
                 >
-                    {isDarkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+                    {isDarkMode ? <Sun className="w-6 h-6 text-yellow-400" /> : <Moon className="w-6 h-6 text-indigo-500" />}
                 </Button>
             </div>
 
@@ -148,10 +151,11 @@ export default function OnboardingFlow() {
                                         initial={{ scale: 0.8, opacity: 0 }}
                                         animate={{ scale: 1, opacity: 1 }}
                                         transition={{ type: "spring", bounce: 0.5, duration: 1 }}
-                                        className="w-32 h-32 md:w-40 md:h-40 relative"
+                                        className="w-48 h-48 md:w-56 md:h-56 relative flex items-center justify-center mb-4"
                                     >
-                                        <div className="absolute inset-0 bg-terracota-500/20 blur-2xl rounded-full animate-pulse" />
-                                        <CivicumLogo className={`w-full h-full relative z-10 ${isDarkMode ? 'text-white' : 'text-slate-900'}`} />
+                                        {/* Logo destellando sin fondo de caja, el blur está difuminado atrás */}
+                                        <div className={`absolute inset-0 blur-[60px] rounded-full animate-pulse transition-colors duration-1000 ${isDarkMode ? 'bg-terracota-500/30' : 'bg-terracota-400/20'}`} />
+                                        <CivicumLogo className={`w-full h-full relative z-10 drop-shadow-2xl ${isDarkMode ? 'text-white' : 'text-slate-900'}`} />
                                     </motion.div>
 
                                     <div className="space-y-4">
@@ -209,23 +213,23 @@ export default function OnboardingFlow() {
 
                             {splashStep === 2 && (
                                 <div className="flex flex-col items-center space-y-8 w-full">
-                                    <div className={`w-24 h-24 rounded-full flex items-center justify-center shadow-xl mb-4
-                    ${isDarkMode ? 'bg-gradient-to-tr from-green-600 to-green-400' : 'bg-gradient-to-tr from-green-500 to-green-300'}
+                                    <div className={`w-28 h-28 rounded-3xl flex items-center justify-center shadow-2xl mb-4
+                    ${isDarkMode ? 'bg-gradient-to-tr from-green-600 to-green-500' : 'bg-gradient-to-tr from-green-500 to-green-400'}
                   `}>
-                                        <Shield className="w-12 h-12 text-white" />
+                                        <Shield className="w-14 h-14 text-white" />
                                     </div>
 
                                     <div className="space-y-4">
-                                        <h2 className="text-3xl font-extrabold tracking-tight">Privacidad Blindada</h2>
-                                        <p className={`text-lg leading-relaxed max-w-md ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                                            Tus datos son tuyos. Operamos bajo <b>Honestidad Radical</b> y el principio de <b>1 Persona = 1 Voto</b>.
+                                        <h2 className={`text-4xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Privacidad Blindada</h2>
+                                        <p className={`text-xl leading-relaxed max-w-md ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                                            Tus datos son tuyos. Operamos bajo <b className={isDarkMode ? 'text-white' : 'text-slate-800'}>Honestidad Radical</b> y el principio de <b className={isDarkMode ? 'text-white' : 'text-slate-800'}>1 Persona = 1 Voto</b>.
                                         </p>
                                     </div>
 
                                     <Button onClick={handleSplashNext} className={`w-full max-w-xs h-16 text-xl font-bold rounded-2xl shadow-2xl transition-all hover:scale-105
-                    ${isDarkMode ? 'bg-white text-slate-900 hover:bg-slate-100' : 'bg-slate-900 text-white hover:bg-slate-800'}
+                    ${isDarkMode ? 'bg-white text-slate-900 hover:bg-slate-100 shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'bg-slate-900 text-white hover:bg-slate-800'}
                   `}>
-                                        Crear mi Identidad Cívica
+                                        Siguiente
                                     </Button>
                                 </div>
                             )}
@@ -269,8 +273,8 @@ export default function OnboardingFlow() {
                                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                 className="w-full"
                             >
-                                <Card className={`border-0 shadow-2xl ring-1 overflow-hidden rounded-3xl backdrop-blur-2xl
-                  ${isDarkMode ? 'bg-slate-900/40 ring-white/10' : 'bg-white/70 ring-slate-900/5 shadow-slate-200/50'}
+                                <Card className={`border-0 shadow-2xl ring-1 overflow-hidden rounded-[2rem] 
+                  ${isDarkMode ? 'bg-[#1e293b]/80 backdrop-blur-3xl ring-white/10' : 'bg-white/90 backdrop-blur-2xl ring-slate-900/5 shadow-slate-200/50'}
                 `}>
 
                                     {/* PASO 1: Pacto */}
@@ -279,16 +283,16 @@ export default function OnboardingFlow() {
                                             <div className="w-20 h-20 bg-gradient-to-tr from-terracota-500 to-terracota-400 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
                                                 <LogIn className="w-10 h-10 text-white" />
                                             </div>
-                                            <div className="space-y-2">
-                                                <h2 className="text-3xl font-extrabold tracking-tight">Honestidad Radical</h2>
-                                                <p className={`text-lg leading-relaxed ${isDarkMode ? 'text-white/80' : 'text-slate-600'}`}>
+                                            <div className="space-y-4">
+                                                <h2 className={`text-3xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Honestidad Radical</h2>
+                                                <p className={`text-lg leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                                                     No podemos arreglar tu ciudad solos. Necesitamos que confirmes que tus reportes serán reales y constructivos.
                                                 </p>
                                             </div>
 
                                             <Button
                                                 onClick={handleNext}
-                                                className={`w-full h-14 text-lg font-bold rounded-xl transition-all
+                                                className={`w-full h-14 text-lg font-bold rounded-2xl transition-all
                           ${isDarkMode ? 'bg-white text-slate-900 hover:bg-slate-100 shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'bg-slate-900 text-white hover:bg-slate-800 shadow-xl'}
                         `}
                                             >
@@ -480,21 +484,21 @@ export default function OnboardingFlow() {
                                                 <CheckCircle2 className="w-12 h-12 text-white z-10" />
                                             </motion.div>
 
-                                            <div className="space-y-3">
-                                                <h2 className="text-3xl font-extrabold tracking-tight">Diagnóstico Listo</h2>
-                                                <p className={`text-lg font-light ${isDarkMode ? 'text-white/80' : 'text-slate-600'}`}>
+                                            <div className="space-y-4">
+                                                <h2 className={`text-4xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Diagnóstico Listo</h2>
+                                                <p className={`text-xl font-light leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                                                     El mapa interactivo de <b className={isDarkMode ? 'text-white' : 'text-slate-900'}>{data.communeId}</b> está preparado. Has dado tu primer paso hacia una democracia en tiempo real.
                                                 </p>
                                             </div>
 
-                                            <div className="w-full flex flex-col gap-3 pt-4">
+                                            <div className="w-full flex flex-col gap-3 pt-6">
                                                 <Button
                                                     onClick={handleComplete}
                                                     className="w-full h-16 text-xl font-black bg-gradient-to-r from-terracota-600 to-terracota-500 text-white border-0 hover:from-terracota-500 hover:to-terracota-400 rounded-2xl shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:shadow-[0_0_30px_rgba(239,68,68,0.6)] hover:scale-105 transition-all"
                                                 >
                                                     Entrar a CIVICUM
                                                 </Button>
-                                                <Button variant="ghost" onClick={handlePrev} className={isDarkMode ? 'text-white/60 hover:text-white hover:bg-white/10' : 'text-slate-500 hover:text-slate-900'}>
+                                                <Button variant="ghost" onClick={handlePrev} className={`h-14 font-medium rounded-2xl ${isDarkMode ? 'text-slate-400 hover:text-white hover:bg-white/10' : 'text-slate-500 hover:text-slate-900'}`}>
                                                     Revisar mis datos
                                                 </Button>
                                             </div>
