@@ -5,7 +5,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { MapPin, ShieldCheck, Target, CheckCircle2, ChevronRight, Navigation2, LogIn, Moon, Sun, ArrowRight, Shield, Activity } from 'lucide-react';
+import { MapPin, ShieldCheck, Target, CheckCircle2, ChevronRight, Navigation2, LogIn, Moon, Sun, ArrowRight, Shield, Activity, ShieldAlert } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CivicumLogo } from '@/components/icons/CivicumLogo';
 
@@ -149,11 +149,9 @@ export default function OnboardingFlow() {
                                         initial={{ scale: 0.8, opacity: 0 }}
                                         animate={{ scale: 1, opacity: 1 }}
                                         transition={{ type: "spring", bounce: 0.5, duration: 1 }}
-                                        className="w-48 h-48 md:w-56 md:h-56 relative flex items-center justify-center mb-4"
+                                        className="w-56 h-56 md:w-64 md:h-64 mb-4"
                                     >
-                                        {/* Logo destellando sin fondo de caja, el blur está difuminado atrás */}
-                                        <div className={`absolute inset-0 blur-[60px] rounded-full animate-pulse transition-colors duration-1000 ${isDarkMode ? 'bg-terracota-500/30' : 'bg-terracota-400/20'}`} />
-                                        <CivicumLogo className={`w-full h-full relative z-10 drop-shadow-2xl ${isDarkMode ? 'text-white' : 'text-slate-900'}`} />
+                                        <CivicumLogo className={`w-full h-full drop-shadow-2xl ${isDarkMode ? 'text-white' : 'text-slate-900'}`} />
                                     </motion.div>
 
                                     <div className="space-y-4">
