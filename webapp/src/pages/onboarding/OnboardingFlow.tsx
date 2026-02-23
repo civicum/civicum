@@ -243,8 +243,8 @@ export default function OnboardingFlow() {
                             animate={{ y: 0, opacity: 1 }}
                             className="w-full flex flex-col items-center mb-8 space-y-6"
                         >
-                            <div className="w-12 h-12 shadow-lg rounded-xl overflow-hidden bg-slate-900 p-2">
-                                <CivicumLogo className="w-full h-full text-white" />
+                            <div className="w-16 h-16 mb-2">
+                                <CivicumLogo className={`w-full h-full ${isDarkMode ? 'text-white' : 'text-slate-900'}`} />
                             </div>
                             <div className="w-full px-2 flex items-center gap-4">
                                 <Progress
