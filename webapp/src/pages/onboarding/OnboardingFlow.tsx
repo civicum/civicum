@@ -100,8 +100,6 @@ export default function OnboardingFlow() {
     // Helper para saber si estamos en modo oscuro localmente (incluso si theme==="system")
     const isDarkMode = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-    const isDarkMode = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-
     // Force exact string class logic to avoid Tailwind conflicts
     const globalBgClass = isDarkMode
         ? 'bg-[#0f172a] text-white'
