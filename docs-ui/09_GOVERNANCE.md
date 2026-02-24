@@ -4,7 +4,13 @@
 
 ## Decisiones que debe contener
 
-- [ ] Roles: quién propone, quién revisa, quién aprueba cambios de UI
+- [x] Roles: quién propone, quién revisa, quién aprueba cambios de UI (ver tabla + §Modo Solo Dev)
+
+| Rol | Responsabilidad | En modo Solo Dev |
+|-----|-----------------|------------------|
+| **Autor (Proponente)** | Crea el ADR con contexto, decisión, alternativas | El desarrollador |
+| **Revisor** | Valida contra checklist de aceptación (4 puntos) | El mismo desarrollador |
+| **Aprobador** | Marca `Aceptado` + fecha en el ADR | El mismo desarrollador |
 - [ ] Proceso ADR: flujo completo (propuesta → revisión → aceptación → implementación → verificación)
 - [ ] Frecuencia de auditoría: cuándo se revisa que código ↔ docs estén sincronizados
 - [ ] Criterio de "Done UI": checklist completa (referenciada desde `README.md`)

@@ -64,7 +64,7 @@ Las siguientes fuentes del repo son **material legítimo** del cual extraer regl
 
 1. **Proponer:** Crear un ADR en `/adr-ui/` usando la plantilla `ADR-0000-template.md`
 2. **Revisar:** El ADR debe incluir contexto, decisión, alternativas y consecuencias
-3. **Aceptar:** El ADR se marca como `Aceptado` tras revisión del responsable de UI
+3. **Aceptar:** El ADR se marca como `Aceptado` tras revisión del responsable de UI (ver `09_GOVERNANCE.md` — Modo Solo Dev)
 4. **Implementar:** Solo después de aceptación se modifica código
 5. **Verificar:** El cambio debe reflejarse en el archivo correspondiente del pack (00–09)
 
@@ -74,13 +74,13 @@ Las siguientes fuentes del repo son **material legítimo** del cual extraer regl
 
 ### Done UI — Pantallas (Views)
 
-- [ ] **AppShell:** Renderiza correctamente dentro de `AppLayout` (o layout propio si es standalone como Onboarding)
+- [ ] **AppShell:** Renderiza correctamente dentro de `AppLayout` (o layout standalone **solo si está explícitamente definido en `03_LAYOUTS` y referenciado en `04_NAVIGATION`**)
 - [ ] **Tokens:** Usa exclusivamente tokens del Design System Terracota (sin colores hardcodeados)
 - [ ] **Estados:** Implementa al menos: normal, loading (skeleton/spinner), empty (con CTA), error (con retry)
 - [ ] **Accesibilidad mínima:** Contraste AA (4.5:1 texto, 3:1 UI), focus-visible, labels ARIA en interactivos
 - [ ] **Visual baseline:** Screenshot desktop + mobile si la pantalla está marcada como "golden"
 - [ ] **Dark mode:** Responde a la fuente de tema definida en el sistema (ver `01_TOKENS` / `03_LAYOUTS`)
-- [ ] **Responsive:** Funciona en 360px–1536px sin overflow horizontal
+- [ ] **Responsive:** Cumple los breakpoints definidos en `03_LAYOUTS` (mínimo móvil y desktop) sin overflow horizontal
 
 ### Done UI — Componentes (UI Kit)
 
