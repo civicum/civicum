@@ -12,10 +12,10 @@
 | **Revisor** | Valida contra checklist de aceptación (4 puntos) | El mismo desarrollador |
 | **Aprobador** | Marca `Aceptado` + fecha en el ADR | El mismo desarrollador |
 - [x] Proceso ADR: flujo completo (ver `docs-ui/README.md` — Proceso de Cambio)
-- [ ] Frecuencia de auditoría: cuándo se revisa que código ↔ docs estén sincronizados
+- [x] Frecuencia de auditoría: al cierre de cada gate se verifica que código ↔ docs estén sincronizados
 - [x] Criterio de "Done UI": checklist completa (definido en `docs-ui/README.md` — Definición de Done UI)
 - [x] Gates de calidad: qué verifica cada gate (ver §Gates abajo)
-- [ ] Deprecación de componentes: cómo se retira un componente del catálogo
+- [x] Deprecación de componentes: marcar como `@deprecated` en 02_COMPONENTS + ADR que justifique remoción; no se elimina archivo hasta gate posterior
 - [ ] Versionado del pack: cuándo se incrementa versión de los docs 00–09
 - [ ] Escalamiento: qué pasa si hay desacuerdo en una decisión de UI
 
@@ -51,4 +51,3 @@ Si los 4 puntos se cumplen, el ADR se marca `Aceptado`.
 ## TODO
 
 - Importar reglas de `docs/governance/` relevantes para UI
-- Documentar proceso de deprecación (no aplica aún, pero la estructura debe existir)

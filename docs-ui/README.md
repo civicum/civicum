@@ -87,7 +87,7 @@ Las siguientes fuentes del repo son **material legítimo** del cual extraer regl
 - [ ] **Tokens:** Usa exclusivamente tokens del Design System Terracota
 - [ ] **Estados:** Implementa estados relevantes (disabled, loading, error) si aplica al componente
 - [ ] **Accesibilidad mínima:** Contraste AA, focus-visible, labels ARIA
-- [ ] **Evidencia:** Storybook/Playground `/ui-kit` + screenshots generados vía Playwright (o herramienta definida) en `tests/visual/ui-kit/`
+- [ ] **Evidencia:** Storybook/Playground `/ui-kit` + screenshots generados vía Playwright en `tests/visual/ui-kit/`; cambiar herramienta requiere ADR aceptado
 
 ---
 
