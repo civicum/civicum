@@ -13,7 +13,11 @@
 
 ## Evidencia exigida en Gate 4
 
-> Todo componente listado debe tener correspondencia 1:1 con un archivo en `src/components/ui/` o `src/components/`. Toda variante debe estar demostrada en al menos un screenshot de baseline.
+> Todo componente listado debe tener correspondencia 1:1 con un archivo en `src/components/ui/` o `src/components/`.
+>
+> **Variantes:** Deben estar demostradas en un Storybook, Playground o página interna `/ui-kit` con screenshot automático por variante.
+>
+> **Baseline visual (`tests/visual/baseline/`):** Reservado para pantallas golden completas (como las de Época 1). No se usa para demostrar variantes individuales de componentes.
 
 ---
 

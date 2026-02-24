@@ -23,6 +23,22 @@ Esto incluye:
 
 Si un patrón o decisión de esos documentos debe ser normativo, **debe importarse** formalmente mediante un ADR o incorporarse en el archivo correspondiente de este pack (00–09).
 
+## 📚 Fuentes Permitidas para Extracción (Gate 2)
+
+Las siguientes fuentes del repo son **material legítimo** del cual extraer reglas, tokens, patrones y restricciones para importar a `/docs-ui/`:
+
+| Fuente | Ubicación | Tipo de contenido |
+|--------|-----------|-------------------|
+| UX / Copywriting | `/docs/ux/` | Tono Terracota, microcopy, reglas de redacción |
+| Knowledge Base | `/docs/knowledge-base/` | Design System, módulos MVP, arquitectura técnica, decisiones F-01–F-47, identidad de marca |
+| Master Plan | `/docs/roadmap/CIVICUM_ULTIMATE_MASTER_PLAN.md` | Épocas, módulos, requisitos de performance y a11y |
+| Anexos Técnicos | `/docs/knowledge-base/CIVICUM_Anexo_Arquitectura_Tecnica_Completa.docx.md` | Stack, offline tiers, breakpoints, auth levels |
+| Anexos Legales | `/docs/legal/` | Disclaimers, términos de servicio, compliance |
+| Governance | `/docs/governance/` | Anti-dark-patterns, coherencia de marca, ética |
+
+> [!IMPORTANT]
+> Estas fuentes **no son normativas hasta ser importadas** en un archivo del pack (`/docs-ui/00–09`) o formalizadas en un ADR (`/adr-ui/`). La extracción debe citar siempre el DOCREF de origen.
+
 ---
 
 ## 📦 Mapa del UI Architecture Pack
