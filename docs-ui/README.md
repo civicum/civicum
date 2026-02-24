@@ -66,7 +66,7 @@ Las siguientes fuentes del repo son **material legítimo** del cual extraer regl
 2. **Revisar:** El ADR debe incluir contexto, decisión, alternativas y consecuencias
 3. **Aceptar:** El ADR se marca como `Aceptado` tras revisión del responsable de UI (ver `09_GOVERNANCE.md` — Modo Solo Dev)
 4. **Implementar:** Solo después de aceptación se modifica código
-5. **Verificar:** El cambio debe reflejarse en el archivo correspondiente del pack (00–09)
+5. **Verificar:** El cambio debe reflejarse en el archivo correspondiente del pack (00–09) y en `traceability_matrix.md` (cuando exista)
 
 ---
 
@@ -78,7 +78,7 @@ Las siguientes fuentes del repo son **material legítimo** del cual extraer regl
 - [ ] **Tokens:** Usa exclusivamente tokens del Design System Terracota (sin colores hardcodeados)
 - [ ] **Estados:** Implementa al menos: normal, loading (skeleton/spinner), empty (con CTA), error (con retry)
 - [ ] **Accesibilidad mínima:** Contraste AA (4.5:1 texto, 3:1 UI), focus-visible, labels ARIA en interactivos
-- [ ] **Visual baseline:** Screenshot desktop + mobile si la pantalla está marcada como "golden"
+- [ ] **Visual baseline:** Screenshot desktop + mobile si la pantalla está registrada en [`golden_screens.md`](./golden_screens.md). Cambios a esa lista requieren ADR aceptado.
 - [ ] **Dark mode:** Responde a la fuente de tema definida en el sistema (ver `01_TOKENS` / `03_LAYOUTS`)
 - [ ] **Responsive:** Cumple los breakpoints definidos en `03_LAYOUTS` (mínimo móvil y desktop) sin overflow horizontal
 
@@ -87,7 +87,7 @@ Las siguientes fuentes del repo son **material legítimo** del cual extraer regl
 - [ ] **Tokens:** Usa exclusivamente tokens del Design System Terracota
 - [ ] **Estados:** Implementa estados relevantes (disabled, loading, error) si aplica al componente
 - [ ] **Accesibilidad mínima:** Contraste AA, focus-visible, labels ARIA
-- [ ] **Evidencia:** Demostrado en Storybook, Playground o página interna `/ui-kit` con screenshot automático por variante
+- [ ] **Evidencia:** Storybook/Playground `/ui-kit` + screenshots generados vía Playwright (o herramienta definida) en `tests/visual/ui-kit/`
 
 ---
 

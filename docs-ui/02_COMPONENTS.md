@@ -15,7 +15,7 @@
 
 > Todo componente listado debe tener correspondencia 1:1 con un archivo en `src/components/ui/` o `src/components/`.
 >
-> **Variantes:** Deben estar demostradas en un Storybook, Playground o página interna `/ui-kit` con screenshot automático por variante.
+> **Variantes:** Deben estar demostradas en Storybook, Playground o página interna `/ui-kit` con screenshots generados vía Playwright (o herramienta definida) en `tests/visual/ui-kit/`.
 >
 > **Baseline visual (`tests/visual/baseline/`):** Reservado para pantallas golden completas (como las de Época 1). No se usa para demostrar variantes individuales de componentes.
 

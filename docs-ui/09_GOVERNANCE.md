@@ -11,9 +11,9 @@
 | **Autor (Proponente)** | Crea el ADR con contexto, decisión, alternativas | El desarrollador |
 | **Revisor** | Valida contra checklist de aceptación (4 puntos) | El mismo desarrollador |
 | **Aprobador** | Marca `Aceptado` + fecha en el ADR | El mismo desarrollador |
-- [ ] Proceso ADR: flujo completo (propuesta → revisión → aceptación → implementación → verificación)
+- [x] Proceso ADR: flujo completo (ver `docs-ui/README.md` — Proceso de Cambio)
 - [ ] Frecuencia de auditoría: cuándo se revisa que código ↔ docs estén sincronizados
-- [ ] Criterio de "Done UI": checklist completa (referenciada desde `README.md`)
+- [x] Criterio de "Done UI": checklist completa (definido en `docs-ui/README.md` — Definición de Done UI)
 - [x] Gates de calidad: qué verifica cada gate (ver §Gates abajo)
 - [ ] Deprecación de componentes: cómo se retira un componente del catálogo
 - [ ] Versionado del pack: cuándo se incrementa versión de los docs 00–09
