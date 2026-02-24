@@ -19,7 +19,7 @@
 |------|--------|--------------|
 | **Gate 0** | Baseline / Inventario | Branch de control, inventario de rutas y componentes, screenshots golden |
 | **Gate 1** | SSOT / ADR / Skeleton | Declaración SSOT, sistema ADR, skeleton del pack 00–09 |
-| **Gate 2** | Extracción Documental | Extrae reglas de `/docs/` → las inyecta en 00–09 con DOCREF. Matriz de trazabilidad |
+| **Gate 2** | Extracción Documental | Extrae reglas desde fuentes permitidas → construye matriz de trazabilidad con DOCREF + conflicts/gaps. No completa 00–09 aún |
 | **Gate 3** | Resolución de Conflictos | Resuelve contradicciones entre fuentes mediante ADRs. Cada conflicto = 1 ADR |
 | **Gate 4** | Pack Completo + Auditoría | Completa 00–09 con reglas + DOCREFs. Auditoría código ↔ docs (0 drift) |
 | **Gate 5+** | Implementación + Retrofit | Aplica reglas del pack al código real. Tests. Visual regression |
@@ -30,8 +30,19 @@
 
 ---
 
+## Modo Solo Dev (1 desarrollador)
+
+> **Autor propone ADR → Autor revisa con checklist de aceptación → Aceptación registrada en el ADR con estado `Aceptado` + fecha.**
+
+En un proyecto con un solo desarrollador, el autor cumple ambos roles (propuesta y revisión). La checklist de revisión es:
+- [ ] ¿El ADR cita DOCREF o justificación técnica?
+- [ ] ¿Las alternativas son reales (no strawman)?
+- [ ] ¿Las consecuencias incluyen riesgos?
+- [ ] ¿No contradice ADRs anteriores aceptados?
+
+Si los 4 puntos se cumplen, el ADR se marca `Aceptado`.
+
 ## TODO
 
-- Definir roles para proyecto de 1 desarrollador (autor = revisor con checklist)
 - Importar reglas de `docs/governance/` relevantes para UI
 - Documentar proceso de deprecación (no aplica aún, pero la estructura debe existir)

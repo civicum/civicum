@@ -17,7 +17,7 @@ Todo componente, token, patrón de navegación, contrato de layout o regla de ac
 
 Esto incluye:
 - Documentos en `/docs/knowledge-base/` (son fuente de investigación, no especificaciones ejecutables)
-- Documentos en `/docs/ux/` (son guías históricas de tono, no contratos de implementación)
+- Documentos en `/docs/ux/` (son fuentes de diseño/copy; no normativas hasta importarlas vía ADR o consolidarlas en `/docs-ui`)
 - Conversaciones previas de desarrollo (contexto, no norma)
 - Mockups o wireframes no formalizados
 
@@ -72,15 +72,22 @@ Las siguientes fuentes del repo son **material legítimo** del cual extraer regl
 
 ## ✅ Definición de "Done UI" (nivel mínimo)
 
-Una pantalla o componente se considera "Done UI" si cumple **todos** estos criterios:
+### Done UI — Pantallas (Views)
 
 - [ ] **AppShell:** Renderiza correctamente dentro de `AppLayout` (o layout propio si es standalone como Onboarding)
 - [ ] **Tokens:** Usa exclusivamente tokens del Design System Terracota (sin colores hardcodeados)
 - [ ] **Estados:** Implementa al menos: normal, loading (skeleton/spinner), empty (con CTA), error (con retry)
 - [ ] **Accesibilidad mínima:** Contraste AA (4.5:1 texto, 3:1 UI), focus-visible, labels ARIA en interactivos
-- [ ] **Visual baseline:** Tiene screenshot en `tests/visual/baseline/` en desktop y mobile
-- [ ] **Dark mode:** Responde al tema del `useUIStore` (si aplica al contexto de la pantalla)
+- [ ] **Visual baseline:** Screenshot desktop + mobile si la pantalla está marcada como "golden"
+- [ ] **Dark mode:** Responde a la fuente de tema definida en el sistema (ver `01_TOKENS` / `03_LAYOUTS`)
 - [ ] **Responsive:** Funciona en 360px–1536px sin overflow horizontal
+
+### Done UI — Componentes (UI Kit)
+
+- [ ] **Tokens:** Usa exclusivamente tokens del Design System Terracota
+- [ ] **Estados:** Implementa estados relevantes (disabled, loading, error) si aplica al componente
+- [ ] **Accesibilidad mínima:** Contraste AA, focus-visible, labels ARIA
+- [ ] **Evidencia:** Demostrado en Storybook, Playground o página interna `/ui-kit` con screenshot automático por variante
 
 ---
 
