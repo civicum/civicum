@@ -1,0 +1,40 @@
+# 🕳️ Gate 2 — Gaps Log
+
+**Propósito:** Registro de reglas que deberían existir pero no tienen fuente (o la fuente es insuficiente). No se resuelven aquí — opciones listadas para Gate 3+.
+
+---
+
+## Gaps Detectados
+
+| GAP_ID | Qué falta | Dónde debería estar | Impacto | Opciones para resolver |
+|--------|-----------|---------------------|---------|----------------------|
+| GAP-001 | Ruta 404: no existe ninguna pantalla ni ruta catch-all para URLs inválidas | `04_NAVIGATION` (routing) y código `src/App.tsx` | ALTO | (A) Crear ruta catch-all con redirect a Dashboard, (B) Crear pantalla 404 personalizada con tono "Vecino Organizado" y CTA, (C) Pantalla 404 + sugerencias tipo "¿Buscabas…?" |
+| GAP-002 | Error handling geolocalización: no hay fallback visual definido si la geolocalización falla durante onboarding | `08_STATES_OFFLINE_PERF` y `05_PATTERNS` (onboarding) | MEDIO | (A) Fallback silencioso a selector de comuna manual, (B) Toast informativo + selector manual, (C) Dialog explícito con opciones "Intentar de nuevo" / "Elegir manualmente" |
+| GAP-003 | Persistencia de borrador onboarding: no hay definición de guardado parcial en IndexedDB | `08_STATES_OFFLINE_PERF` | MEDIO | (A) Guardar en localStorage por step, (B) Guardar en IndexedDB por step con TTL 7 días, (C) No guardar — requerir completar en una sesión (aceptar pérdida) |
+| GAP-004 | Smart Dock: falta tab "Más" y badges de notificación en implementación Época 1 | `04_NAVIGATION` + `02_COMPONENTS` | MEDIO | (A) Implementar "Más" como bottom sheet con módulos secundarios, (B) Implementar como drawer lateral, (C) Posponer a Época 2 cuando los módulos secundarios existan |
+| GAP-005 | Dark mode: no hay definición de tokens/layouts para dark mode en ninguna fuente | `01_TOKENS`, `03_LAYOUTS`, `00_UI_CONTRACT` | ALTO | (A) Definir paleta dark mode completa (Terracota sobre fondos oscuros), (B) Dark mode = Azul Profundo base + tokens invertidos, (C) Posponer dark mode a Época 3+ (priorizar funcionalidad) |
+| GAP-006 | Estados loading/error no implementados en pantallas de Época 1 (Dashboard, Perfil) | `08_STATES_OFFLINE_PERF` y código Época 1 | ALTO | (A) Implementar 5 estados en todas las pantallas existentes en Gate 5, (B) Implementar solo loading+error en Gate 5 (empty y offline en Época 2+), (C) Crear componentes genéricos de estado y dejar integración para cada módulo |
+| GAP-007 | Tipografía: spec define Nunito Sans + IBM Plex Sans + IBM Plex Mono, pero código Época 1 usa solo Inter. No hay fuente que autorice explícitamente Inter como alternativa. | `01_TOKENS` (tipografía) | ALTO | (A) Migrar a Nunito Sans + IBM Plex Sans (según spec), (B) Crear ADR para mantener Inter como decisión nueva, (C) Usar Inter para body + Nunito Sans para headings (híbrido) |
+| GAP-008 | PWA Assets: faltan favicon, OG image, splash icons según spec | `08_STATES_OFFLINE_PERF` (PWA) | MEDIO | (A) Generar todos los assets según spec §18.1 en Gate 5, (B) Generar mínimo (favicon + 192px + 512px) ahora, (C) Posponer a Época 4 (deploy) |
+
+---
+
+## Mapeo GAPs → Inventario Época 1
+
+| GAP_ID | GAP Inventario (epoch1_inventory.md) | Reglas candidatas en la matriz |
+|--------|---------------------------------------|-------------------------------|
+| GAP-001 | G1 (No 404 route) | UI-NAV-008 |
+| GAP-002 | G2 (No geo fallback) | — (ninguna regla extraída, fuente insuficiente) |
+| GAP-004 | G8 (Smart Dock lacks "More" tab) | UI-CMP-006 |
+| GAP-005 | G4 + G7 (Dark mode incompleto en Dashboard + AppLayout) | UI-LAY-007 |
+| GAP-006 | — (detectado por inventario general) | UI-STP-009 |
+| GAP-007 | — (detectado al comparar código vs spec) | — |
+| GAP-008 | G13 (Missing PWA assets) | — (regla existe en spec pero no se extrajo como rule atómica) |
+
+---
+
+## Notas
+
+- Los GAPs de **impacto ALTO** son: GAP-001 (404), GAP-005 (dark mode), GAP-006 (estados), GAP-007 (tipografía).
+- GAP-005 (dark mode) es especial: **no hay ninguna fuente que defina dark mode para Terracota**. Las fuentes solo mencionan light mode. Se necesita un ADR para definirlo.
+- GAP-007 (tipografía) puede ser un CONFLICTO encubierto si se descubre que Inter fue elegido intencionalmente.
