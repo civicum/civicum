@@ -19,7 +19,7 @@
 
 ---
 
-## 2. Muestreo de Precisión (20 reglas en 8 categorías)
+## 2. Muestreo de Precisión (20 reglas en 9 categorías)
 
 ### CONTRACT
 
