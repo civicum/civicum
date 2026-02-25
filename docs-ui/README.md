@@ -78,7 +78,7 @@ Las siguientes fuentes del repo son **material legítimo** del cual extraer regl
 - [ ] **Tokens:** Usa exclusivamente tokens del Design System Terracota (sin colores hardcodeados)
 - [ ] **Estados:** Implementa al menos: normal, loading (skeleton/spinner), empty (con CTA), error (con retry)
 - [ ] **Accesibilidad mínima:** Contraste AA (4.5:1 texto, 3:1 UI), focus-visible, labels ARIA en interactivos
-- [ ] **Visual baseline:** Screenshot desktop + mobile si la pantalla está registrada en [`golden_screens.md`](./golden_screens.md). Cambios a esa lista requieren ADR aceptado.
+- [ ] **Visual baseline:** Screenshot desktop + mobile solo si la pantalla está registrada en [`golden_screens.md`](./golden_screens.md) y su **Estado = Completo**. Cambios a esa lista requieren ADR aceptado.
 - [ ] **Dark mode:** Responde a la fuente de tema definida en el sistema (ver `01_TOKENS` / `03_LAYOUTS`)
 - [ ] **Responsive:** Cumple los breakpoints definidos en `03_LAYOUTS` (mínimo móvil y desktop) sin overflow horizontal
 

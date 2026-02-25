@@ -14,11 +14,12 @@
 | 4 | Onboarding Paso 1 (Pacto Cívico) | `/onboarding` | `step1` | splash2 → click "Siguiente" | `04_…desktop.png` | — | Parcial |
 | 5 | Onboarding Paso 2 (Territorio) | `/onboarding` | `step2` | step1 → click "Acepto" | `05_…desktop.png` | — | Parcial |
 | 6 | Onboarding Paso 3 (Identidad) | `/onboarding` | `step3` | step2 → seleccionar comuna → "Siguiente" | `06_…desktop.png` | — | Parcial |
-| 7 | Onboarding Paso 5 (Listo) | `/onboarding` | `step5` | step3 → "Entendido" → step4 → "Siguiente" | `07_…desktop.png` | — | Parcial |
-| 8 | Dashboard (Pulso Cívico) | `/` | `dashboard` | Completar onboarding → redirect `/` | `08_…desktop.png` | `12_…mobile.png` | Completo |
-| 9 | Perfil — Resumen | `/perfil` | `profile-overview` | Dashboard → click "Mi Perfil" | — | `13_…mobile.png` | Parcial |
-| 10 | Perfil — Verificación | `/perfil` | `profile-verification` | Perfil → tab "Estado de Verificación" | — | `14_…mobile.png` | Parcial |
-| 11 | Perfil — Ajustes | `/perfil` | `profile-settings` | Perfil → tab "Ajustes App" | — | `15_…mobile.png` | Parcial |
+| 7 | Onboarding Paso 4 (Elige tus Batallas) | `/onboarding` | `step4` | step3 → click "Entendido" | — | — | Pendiente |
+| 8 | Onboarding Paso 5 (Listo) | `/onboarding` | `step5` | step4 → click "Siguiente" | `07_…desktop.png` | — | Parcial |
+| 9 | Dashboard (Pulso Cívico) | `/` | `dashboard` | Completar onboarding → redirect `/` | `08_…desktop.png` | `12_…mobile.png` | Completo |
+| 10 | Perfil — Resumen | `/perfil` | `profile-overview` | Dashboard → click "Mi Perfil" | — | `13_…mobile.png` | Parcial |
+| 11 | Perfil — Verificación | `/perfil` | `profile-verification` | Perfil → tab "Estado de Verificación" | — | `14_…mobile.png` | Parcial |
+| 12 | Perfil — Ajustes | `/perfil` | `profile-settings` | Perfil → tab "Ajustes App" | — | `15_…mobile.png` | Parcial |
 
 **Leyenda de Estado:**
 - **Completo:** Screenshot desktop + mobile presentes
