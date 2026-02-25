@@ -8,14 +8,14 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Total reglas | 63 |
-| OK | 57 (90.5%) |
-| CONFLICTO | 2 (3.2%) |
-| GAP | 4 (6.3%) |
+| Total reglas | 74 |
+| OK | 69 (93.2%) |
+| CONFLICTO | 2 (2.7%) |
+| GAP | 3 (4.1%) |
 | Reglas sin DOCREF | **0** ✅ |
 | Categorías cubiertas | 10/10 |
 | Fuentes en Source Map | 17 |
-| Fuentes activamente usadas | 5 |
+| Fuentes activamente usadas | 4 |
 
 ---
 
@@ -173,9 +173,9 @@
 | Criterio "DONE" Gate 2 | Cumple |
 |------------------------|--------|
 | Matriz existe | ✅ `traceability_matrix.md` |
-| 0 reglas sin DOCREF | ✅ (0/63) |
+| 0 reglas sin DOCREF | ✅ (0/74) |
 | Conflictos registrados | ✅ 2 en `conflicts_log.md` |
-| Gaps registrados | ✅ 8 en `gaps_log.md` |
+| Gaps registrados | ✅ 8 en `gaps_log.md` (3 elevados a GAP rules en matriz) |
 | Muestreo 20 reglas | ✅ 20/20 verificados en 8 categorías |
 | No cambios UI/código | ✅ Solo archivos .md en docs-ui/ y adr-ui/ |
 

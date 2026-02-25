@@ -2,9 +2,9 @@
 
 **Gate:** Gate 2 — Extracción Documental
 **Fecha:** 2026-02-24
-**Total reglas:** 63
-**Fuentes:** 5 documentos activos (ver `_gate2/source_map.md`)
-**Convenciones:** S01=UI/UX Definitivo, S02=Design System, S03=Decisiones F01-F47, S04=Arq. Técnica, S07=Anti-Dark-Patterns
+**Total reglas:** 74
+**Fuentes:** 4 documentos activos (ver `_gate2/source_map.md`)
+**Convenciones:** S01=UI/UX Definitivo, S02=Design System Terracota, S03=Decisiones F01-F47, S07=Anti-Dark-Patterns
 
 ---
 
@@ -156,9 +156,9 @@
 
 | Métrica | Valor |
 |---------|-------|
-| **Total reglas** | 63 |
-| **OK** | 57 |
+| **Total reglas** | 74 |
+| **OK** | 69 |
 | **CONFLICTO** | 2 |
-| **GAP** | 4 |
+| **GAP** | 3 |
 | **Sin DOCREF** | 0 |
 | **Categorías** | 10 |

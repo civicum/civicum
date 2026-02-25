@@ -14,7 +14,7 @@
 | S01 | `/docs/knowledge-base/CIVICUM_Diseno_UI_UX_Definitivo.md` | UX / Design | Documento canónico: 21 secciones, tokens, tipografía, breakpoints, componentes, navegación, estados, a11y, microcopy, animaciones, onboarding, atmósferas | Usada |
 | S02 | `/docs/knowledge-base/CIVICUM_Anexo_Design_System_Terracota.docx.md` | Design System | Paleta completa, escalas de color, semántica, contrastes WCAG, CSS variables, dark mode, tipografía, espaciado | Usada |
 | S03 | `/docs/knowledge-base/CIVICUM_Anexo_Decisiones_F01_F47_Exhaustivo.docx.md` | Producto / Decisiones | 47 decisiones formales: F-01 MVP, F-02 honestidad, F-03 datos mínimos, F-05 apartidismo, F-07 offline dignity, F-08 gamificación, F-09 coherencia marca, F-14 modo lite, F-45 testing | Usada |
-| S04 | `/docs/knowledge-base/CIVICUM_Anexo_Arquitectura_Tecnica_Completa.docx.md` | Tech / Arquitectura | Stack, Core Web Vitals por tier, offline-first strategy, 3 tiers de experiencia, service worker | Usada |
+| S04 | `/docs/knowledge-base/CIVICUM_Anexo_Arquitectura_Tecnica_Completa.docx.md` | Tech / Arquitectura | Stack, Core Web Vitals por tier, offline-first strategy, 3 tiers de experiencia, service worker | Revisada sin reglas nuevas (cubierta por S01/S03) |
 | S05 | `/docs/knowledge-base/CIVICUM_Identidad_de_Marca_Propuesta_Mision_Vision_Manifiesto.md` | Marca / Identidad | Misión, visión, manifiesto, tono de voz, valores de marca | Revisada sin reglas nuevas (cubierta por S01/S02) |
 | S06 | `/docs/knowledge-base/CIVICUM_Anexo_Modulos_MVP_Especificacion_Exhaustiva.docx.md` | Producto | Especificación MVP por módulo, flujos, pantallas | Revisada sin reglas nuevas (cubierta por S01) |
 | S07 | `/docs/governance/anti-dark-patterns.md` | Governance / Ética | 20+ prohibiciones de dark patterns organizadas por categoría: onboarding, notificaciones, gamificación, retención, contenido | Usada |
@@ -33,7 +33,7 @@
 
 ## Reglas del Source Map
 
-1. **Solo las fuentes marcadas "Usada"** han generado reglas en la matriz de trazabilidad.
+1. **Solo las fuentes marcadas "Usada"** han generado reglas en la matriz de trazabilidad. Fuentes activas: S01, S02, S03, S07.
 2. **"Revisada sin reglas nuevas"** = se leyó y las reglas relevantes ya están cubiertas por otra fuente.
 3. Ninguna regla en `traceability_matrix.md` puede tener un DOCREF a una fuente no listada aquí.
 4. Nuevas fuentes descubiertas en gates posteriores deben añadirse aquí primero.
