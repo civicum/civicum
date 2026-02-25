@@ -16,7 +16,7 @@
 - [x] Criterio de "Done UI": checklist completa (definido en `docs-ui/README.md` — Definición de Done UI)
 - [x] Gates de calidad: qué verifica cada gate (ver §Gates abajo)
 - [x] Deprecación de componentes: marcar como `@deprecated` en 02_COMPONENTS + ADR que justifique remoción; no se elimina archivo hasta gate posterior
-- [ ] Versionado del pack: cuándo se incrementa versión de los docs 00–09
+- [x] Versionado del pack: SemVer adaptado (ver [`PACK_VERSION.md`](../docs-ui/PACK_VERSION.md))
 - [x] Escalamiento: si hay conflicto entre documentos fuente, se crea un ADR de conflicto y se congela la implementación de UI relacionada hasta que el ADR se marque `Aceptado`
 
 ## Gates de Calidad UI (v1)

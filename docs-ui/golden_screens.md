@@ -36,3 +36,4 @@
 4. **Convención de naming:** `Step Key` es el ID canónico de cada pantalla (estable e inmutable). `NN_` es solo orden de sorting histórico — no se renumeran archivos al insertar pantallas nuevas. Pantallas nuevas reciben el siguiente `NN_` disponible.
 5. Los screenshots de **componentes individuales** (UI Kit) van en `tests/visual/ui-kit/`, no aquí.
 6. **Una pantalla solo cuenta para "Done UI → Visual baseline" cuando su Estado = Completo.**
+7. **Completar viewport faltante (Parcial → Completo):** cuando una pantalla existente está Parcial y se agrega el screenshot faltante (desktop o mobile), debe usar el **mismo `NN_`** y el **mismo basename** que el screenshot existente; solo cambia el sufijo de viewport (`_desktop` / `_mobile`). Esto NO cuenta como pantalla nueva y NO consume un `NN_` nuevo.

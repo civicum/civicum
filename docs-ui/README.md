@@ -56,6 +56,20 @@ Las siguientes fuentes del repo son **material legítimo** del cual extraer regl
 | 08 | [08_STATES_OFFLINE_PERF.md](./08_STATES_OFFLINE_PERF.md) | Estados de UI (loading/empty/error), offline y performance |
 | 09 | [09_GOVERNANCE.md](./09_GOVERNANCE.md) | Gobernanza UI: proceso de cambio, roles, auditoría |
 
+## 🧩 Artefactos Transversales (SSOT auxiliares)
+
+| Artefacto | Ubicación | Propósito |
+|-----------|-----------|----------|
+| `golden_screens.md` | `/docs-ui/` | Registro canónico de pantallas golden (ADR-gated) |
+| `epoch1_inventory.md` | `/docs-ui/` | Baseline funcional/documental (Época 1, no normativo) |
+| `traceability_matrix.md` | `/docs-ui/` | Matriz DOCREF — se crea en Gate 2 |
+| `PACK_VERSION.md` | `/docs-ui/` | Versionado SemVer del pack 00–09 |
+| `tests/visual/baseline/` | `/tests/` | Evidencia visual de pantallas golden |
+| `tests/visual/ui-kit/` | `/tests/` | Evidencia visual de variantes de componentes (UI Kit) |
+
+> [!NOTE]
+> Si un cambio afecta a cualquiera de estos artefactos, debe actualizarse la trazabilidad (y aplicar ADR cuando corresponda: golden list / herramienta de evidencia).
+
 ---
 
 ## 🔄 Proceso de Cambio
@@ -88,6 +102,18 @@ Las siguientes fuentes del repo son **material legítimo** del cual extraer regl
 - [ ] **Estados:** Implementa estados relevantes (disabled, loading, error) si aplica al componente
 - [ ] **Accesibilidad mínima:** Contraste AA, focus-visible, labels ARIA
 - [ ] **Evidencia:** Storybook/Playground `/ui-kit` + screenshots generados vía Playwright en `tests/visual/ui-kit/`; cambiar herramienta requiere ADR aceptado
+
+## 📘 Glosario Operativo
+
+| Término | Definición |
+|---------|------------|
+| **AppLayout** | Layout principal de la app: estructura global que contiene header, main y Smart Dock |
+| **AppShell** | "Cascarón" visual y navegacional dentro del AppLayout (top nav, dock, zonas de contenido) |
+| **Standalone Layout** | Layout alternativo permitido **solo** si está definido en `03_LAYOUTS` y referenciado en `04_NAVIGATION` |
+| **Golden Screen** | Pantalla crítica para regresión visual, registrada en `golden_screens.md` |
+| **Step Key** | ID canónico e inmutable de una pantalla dentro de un flujo (ej.: `splash0`, `dashboard`) |
+| **DOCREF** | Referencia verificable a fuente original: ruta + sección + cita corta |
+| **Done UI** | Criterio mínimo de completitud para pantallas o componentes (definido arriba) |
 
 ---
 
