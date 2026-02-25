@@ -176,7 +176,7 @@
 | 0 reglas sin DOCREF | ✅ (0/74) |
 | Conflictos registrados | ✅ 2 en `conflicts_log.md` |
 | Gaps registrados | ✅ 8 en `gaps_log.md` (3 elevados a GAP rules en matriz) |
-| Muestreo 20 reglas | ✅ 20/20 verificados en 8 categorías |
+| Muestreo 20 reglas | ✅ 20/20 verificados en 9 categorías |
 | No cambios UI/código | ✅ Solo archivos .md en docs-ui/ y adr-ui/ |
 
 **Gate 2: COMPLETO.** Listo para Gate 3 (resolución de conflictos vía ADR).
