@@ -139,7 +139,7 @@
 | Métrica | Valor |
 |---------|-------|
 | Reglas muestreadas | 20 |
-| Categorías cubiertas | 8 (CONTRACT, TOKENS, COMPONENTS, LAYOUTS, NAVIGATION, CONTENT, A11Y, STATES, GOVERNANCE) |
+| Categorías cubiertas | 9 (CONTRACT, TOKENS, COMPONENTS, LAYOUTS, NAVIGATION, CONTENT, A11Y, STATES/PERF, GOVERNANCE) |
 | DOCREFs verificados ✅ | 20/20 |
 | Correcciones necesarias | 0 |
 

@@ -37,5 +37,5 @@
 
 - **Backlog gaps = 8; GAP rules en `traceability_matrix.md` = 3** (los que carecen de fuente suficiente para volverse regla: UI-LAY-007, UI-NAV-008, UI-STP-009).
 - Los GAPs de **impacto ALTO** son: GAP-001 (404), GAP-005 (dark mode), GAP-006 (estados), GAP-007 (tipografía).
-- GAP-005 (dark mode) es especial: **no hay ninguna fuente que defina dark mode para Terracota**. Las fuentes solo mencionan light mode. Se necesita un ADR para definirlo.
-- GAP-007 (tipografía) puede ser un CONFLICTO encubierto si se descubre que Inter fue elegido intencionalmente.
+- GAP-005 (dark mode): las fuentes mencionan dark mode como criterio y referencia, pero **no contienen una definición implementable** de tokens/layouts. Se necesita un ADR para establecerlo.
+- GAP-007 (tipografía): es una **desviación de implementación vs spec** (Inter en código vs Nunito Sans/IBM Plex en spec). En Gate 3 se resuelve vía ADR como *decisión*, no como ausencia.
