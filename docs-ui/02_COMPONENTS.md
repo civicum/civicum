@@ -15,7 +15,7 @@
 
 > Todo componente listado debe tener correspondencia 1:1 con un archivo en `src/components/ui/` o `src/components/`.
 >
-> **Ubicación del UI Kit:** Storybook (preferido) o una ruta interna `/ui-kit` si Storybook no está disponible. La ubicación elegida debe documentarse aquí al implementarse.
+> **Ubicación del UI Kit:** Storybook (preferido) o una ruta interna `/ui-kit` si Storybook no está disponible (= no ejecuta localmente o no ejecuta en CI). La ubicación elegida debe documentarse aquí al implementarse.
 >
 > **Variantes:** Deben estar demostradas en Storybook, Playground o página interna `/ui-kit` con screenshots generados vía Playwright en `tests/visual/ui-kit/`. Cambiar herramienta requiere ADR aceptado.
 >

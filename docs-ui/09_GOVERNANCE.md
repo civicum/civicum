@@ -17,7 +17,7 @@
 - [x] Gates de calidad: qué verifica cada gate (ver §Gates abajo)
 - [x] Deprecación de componentes: marcar como `@deprecated` en 02_COMPONENTS + ADR que justifique remoción; no se elimina archivo hasta gate posterior
 - [ ] Versionado del pack: cuándo se incrementa versión de los docs 00–09
-- [ ] Escalamiento: qué pasa si hay desacuerdo en una decisión de UI
+- [x] Escalamiento: si hay conflicto entre documentos fuente, se crea un ADR de conflicto y se congela la implementación de UI relacionada hasta que el ADR se marque `Aceptado`
 
 ## Gates de Calidad UI (v1)
 
