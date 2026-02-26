@@ -19,7 +19,9 @@ El código de Época 1 usa Tailwind defaults. Esto genera CONFLICT-002 entre la 
 
 ## Decisión (propuesta)
 
-Extender la configuración de Tailwind (`tailwind.config.ts`) con los breakpoints de la spec. **Esto es un breaking change para clases `sm:`** (pasan de 640px a 480px):
+Proponemos alinear la configuración de Tailwind con los breakpoints de S01 (DOCREF: S01 → §6.1, L618). **Moska elige estrategia al aprobar:** Opción A (alias sin override) u Opción B (override + alias temporal de migración) — ver sección "Compatibilidad / Migración" más abajo.
+
+Configuración objetivo (Opción B, si se elige override):
 
 ```js
 screens: {
@@ -32,7 +34,7 @@ screens: {
 }
 ```
 
-Auditar el código existente para clases `sm:` que asumían 640px y ajustar.
+**Si se elige Opción B, esto es un breaking change para clases `sm:`** (pasan de 640px a 480px). Auditar el código existente para clases `sm:` que asumían 640px y ajustar.
 
 > **Baseline histórico vs validación S4:** Los breakpoints Tailwind defaults (sm=640px) son el baseline histórico del código actual. El objetivo de esta migración no es solo alinear con la spec, sino habilitar la **validación S4** (Android Go, 360px) como criterio de aceptación real (DOCREF: S01 → §6.2, L629). El breakpoint `xs: 360px` es el umbral mínimo de diseño; `sm: 480px` cubre móviles medianos donde la mayoría de usuarios chilenos opera.
 

@@ -25,12 +25,12 @@ Implementar `data-module` en el contenedor raíz de cada módulo, asignando el a
 
 Las CSS variables `--module-accent` y `--module-bg` se definirán con los selectores `[data-module="xxx"]`.
 
-> **Nota:** "Círculos" no aparece como módulo en la spec de diseño (S01). Si se añade como módulo en futuras épocas, se deberá extender esta lista con DOCREF correspondiente.
+> **Nota — Círculos:** "Círculos" no aparece como módulo en la spec de diseño (S01). Si existen rutas de producto que actúan como módulo (ej. `/circulos`) pero no están en S01, el atributo debe usar un valor `unknown` temporal o requerir ADR de "definición de módulos" antes de implementar theming para ese módulo. No se deben inventar valores `data-module` sin DOCREF.
 
 ## Alternativas Consideradas
 
 ### Alternativa A: Implementar vía `data-module` en contenedor raíz (propuesta)
-- **Pros:** Alineado 1:1 con la spec, CSS puro (sin JS para theming), un solo punto de control
+- **Pros:** Alineado 1:1 con la spec, theming vía CSS variables (un solo punto de control); el valor de `data-module` se deriva en runtime (ruteo)
 - **Contras:** Requiere refactor del AppLayout para inyectar el atributo dinámicamente
 
 ### Alternativa B: Implementar vía Zustand + className condicional
