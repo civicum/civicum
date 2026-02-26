@@ -40,7 +40,7 @@ screens: {
 
 ## Alternativas Consideradas
 
-### Alternativa 1: Extender Tailwind con breakpoints de la spec (propuesta)
+### Alternativa 1: Extender Tailwind con breakpoints de la spec (alternativa recomendada)
 - **Pros:** Alineación 1:1 con spec, habilita diseño real para Android Go (360px), `sm` a 480px cubre mejor el rango móvil medio (hipótesis a validar con analytics)
 - **Contras:** **Breaking change**: clases `sm:` existentes ahora aplican desde 480px (no 640px). Inventario actual: estimación ~1 archivo afectado (verificar con `grep` antes de implementar)
 
@@ -60,7 +60,7 @@ screens: {
 
 ## Verificación (Gate 5+)
 
-- Golden screenshots: desktop + mobile (360px) para todas las golden screens
+- Golden screenshots (solo `golden_screens.md` con Estado=Completo): desktop + mobile (360px)
 - Visual regression: Playwright en 360px, 480px, 768px, 1024px
 - E2E: Verificar que Smart Dock pasa de bottom bar a side rail en LG (1024px)
 

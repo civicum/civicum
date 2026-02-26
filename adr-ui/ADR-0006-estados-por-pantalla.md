@@ -51,7 +51,7 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 
 ## Consecuencias
 
-- **Positivas:** Cierra GAP-006, experiencia degradada digna (F-07), skeleton elimina CLS, retry reduce frustración
+- **Positivas:** Cierra GAP-006, experiencia degradada digna (F-07), skeleton ayuda a reducir CLS si matchea layout real, retry reduce frustración
 - **Negativas:** ~8-12h implementación, posible cambio en golden screenshots existentes
 - **Riesgos:** Skeleton layout debe coincidir con layout real para evitar CLS al cargar. Mitigación: diseñar skeleton que matchee estructura de cards/forms.
 
