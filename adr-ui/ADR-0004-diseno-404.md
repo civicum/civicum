@@ -1,7 +1,9 @@
 # ADR-0004: Diseño de pantalla 404
 
-- **Estado:** PROPOSED
+- **Estado:** ACCEPTED
 - **Fecha:** 2026-02-25
+- **Daniel decision:** ACCEPTED — opción elegida: A (única propuesta)
+- **Decision date:** 2026-02-26
 - **Autor:** Antigravity (para aprobación de Moska)
 - **Afecta:** UI-NAV-008 | GAP-001
 - **Supersede:** —

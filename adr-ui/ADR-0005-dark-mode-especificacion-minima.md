@@ -1,7 +1,9 @@
 # ADR-0005: Dark mode — especificación mínima implementable
 
-- **Estado:** PROPOSED
+- **Estado:** ACCEPTED
 - **Fecha:** 2026-02-25
+- **Daniel decision:** ACCEPTED — opción elegida: A (única propuesta)
+- **Decision date:** 2026-02-26
 - **Autor:** Antigravity (para aprobación de Moska)
 - **Afecta:** UI-LAY-007 | GAP-005
 - **Supersede:** —

@@ -76,9 +76,9 @@ Ejemplos:
 | # | Título | Estado | Fecha |
 |---|--------|--------|-------|
 | [ADR-0001](./ADR-0001-ssot-ui-docs.md) | SSOT para documentación UI | ACCEPTED | 2026-02-24 |
-| [ADR-0002](./ADR-0002-data-module-atmosferas.md) | `data-module` para atmósferas cromáticas | PROPOSED | 2026-02-25 |
-| [ADR-0003](./ADR-0003-breakpoints-oficiales-vs-tailwind.md) | Breakpoints oficiales vs Tailwind defaults | PROPOSED | 2026-02-25 |
-| [ADR-0004](./ADR-0004-diseno-404.md) | Diseño de pantalla 404 | PROPOSED | 2026-02-25 |
-| [ADR-0005](./ADR-0005-dark-mode-especificacion-minima.md) | Dark mode — especificación mínima | PROPOSED | 2026-02-25 |
-| [ADR-0006](./ADR-0006-estados-por-pantalla.md) | Estados obligatorios por pantalla (5-state) | PROPOSED | 2026-02-25 |
-| [ADR-0007](./ADR-0007-tipografia-decision.md) | Tipografía — Inter vs Nunito Sans + IBM Plex | PROPOSED | 2026-02-25 |
+| [ADR-0002](./ADR-0002-data-module-atmosferas.md) | `data-module` para atmósferas cromáticas | ACCEPTED | 2026-02-26 |
+| [ADR-0003](./ADR-0003-breakpoints-oficiales-vs-tailwind.md) | Breakpoints oficiales vs Tailwind defaults | ACCEPTED | 2026-02-26 |
+| [ADR-0004](./ADR-0004-diseno-404.md) | Diseño de pantalla 404 | ACCEPTED | 2026-02-26 |
+| [ADR-0005](./ADR-0005-dark-mode-especificacion-minima.md) | Dark mode — especificación mínima | ACCEPTED | 2026-02-26 |
+| [ADR-0006](./ADR-0006-estados-por-pantalla.md) | Estados obligatorios por pantalla (5-state) | ACCEPTED | 2026-02-26 |
+| [ADR-0007](./ADR-0007-tipografia-decision.md) | Tipografía — Inter vs Nunito Sans + IBM Plex | ACCEPTED | 2026-02-26 |

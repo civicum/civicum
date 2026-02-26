@@ -1,7 +1,9 @@
 # ADR-0007: Tipografía — Inter (actual) vs Nunito Sans + IBM Plex (spec)
 
-- **Estado:** PROPOSED
+- **Estado:** ACCEPTED
 - **Fecha:** 2026-02-25
+- **Daniel decision:** ACCEPTED — opción elegida: A (única propuesta)
+- **Decision date:** 2026-02-26
 - **Autor:** Antigravity (para aprobación de Moska)
 - **Afecta:** GAP-007
 - **Nota:** No existe UI_RULE_ID tipográfico en la matriz de trazabilidad; se consolidará en Gate 4 al crear regla en `01_TOKENS` con DOCREF.

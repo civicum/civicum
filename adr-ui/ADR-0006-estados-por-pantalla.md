@@ -1,7 +1,9 @@
 # ADR-0006: Estados obligatorios por pantalla (5-state pattern)
 
-- **Estado:** PROPOSED
+- **Estado:** ACCEPTED
 - **Fecha:** 2026-02-25
+- **Daniel decision:** ACCEPTED — opción elegida: A (única propuesta)
+- **Decision date:** 2026-02-26
 - **Autor:** Antigravity (para aprobación de Moska)
 - **Afecta:** UI-STP-001, UI-STP-002, UI-STP-003, UI-STP-004, UI-STP-005, UI-STP-009 | GAP-006
 - **Supersede:** —

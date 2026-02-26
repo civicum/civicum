@@ -1,7 +1,9 @@
 # ADR-0002: Implementación de `data-module` para cambio de atmósfera cromática
 
-- **Estado:** PROPOSED
+- **Estado:** ACCEPTED
 - **Fecha:** 2026-02-25
+- **Daniel decision:** ACCEPTED — opción elegida: A (única propuesta)
+- **Decision date:** 2026-02-26
 - **Autor:** Antigravity (para aprobación de Moska)
 - **Afecta:** UI-TOK-007, UI-NAV-004, UI-PAT-002 | CONFLICT-001
 - **Supersede:** —

@@ -1,7 +1,9 @@
 # ADR-0003: Breakpoints oficiales vs Tailwind defaults
 
-- **Estado:** PROPOSED
+- **Estado:** ACCEPTED
 - **Fecha:** 2026-02-25
+- **Daniel decision:** ACCEPTED — opción elegida: B (override + alias temporal de migración)
+- **Decision date:** 2026-02-26
 - **Autor:** Antigravity (para aprobación de Moska)
 - **Afecta:** UI-LAY-001, UI-LAY-004, UI-CMP-006 | CONFLICT-002
 - **Supersede:** —
