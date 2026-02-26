@@ -21,25 +21,27 @@ GAP-006 identifica esta ausencia. Las reglas existen (UI-STP-001 a UI-STP-005) p
 
 ## Decisión (propuesta)
 
-Implementar un **5-state pattern** como componentes reutilizables y aplicarlos a todas las pantallas:
+Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar los 5 estados definidos en la spec (DOCREF: S01 → §12, L1356).
 
 ### Los 5 estados
 
-| Estado | Componente | Comportamiento | Cuándo aplica |
-|--------|-----------|----------------|---------------|
-| **Loading** | `<ScreenSkeleton>` | Shimmer animation (Gris100→200→100, 1.5s infinite) | Fetch inicial de datos |
-| **Empty** | `<EmptyState>` | Ilustración + copy contextual + CTA | Datos cargados = 0 resultados |
-| **Error** | `<ErrorState>` | Toast Terracota + mensaje humano + retry | Fetch falló |
-| **Offline** | `<OfflineBanner>` | Banner top informativo (no alarma) + funcionalidad degradada | `navigator.onLine === false` |
-| **Success** | (inline) | Checkmark verde + texto confirmatorio | Post-acción completada |
+| Estado | Comportamiento esperado | Cuándo aplica |
+|--------|------------------------|---------------|
+| **Loading** | Skeleton shimmer (DOCREF: S01 → §12.2, L1381) | Fetch inicial de datos |
+| **Empty** | Ilustración contextual + copy + CTA (DOCREF: S01 → §12.3, L1387) | Datos cargados = 0 resultados |
+| **Error** | Feedback Terracota + mensaje humano + opción retry (DOCREF: S01 → §12.1, L1359) | Fetch o acción falló |
+| **Offline** | Banner informativo (no alarma) + funcionalidad degradada (DOCREF: S01 → §12.1, L1360) | Sin conectividad |
+| **Success** | Confirmación visual + texto confirmatorio | Post-acción completada |
 
 ### Aplicación por pantalla (Época 1)
 
+Cada pantalla de Época 1 debe integrar los estados aplicables:
+
 | Pantalla | Loading | Empty | Error | Offline | Success |
 |----------|---------|-------|-------|---------|---------|
-| Dashboard | Skeleton cards | "Tu camino cívico comienza aquí" + CTA | Toast + retry | Banner + datos cacheados | — |
-| Perfil | Skeleton form | — (siempre hay datos del usuario) | Toast + retry | Banner + datos locales | "Cambios guardados" |
-| Onboarding | — (no fetcha datos) | — | Dialog + opción reiniciar | Banner + continuar offline | "¡Bienvenido!" |
+| Dashboard | ✓ | ✓ | ✓ | ✓ (datos cacheados) | — |
+| Perfil | ✓ | — (siempre hay datos) | ✓ | ✓ (datos locales) | ✓ |
+| Onboarding | — (no fetcha datos) | — | ✓ | ✓ (continuar offline) | ✓ |
 
 ## Alternativas Consideradas
 
@@ -70,11 +72,14 @@ Implementar un **5-state pattern** como componentes reutilizables y aplicarlos a
 
 ## Plan de implementación (no ejecutar aún)
 
-1. Crear componentes en `src/components/feedback/`: `ScreenSkeleton`, `EmptyState`, `ErrorState`, `OfflineBanner`
-2. Crear hook `useScreenState(fetchFn)` que retorna `{ state, data, retry }`
-3. Integrar en Dashboard, Perfil (Onboarding solo offline banner)
-4. Capturar screenshots de cada estado para `tests/visual/ui-kit/`
-5. Actualizar golden screenshots si aplica
+1. **Componentes sugeridos** (nombres y ubicación TBD):
+   - Skeleton screen, Empty state, Error state, Offline banner — como componentes reutilizables
+   - Ej. ubicación: `src/components/feedback/` (TBD)
+2. **Hook sugerido:** wrapper que encapsule fetch + state machine → retorna `{ state, data, retry }` (API TBD)
+3. Detección offline: vía API del navegador (ej. `navigator.onLine`, Connection API) — implementación TBD
+4. Integrar en Dashboard, Perfil (Onboarding solo offline banner)
+5. Capturar screenshots de cada estado para visual regression
+6. Actualizar golden screenshots si aplica
 
 ## Referencias
 

@@ -3,7 +3,8 @@
 - **Estado:** PROPOSED
 - **Fecha:** 2026-02-25
 - **Autor:** Antigravity (para aprobación de Moska)
-- **Afecta:** UI-TOK-001 (indirectamente), GAP-007
+- **Afecta:** GAP-007
+- **Nota:** No existe UI_RULE_ID tipográfico en la matriz de trazabilidad; se consolidará en Gate 4 al crear regla en `01_TOKENS` con DOCREF.
 - **Supersede:** —
 
 ---

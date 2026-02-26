@@ -22,13 +22,11 @@ Esto genera GAP-005: la regla existe como criterio, pero no hay especificación 
 **Posponer dark mode a Época 3+**, con las siguientes condiciones:
 
 1. **Época 1-2:** Solo tema claro. Eliminarlo de Done UI como bloqueante; mantenerlo como aspiración documentada.
-2. **Época 3 (prerrequisito):** Crear spec de tokens dark mode en `01_TOKENS.md` con paleta derivada:
-   - Background: Gris 900 (`#111827`) base
-   - Surface: Gris 800 (`#1F2937`)
-   - Text primary: Gris 50 (`#F9FAFB`)
-   - Acentos: los 4 colores primarios con ajuste de luminosidad (+10-15% para contraste sobre oscuro)
-3. **Activación:** Via `prefers-color-scheme: dark` + toggle manual en Settings
-4. **Criterio de implementación:** Todos los contrastes WCAG AA deben verificarse en ambos temas antes de marcar dark mode como "hecho"
+2. **Época 3 (prerrequisito):** Crear spec de tokens dark mode en `01_TOKENS.md`. Requisitos verificables:
+   - (i) Dark mode se define vía **tokens semánticos** (background, surface, text-primary, accent) — valores concretos TBD en la spec de tokens.
+   - (ii) Activación **class-based** (`[data-theme="dark"]`) + respeto a `prefers-color-scheme` del usuario.
+   - (iii) **Contraste WCAG AA** en ambos temas como condición de "Done".
+3. **Criterio de aceptación:** No se marca dark mode como "hecho" hasta que los 3 requisitos anteriores se cumplan y verifiquen.
 
 ## Alternativas Consideradas
 
@@ -42,7 +40,7 @@ Esto genera GAP-005: la regla existe como criterio, pero no hay especificación 
 
 ### Alternativa C: Eliminar dark mode del roadmap completamente
 - **Pros:** Simplifica, no hay deuda
-- **Contras:** Ignora 40-60% usuarios móviles que usan dark mode, viola accesibilidad (AMOLED battery saving), competitivamente débil
+- **Contras:** Ignora una proporción significativa de usuarios móviles que prefieren dark mode (hipótesis a validar con datos reales), reduce opciones de accesibilidad, competitivamente débil
 
 ## Consecuencias
 
@@ -67,7 +65,7 @@ Esto genera GAP-005: la regla existe como criterio, pero no hay especificación 
 - DOCREF: `docs-ui/README.md` → Done UI → "Dark mode" (L82)
 - DOCREF: `docs-ui/_gate2/gaps_log.md` → GAP-005
 - DOCREF: `docs/knowledge-base/CIVICUM_Anexo_Design_System_Terracota.docx.md` (dark mode mencionado sin tokens)
-- Referencia: `/docs/ux/amoled-true-black-battery-survival.md` (consideraciones battery)
+- Hipótesis a validar: beneficio de batería AMOLED con dark mode — requiere datos reales antes de usar como argumento de decisión
 
 ---
 

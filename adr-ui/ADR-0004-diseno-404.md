@@ -19,17 +19,18 @@ Ninguna fuente de diseño define explícitamente una pantalla 404, por lo que es
 
 ## Decisión (propuesta)
 
-Crear una pantalla 404 personalizada con tono "Vecino Organizado", que incluya:
+Crear una pantalla 404 personalizada alineada al tono CIVICUM: empática, directa, no técnica, no culpabilizante (ref: UI-CNT-001, DOCREF: S01 → §15.1 L1500; UI-CNT-004, DOCREF: S01 → §15.4 L1532).
+
+Requisitos funcionales:
 
 1. **Logo CIVICUM** centrado (isotipo, no texto completo)
-2. **Copy principal:** "Esta página no existe — pero tu camino cívico sí."
-3. **Copy secundario:** "Quizás la dirección cambió o escribiste algo distinto."
-4. **CTA primario:** "Ir al Inicio" → `/` (Dashboard)
-5. **CTA secundario:** "Explorar módulos" → abre Smart Dock
-6. **Navegación:** Smart Dock permanece visible (no standalone layout)
-7. **Registro:** log del URL intentado para detección de enlaces rotos (analytics privacy-first)
-
-**Ruta:** React Router catch-all `<Route path="*" element={<NotFoundPage />} />`
+2. **Copy principal y secundario:** *(Copy propuesto — requiere aprobación Moska)*
+   - "Esta página no existe — pero tu camino cívico sí."
+   - "Quizás la dirección cambió o escribiste algo distinto."
+3. **CTA primario:** Acción que lleve al inicio (Dashboard)
+4. **CTA secundario:** Acción que permita explorar módulos
+5. **Navegación:** Smart Dock permanece visible (no standalone layout)
+6. **Registro:** log del URL intentado para detección de enlaces rotos (analytics privacy-first)
 
 ## Alternativas Consideradas
 
@@ -49,7 +50,7 @@ Crear una pantalla 404 personalizada con tono "Vecino Organizado", que incluya:
 
 - **Positivas:** Cierra GAP-001, mejora UX de error, detecta enlaces rotos, alineada a F-02
 - **Negativas:** ~2h implementación, necesita copy aprobado
-- **Riesgos:** Copy debe validarse con tono "Vecino Organizado" (no técnico, no culpabilizante)
+- **Riesgos:** Copy debe validarse con tono CIVICUM (UI-CNT-001: empática, directa, cero paternalismo)
 
 ## Verificación (Gate 5+)
 
@@ -59,9 +60,9 @@ Crear una pantalla 404 personalizada con tono "Vecino Organizado", que incluya:
 
 ## Plan de implementación (no ejecutar aún)
 
-1. Crear `src/pages/NotFoundPage.tsx` con layout AppShell (Smart Dock visible)
-2. Agregar `<Route path="*">` en React Router
-3. Implementar copy y CTAs según decisión
+1. Ruta catch-all: configurar ruta comodín (`path="*"`) en el router (ubicación TBD)
+2. Crear componente de pantalla 404 (nombre y ubicación TBD) con layout AppShell (Smart Dock visible)
+3. Implementar copy y CTAs según decisión (pendiente aprobación Moska)
 4. Capturar golden screenshots
 5. Agregar a `golden_screens.md` si se decide que es golden (ADR separado)
 
