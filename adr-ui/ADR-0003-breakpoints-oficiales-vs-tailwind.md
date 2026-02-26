@@ -19,7 +19,7 @@ El código de Época 1 usa Tailwind defaults. Esto genera CONFLICT-002 entre la 
 
 ## Decisión (propuesta)
 
-Extender la configuración de Tailwind (`tailwind.config.ts`) con los breakpoints de la spec, manteniendo compatibilidad:
+Extender la configuración de Tailwind (`tailwind.config.ts`) con los breakpoints de la spec. **Esto es un breaking change para clases `sm:`** (pasan de 640px a 480px):
 
 ```js
 screens: {
@@ -32,13 +32,15 @@ screens: {
 }
 ```
 
-Auditar el código existente para clases `sm:` que asumían 640px y ajustar si es necesario.
+Auditar el código existente para clases `sm:` que asumían 640px y ajustar.
+
+> **Baseline histórico vs validación S4:** Los breakpoints Tailwind defaults (sm=640px) son el baseline histórico del código actual. El objetivo de esta migración no es solo alinear con la spec, sino habilitar la **validación S4** (Android Go, 360px) como criterio de aceptación real (DOCREF: S01 → §6.2, L629). El breakpoint `xs: 360px` es el umbral mínimo de diseño; `sm: 480px` cubre móviles medianos donde la mayoría de usuarios chilenos opera.
 
 ## Alternativas Consideradas
 
 ### Alternativa A: Extender Tailwind con breakpoints de la spec (propuesta)
 - **Pros:** Alineación 1:1 con spec, habilita diseño real para Android Go (360px), `sm` a 480px cubre mejor la realidad móvil chilena
-- **Contras:** Rompe clases `sm:` existentes (ahora aplican desde 480px, no 640px), requiere auditoría de ~todos los archivos con `sm:`
+- **Contras:** **Breaking change**: clases `sm:` existentes ahora aplican desde 480px (no 640px). Inventario actual: estimación ~1 archivo afectado (verificar con `grep` antes de implementar)
 
 ### Alternativa B: Mantener Tailwind defaults + alias custom
 - **Pros:** No rompe nada existente, cero regresión
@@ -51,8 +53,8 @@ Auditar el código existente para clases `sm:` que asumían 640px y ajustar si e
 ## Consecuencias
 
 - **Positivas:** S4 (Android Go 360px) tiene breakpoint dedicado, diseño mobile-first real, spec y código alineados
-- **Negativas:** Requiere auditoría de clases `sm:` existentes (~15-30 archivos estimados), posible regresión visual en breakpoint 480-640px
-- **Riesgos:** Si hay muchas clases `sm:` que asumen 640px, el refactor puede ser significativo. Mitigación: buscar `sm:` en codebase antes de implementar.
+- **Negativas:** Requiere auditoría de clases `sm:` existentes (estimación preliminar: ~1 archivo; verificar con grep real antes de implementar), posible regresión visual en rango 480-640px
+- **Riesgos:** Si hay clases `sm:` que asumen 640px, el cambio puede causar regresión visual. Mitigación: `grep -r "sm:" webapp/src/` antes de implementar para inventario exacto.
 
 ## Verificación (Gate 5+)
 
@@ -62,7 +64,7 @@ Auditar el código existente para clases `sm:` que asumían 640px y ajustar si e
 
 ## Plan de implementación (no ejecutar aún)
 
-1. `grep -r "sm:" src/` → inventariar todas las clases afectadas
+1. `grep -r "sm:" webapp/src/` → inventariar todas las clases afectadas (estimación preliminar: ~1 archivo)
 2. Actualizar `tailwind.config.ts` con nuevos breakpoints
 3. Auditar y ajustar cada archivo donde `sm:` asumía 640px
 4. Build + visual check en 360px, 480px, 768px, 1024px

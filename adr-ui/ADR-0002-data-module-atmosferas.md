@@ -19,7 +19,13 @@ El código de Época 1 **no implementa** `data-module`. El AppLayout y las vista
 
 ## Decisión (propuesta)
 
-Implementar `data-module` en el componente `AppLayout` (o equivalente contenedor raíz de cada módulo), asignando el atributo según la ruta activa. Los 6 valores serán: `mi-civicum`, `academia`, `civia`, `alza-la-voz`, `cuentas-claras`, `voto-ciudadano`. Las CSS variables `--module-accent` y `--module-bg` se definirán en `tokens.css` con los selectores `[data-module="xxx"]`.
+Implementar `data-module` en el contenedor raíz de cada módulo, asignando el atributo según la ruta activa. Los valores corresponden a los 6 módulos definidos en la spec (DOCREF: S01 → §2.7, L351-371 selectores CSS; S01 → §20, L1749-1754 estructura de carpetas):
+
+`mi-civicum`, `academia`, `civia`, `alza-la-voz`, `cuentas-claras`, `voto-ciudadano`
+
+Las CSS variables `--module-accent` y `--module-bg` se definirán con los selectores `[data-module="xxx"]`.
+
+> **Nota:** "Círculos" no aparece como módulo en la spec de diseño (S01). Si se añade como módulo en futuras épocas, se deberá extender esta lista con DOCREF correspondiente.
 
 ## Alternativas Consideradas
 
@@ -38,7 +44,7 @@ Implementar `data-module` en el componente `AppLayout` (o equivalente contenedor
 ## Consecuencias
 
 - **Positivas:** Resuelve CONFLICT-001, habilita regresión visual por módulo, establece convención para Época 2+
-- **Negativas:** Requiere ~2-4h de implementación en AppLayout + tokens.css
+- **Negativas:** Estimación ~2-4h de implementación en contenedor raíz + tokens CSS
 - **Riesgos:** Si se elige Alternativa C, la deuda se multiplica con cada módulo nuevo. Si se elige A, hay riesgo bajo de regresión en las 2 vistas existentes.
 
 ## Verificación (Gate 5+)
@@ -49,9 +55,9 @@ Implementar `data-module` en el componente `AppLayout` (o equivalente contenedor
 
 ## Plan de implementación (no ejecutar aún)
 
-1. Agregar CSS variables `[data-module="xxx"]` en `src/styles/tokens.css`
-2. En `AppLayout.tsx`, derivar `data-module` de la ruta activa (React Router `useLocation`)
-3. Aplicar `data-module` al contenedor principal (`<main>` o `<div id="app-content">`)
+1. Agregar CSS variables `[data-module="xxx"]` en archivo de tokens (ubicación TBD)
+2. En el contenedor raíz (ej. `AppLayout`), derivar `data-module` de la ruta activa (mecanismo TBD)
+3. Aplicar `data-module` al contenedor principal
 4. Verificar desktop + mobile para Dashboard y Perfil
 5. Actualizar golden screenshots si los colores cambian visiblemente
 
