@@ -67,6 +67,12 @@ Esto genera GAP-005: la regla existe como criterio, pero no hay especificación 
 - DOCREF: `docs/knowledge-base/CIVICUM_Anexo_Design_System_Terracota.docx.md` (dark mode mencionado sin tokens)
 - Hipótesis a validar: beneficio de batería AMOLED con dark mode — requiere datos reales antes de usar como argumento de decisión
 
+## Cierre de loop (Gate 4, si se aprueba este ADR)
+
+- Actualizar `docs-ui/README.md` → Done UI para reflejar que Dark Mode no bloquea Época 1–2.
+- Actualizar `docs-ui/traceability_matrix.md` → UI-LAY-007 para anotar decisión tomada y referencia a este ADR.
+- GAP-005 pasa de backlog a "decisión tomada" en `gaps_log.md`.
+
 ---
 
 > ✅ **Aprobación (Moska): PENDIENTE** — no ejecutar implementación hasta aprobación.

@@ -37,8 +37,8 @@ Eliminar Inter del proyecto.
 ## Alternativas Consideradas
 
 ### Alternativa A: Migrar a Nunito Sans + IBM Plex (spec) (propuesta)
-- **Pros:** Alineación 1:1 con spec, coherencia marca F-09, tier system correcto, fuentes diseñadas para el propósito de CIVICUM (cercanía + seriedad + datos)
-- **Contras:** Regresión visual (todo el texto cambia), ~4-6h refactor, ~120KB peso fonts (mitigado por tiers)
+- **Pros:** Alineación 1:1 con spec (DOCREF: S01 → §3.1, L383), tier system alineado con spec (DOCREF: S01 → §3.3, L433), fuentes diseñadas para el propósito de CIVICUM (cercanía + seriedad + datos)
+- **Contras:** Regresión visual (todo el texto cambia), estimación ~4-6h refactor, estimación ~120KB peso fonts (mitigado por tiers)
 
 ### Alternativa B: Mantener Inter (formalizar como decisión nueva)
 - **Pros:** Cero regresión, Inter es excelente font, ya implementada
@@ -50,8 +50,8 @@ Eliminar Inter del proyecto.
 
 ## Consecuencias
 
-- **Positivas:** Coherencia total con spec F-09, cada familia cumple un rol semántico claro (heading ≠ body ≠ datos), tier system optimiza performance
-- **Negativas:** Regresión visual completa, peso de fonts en HIGH tier (~120KB), refactor de CSS/Tailwind font config
+- **Positivas:** Coherencia total con spec tipográfica (S01 → §3.1), cada familia cumple un rol semántico claro (heading ≠ body ≠ datos), tier system optimiza performance (S01 → §3.3)
+- **Negativas:** Regresión visual completa, peso estimado de fonts en HIGH tier (~120KB), refactor de CSS/Tailwind font config
 - **Riesgos:** Si los contrastes tipográficos cambian, golden screenshots necesitan recaptura. Mitigación: implementar después de golden screenshots migration.
 
 ## Verificación (Gate 5+)
@@ -73,10 +73,9 @@ Eliminar Inter del proyecto.
 
 ## Referencias
 
-- DOCREF: `docs/knowledge-base/CIVICUM_Diseno_UI_UX_Definitivo.md` §3.1 (L383-414)
-- DOCREF: `docs/knowledge-base/CIVICUM_Diseno_UI_UX_Definitivo.md` §3.3 (L433) — tiers
+- DOCREF: `docs/knowledge-base/CIVICUM_Diseno_UI_UX_Definitivo.md` §3.1 (L383-414) — familias tipográficas
+- DOCREF: `docs/knowledge-base/CIVICUM_Diseno_UI_UX_Definitivo.md` §3.3 (L433) — tiers de carga tipográfica
 - DOCREF: `docs-ui/_gate2/gaps_log.md` → GAP-007
-- DOCREF: `docs/knowledge-base/CIVICUM_Anexo_Decisiones_F01_F47_Exhaustivo.docx.md` → F-09 (L469)
 
 ---
 

@@ -31,17 +31,9 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 | **Empty** | Ilustración contextual + copy + CTA (DOCREF: S01 → §12.3, L1387) | Datos cargados = 0 resultados |
 | **Error** | Feedback Terracota + mensaje humano + opción retry (DOCREF: S01 → §12.1, L1359) | Fetch o acción falló |
 | **Offline** | Banner informativo (no alarma) + funcionalidad degradada (DOCREF: S01 → §12.1, L1360) | Sin conectividad |
-| **Success** | Confirmación visual + texto confirmatorio | Post-acción completada |
+| **Success** | Confirmación visual + texto confirmatorio + siguiente paso (DOCREF: S01 → §12, L1361) | Post-acción completada |
 
-### Aplicación por pantalla (Época 1)
 
-Cada pantalla de Época 1 debe integrar los estados aplicables:
-
-| Pantalla | Loading | Empty | Error | Offline | Success |
-|----------|---------|-------|-------|---------|---------|
-| Dashboard | ✓ | ✓ | ✓ | ✓ (datos cacheados) | — |
-| Perfil | ✓ | — (siempre hay datos) | ✓ | ✓ (datos locales) | ✓ |
-| Onboarding | — (no fetcha datos) | — | ✓ | ✓ (continuar offline) | ✓ |
 
 ## Alternativas Consideradas
 
@@ -80,6 +72,14 @@ Cada pantalla de Época 1 debe integrar los estados aplicables:
 4. Integrar en Dashboard, Perfil (Onboarding solo offline banner)
 5. Capturar screenshots de cada estado para visual regression
 6. Actualizar golden screenshots si aplica
+
+### Aplicación por pantalla — Época 1 *(hipótesis, requiere validación en implementación)*
+
+| Pantalla | Loading | Empty | Error | Offline | Success |
+|----------|---------|-------|-------|---------|---------|
+| Dashboard | ✓ | ✓ | ✓ | ✓ (datos cacheados) | — |
+| Perfil | ✓ | — (siempre hay datos) | ✓ | ✓ (datos locales) | ✓ |
+| Onboarding | — (no fetcha datos) | — | ✓ | ✓ (continuar offline) | ✓ |
 
 ## Referencias
 
