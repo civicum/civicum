@@ -60,7 +60,7 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 - UI-kit Playwright: screenshots de cada componente (skeleton, empty, error, offline banner)
 - E2E: simular offline → verificar banner + funcionalidad; simular error → verificar toast + retry
 - Golden screenshots: solo aplican si Empty es estado estable de una golden screen; Loading se verifica en UI-kit Playwright (no en golden screenshots)
-- Performance: verificar que skeleton no aumente FCP (debe ser HTML/CSS puro, no JS)
+- Performance: skeleton debe minimizar trabajo extra de JS; no debe introducir CLS; se valida con Lighthouse/Performance en Gate 5+
 
 ## Plan de implementación (no ejecutar aún)
 

@@ -19,7 +19,7 @@ El código de Época 1 usa Tailwind defaults. Esto genera CONFLICT-002 entre la 
 
 ## Decisión (propuesta)
 
-Proponemos alinear la configuración de Tailwind con los breakpoints de S01 (DOCREF: S01 → §6.1, L618). **Moska elige estrategia al aprobar:** Opción A (alias sin override) u Opción B (override + alias temporal de migración) — ver sección "Compatibilidad / Migración" más abajo.
+Proponemos alinear la configuración de Tailwind con los breakpoints de S01 (DOCREF: S01 → §6.1, L618). **Moska elige estrategia al aprobar:** Opción A (alias sin override) u Opción B (override + alias temporal de migración) — ver sección "Compatibilidad / Migración" más abajo. **Ninguna opción se implementa sin aprobación explícita.**
 
 Configuración objetivo (Opción B, si se elige override):
 
@@ -36,12 +36,12 @@ screens: {
 
 **Si se elige Opción B, esto es un breaking change para clases `sm:`** (pasan de 640px a 480px). Auditar el código existente para clases `sm:` que asumían 640px y ajustar.
 
-> **Baseline histórico vs validación S4:** Los breakpoints Tailwind defaults (sm=640px) son el baseline histórico del código actual. El objetivo de esta migración no es solo alinear con la spec, sino habilitar la **validación S4** (Android Go, 360px) como criterio de aceptación real (DOCREF: S01 → §6.2, L629). El breakpoint `xs: 360px` es el umbral mínimo de diseño; `sm: 480px` cubre móviles medianos donde la mayoría de usuarios chilenos opera.
+> **Baseline histórico vs validación S4:** Los breakpoints Tailwind defaults (sm=640px) son el baseline histórico del código actual. El objetivo de esta migración no es solo alinear con la spec, sino habilitar la **validación S4** (Android Go, 360px) como criterio de aceptación real (DOCREF: S01 → §6.2, L629). El breakpoint `xs: 360px` es el umbral mínimo de diseño; `sm: 480px` cubre móviles medianos (hipótesis: validar con analytics cuando exista).
 
 ## Alternativas Consideradas
 
 ### Alternativa A: Extender Tailwind con breakpoints de la spec (propuesta)
-- **Pros:** Alineación 1:1 con spec, habilita diseño real para Android Go (360px), `sm` a 480px cubre mejor la realidad móvil chilena
+- **Pros:** Alineación 1:1 con spec, habilita diseño real para Android Go (360px), `sm` a 480px cubre mejor el rango móvil medio (hipótesis a validar con analytics)
 - **Contras:** **Breaking change**: clases `sm:` existentes ahora aplican desde 480px (no 640px). Inventario actual: estimación ~1 archivo afectado (verificar con `grep` antes de implementar)
 
 ### Alternativa B: Mantener Tailwind defaults + alias custom

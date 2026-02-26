@@ -61,6 +61,7 @@ Requisitos funcionales:
 
 - E2E: Playwright navega a `/ruta-que-no-existe`, verifica presencia de copy + CTAs
 - Golden screenshots: 404 desktop + mobile (candidata a golden screen vía ADR)
+  - **Nota:** 404 no es golden por defecto; se agrega a `golden_screens.md` solo vía ADR explícito.
 - Test a11y: contraste, focus, aria-labels en CTAs
 
 ## Plan de implementación (no ejecutar aún)
