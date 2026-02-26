@@ -17,6 +17,11 @@ Ninguna fuente de diseño define explícitamente una pantalla 404, por lo que es
 - **DOCREF:** `docs-ui/traceability_matrix.md` → UI-NAV-008 (GAP)
 - **DOCREF:** `docs-ui/_gate2/gaps_log.md` → GAP-001
 
+## Scope
+
+- **Dentro de scope:** Este 404 es para rutas dentro de AppLayout (Smart Dock visible).
+- **Fuera de scope:** 404 para flujos standalone/onboarding queda fuera de scope y requerirá ADR separado si aparece el caso.
+
 ## Decisión (propuesta)
 
 Crear una pantalla 404 personalizada alineada al tono CIVICUM: empática, directa, no técnica, no culpabilizante (ref: UI-CNT-001, DOCREF: S01 → §15.1 L1500; UI-CNT-004, DOCREF: S01 → §15.4 L1532).

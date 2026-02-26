@@ -53,6 +53,7 @@ Eliminar Inter del proyecto.
 - **Positivas:** Coherencia total con spec tipográfica (S01 → §3.1), cada familia cumple un rol semántico claro (heading ≠ body ≠ datos), tier system optimiza performance (S01 → §3.3)
 - **Negativas:** Regresión visual completa, peso estimado de fonts en HIGH tier (~120KB), refactor de CSS/Tailwind font config
 - **Riesgos:** Si los contrastes tipográficos cambian, golden screenshots necesitan recaptura. Mitigación: implementar después de golden screenshots migration.
+- **Trade-off performance:** La migración tipográfica impacta el peso del critical pack (UI-STP-008: ≤800KB). El tier HIGH (~120KB estimado) debe validarse contra este presupuesto en Gate 5+; si lo excede, el tier system (S01 → §3.3) es el mecanismo de ajuste: degradar a MEDIUM o LOW según dispositivo. No se inventan números nuevos — la verificación real se hará con build + lighthouse en Gate 5+.
 
 ## Verificación (Gate 5+)
 

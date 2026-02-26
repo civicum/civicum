@@ -62,6 +62,44 @@ Auditar el código existente para clases `sm:` que asumían 640px y ajustar.
 - Visual regression: Playwright en 360px, 480px, 768px, 1024px
 - E2E: Verificar que Smart Dock pasa de bottom bar a side rail en LG (1024px)
 
+## Compatibilidad / Migración
+
+Dos estrategias posibles — **Moska elige cuál adoptar** al aprobar este ADR:
+
+### Opción A: Segura (alias sin override)
+
+Mantener `sm=640px` de Tailwind intacto. Agregar alias nuevos:
+
+```js
+screens: {
+  'xs': '360px',   // NUEVO
+  's480': '480px', // NUEVO — alias para SM de la spec
+  // sm, md, lg, xl, 2xl = Tailwind defaults sin tocar
+}
+```
+
+- **Pro:** Cero regresión, cero migración de clases existentes.
+- **Contra:** Diverge de nomenclatura S01 (`sm` en spec ≠ `sm` en código). Requiere ADR adicional si se desea alinear en el futuro.
+
+### Opción B: Alineada a S01 (override con alias de escape)
+
+Override `sm=480px` según spec. Agregar alias temporal `sm640=640px`:
+
+```js
+screens: {
+  'xs': '360px',    // NUEVO
+  'sm': '480px',    // OVERRIDE
+  'sm640': '640px', // ALIAS TEMPORAL — para migración de usos existentes
+  // md, lg, xl, 2xl = sin cambio
+}
+```
+
+- **Plan de migración:** Renombrar todos los usos actuales de `sm:` → `sm640:` durante implementación (inventario: estimación ~1 archivo). Una vez migrados, eliminar alias `sm640` en Época 2+.
+- **Pro:** Alineación 1:1 con spec desde el inicio.
+- **Contra:** Requiere paso de rename explícito (no "auditar" como verbo mágico).
+
+---
+
 ## Plan de implementación (no ejecutar aún)
 
 1. `grep -r "sm:" webapp/src/` → inventariar todas las clases afectadas (estimación preliminar: ~1 archivo)
