@@ -73,7 +73,9 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 5. Capturar screenshots de cada estado para visual regression
 6. Actualizar golden screenshots si aplica
 
-### Aplicación por pantalla — Época 1 *(hipótesis, requiere validación en implementación)*
+### Ejemplo no normativo — Aplicación por pantalla, Época 1
+
+> ⚠️ Esta tabla es un **ejemplo ilustrativo**, no una spec. Cada pantalla debe declarar su mapping de estados en Gate 4/5 durante implementación.
 
 | Pantalla | Loading | Empty | Error | Offline | Success |
 |----------|---------|-------|-------|---------|---------|

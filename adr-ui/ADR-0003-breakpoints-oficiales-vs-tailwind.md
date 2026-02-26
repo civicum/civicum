@@ -40,15 +40,15 @@ screens: {
 
 ## Alternativas Consideradas
 
-### Alternativa A: Extender Tailwind con breakpoints de la spec (propuesta)
+### Alternativa 1: Extender Tailwind con breakpoints de la spec (propuesta)
 - **Pros:** Alineación 1:1 con spec, habilita diseño real para Android Go (360px), `sm` a 480px cubre mejor el rango móvil medio (hipótesis a validar con analytics)
 - **Contras:** **Breaking change**: clases `sm:` existentes ahora aplican desde 480px (no 640px). Inventario actual: estimación ~1 archivo afectado (verificar con `grep` antes de implementar)
 
-### Alternativa B: Mantener Tailwind defaults + alias custom
+### Alternativa 2: Mantener Tailwind defaults + alias custom
 - **Pros:** No rompe nada existente, cero regresión
 - **Contras:** Diverge de la spec, crea confusión ("¿cuál sm uso?"), `xs` no existe como clase utility
 
-### Alternativa C: No usar breakpoints Tailwind, usar CSS custom media queries
+### Alternativa 3: No usar breakpoints Tailwind, usar CSS custom media queries
 - **Pros:** Control total, cero dependencia de convención Tailwind
 - **Contras:** Pierde beneficio de utility classes, duplica sistema, inconsistente con stack elegido
 

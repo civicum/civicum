@@ -25,7 +25,7 @@ Implementar `data-module` en el contenedor raíz de cada módulo, asignando el a
 
 Las CSS variables `--module-accent` y `--module-bg` se definirán con los selectores `[data-module="xxx"]`.
 
-> **Nota — Círculos:** "Círculos" no aparece como módulo en la spec de diseño (S01). Si existen rutas de producto que actúan como módulo (ej. `/circulos`) pero no están en S01, el atributo debe usar un valor `unknown` temporal o requerir ADR de "definición de módulos" antes de implementar theming para ese módulo. No se deben inventar valores `data-module` sin DOCREF.
+> **Nota — Círculos:** "Círculos" no aparece como módulo en la spec de diseño (S01). Si existen rutas de producto que actúan como módulo (ej. `/circulos`) pero no están en S01, el atributo debe usar un valor `unknown` temporal o requerir ADR de "definición de módulos" antes de implementar theming para ese módulo. No se deben inventar valores `data-module` sin DOCREF. `unknown` no activa atmósferas; usa tokens default (sin acento por módulo) hasta que exista ADR.
 
 ## Alternativas Consideradas
 
