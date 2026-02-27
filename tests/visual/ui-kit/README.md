@@ -22,7 +22,9 @@
 
 - **componente:** nombre en snake_case (ej. `skeleton_shimmer`, `toast_error`, `badge_dot`)
 - **variante:** tamaño o estado (ej. `sm`, `md`, `lg`, `error`, `success`)
-- **viewport:** `desktop` (1440px) o `mobile` (390px)
+- **viewport:** `desktop` (1440×900) o `mobile` (360×800)
+
+> Los snapshots deben capturarse con "Capture screenshot" (viewport), no full size. Para snapshots, lo crítico es el ancho; mantener altura fija por reproducibilidad.
 
 ## Validación CI (GAP)
 

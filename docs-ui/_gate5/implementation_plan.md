@@ -23,7 +23,7 @@
 - Si hay más usos de `sm:` de los estimados, la migración toma más tiempo
 
 **Verificación:**
-- `npx tailwindcss --content ./src/**/*.tsx --no-minify | grep "480px"` (confirmar override)
+- (desde `/webapp`) `npx tailwindcss --content ./src/**/*.tsx --no-minify | grep "480px"` (confirmar override)
 - Golden screenshots: desktop + mobile (360px) para pantallas con Estado=Completo
 - Build OK: `npm run build` sin errores
 
@@ -122,7 +122,7 @@
 **Verificación:**
 - Lighthouse: medir bundle total post-fonts; confirmar ≤800KB critical pack
 - Visual regression: comparar golden screenshots pre/post cambio
-- Performance: FCP/LCP no deben degradarse más de 200ms vs baseline
+- Performance: cumplir CWV Tier LOW (UI-STP-007): FCP≤2.0s, LCP≤4.0s, TTI≤5.0s, CLS≤0.2
 - Build OK
 
 **Rollback:** `git revert HEAD` + restaurar Inter en config

@@ -29,14 +29,16 @@ Ver lista canónica en: [`docs-ui/golden_screens.md`](../../docs-ui/golden_scree
 | Viewport | Resolución | Sufijo |
 |----------|-----------|--------|
 | Desktop | 1440×900 | `_desktop.png` |
-| Mobile | 390×844 (iPhone 14) | `_mobile.png` |
+| Mobile | 360×800 (S4 — ADR-0003) | `_mobile.png` |
+
+> **Nota:** Época 1 fue capturada a 390×844; desde Gate 5.1 la validación S4 usa 360px (ADR-0003). Cuando se regenere baseline, usar 360×800.
 
 ### Flujo de captura
 
 1. Seguir la columna "Cómo reproducir" de `golden_screens.md`
 2. Esperar que la página se estabilice (sin spinners, sin animaciones)
-3. DevTools: Ctrl+Shift+P → "Capture full size screenshot"
-4. Guardar con naming: `NN_nombre_viewport.png` (usar mismo `NN_` que el registro)
+3. DevTools: Ctrl+Shift+P → "Capture screenshot" (viewport, no full size)
+4. Guardar con naming: `NN_<step_key>_<viewport>.png` (usar mismo `NN_` y `step_key` del registro en `golden_screens.md`)
 
 ### Ejemplo
 
