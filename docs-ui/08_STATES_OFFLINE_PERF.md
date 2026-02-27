@@ -16,7 +16,7 @@
 
 ## Evidencia exigida en Gate 4
 
-> Toda pantalla debe demostrar sus 4 estados (normal, loading, empty, error) en screenshots o tests. Performance budgets deben tener medición con Lighthouse CI.
+> Toda pantalla debe demostrar sus 5 estados (loading, empty, error, offline, success) en tests o screenshots. Loading se demuestra en UI-kit Playwright. Empty se incluye en golden screenshots solo si es estado estable y la pantalla está en Estado=Completo. Error, Offline y Success se verifican vía E2E Playwright. Performance budgets deben tener medición con Lighthouse CI.
 
 ## Reglas consolidadas (Gate 4)
 

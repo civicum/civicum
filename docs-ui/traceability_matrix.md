@@ -32,8 +32,9 @@
 | UI-TOK-004 | MUST | Sombras: shadow-sm a shadow-xl | S01 → §5.2 → tabla sombras (L585) | OK | BAJO | Doc review | 4 niveles |
 | UI-TOK-005 | MUST | Border-radius: radius-sm(4px) a radius-full(9999px) | S01 → §5.3 → tabla border radius (L594) | OK | BAJO | Doc review | 5 niveles |
 | UI-TOK-006 | MUST | CSS vars :root con esquema --color-terracota-*, --color-azul-*, etc. | S01 → §2.7 → bloque CSS ":root" (L308) | OK | ALTO | Doc review | Implementación técnica |
-| UI-TOK-007 | MUST | Módulos con data-module + --module-accent / --module-bg | S01 → §2.7 → "[data-module='mi-civicum']" (L355) | OK | ALTO | Visual regression | Resolved by ADR-0002 (ACCEPTED) — Daniel. Valores: 6 módulos S01 + `unknown`=default. |
+| UI-TOK-007 | MUST | Módulos con data-module + --module-accent / --module-bg | S01 → §2.7 → "[data-module='mi-civicum']" (L355) | OK | ALTO | Visual regression | Resolved by ADR-0002 (ACCEPTED) — Daniel. Valores: 6 módulos S01 + `unknown`=default. Implementation pending Gate 5+. |
 | UI-TOK-008 | SHOULD | Amarillo Mostaza (#D4872E) siempre con texto oscuro | S02 → §1.2.1 → "Usar siempre con texto oscuro (#264653 o negro)" (L155) | OK | MEDIO | Test a11y | Contraste 2.73:1 vs blanco |
+| UI-TOK-009 | MUST | Tipografía oficial: Nunito Sans (headings/labels), IBM Plex Sans (body), IBM Plex Mono (data/mono). Tier system HIGH/MED/LOW según S01. | S01 → §3.1 (L394–396) + S01 → §3.3 (tiers) + ADR-0007 (ACCEPTED) | OK | ALTO | Performance (budget UI-STP-008) + Visual regression + Doc review | Resolved by ADR-0007 (ACCEPTED) — Daniel. Implementation pending Gate 5+. |
 
 ---
 
@@ -55,13 +56,13 @@
 
 | UI_RULE_ID | Tipo | Regla | DOCREF | Estado | Impacto | Verificación | Notas |
 |------------|------|-------|--------|--------|---------|-------------|-------|
-| UI-LAY-001 | MUST | Breakpoints mobile-first: XS=360, SM=480, MD=768, LG=1024, XL=1280, 2XL=1536 | S01 → §6.1 → tabla "Breakpoints Oficiales" (L618) | OK | ALTO | Doc review | Resolved by ADR-0003 (ACCEPTED, Opción B) — Daniel. Breaking change: sm 640→480. |
+| UI-LAY-001 | MUST | Breakpoints mobile-first: XS=360, SM=480, MD=768, LG=1024, XL=1280, 2XL=1536 | S01 → §6.1 → tabla "Breakpoints Oficiales" (L618) | OK | ALTO | Doc review | Resolved by ADR-0003 (ACCEPTED, Opción B) — Daniel. Breaking change: sm 640→480. Implementation pending Gate 5+. |
 | UI-LAY-002 | MUST | Grid: 12 columnas, gutter 24px desktop / 16px mobile, max-width 1280px | S01 → §5.4 → "Grid System" (L604) | OK | ALTO | Visual regression | |
 | UI-LAY-003 | MUST | Márgenes laterales: 16px (XS-SM), 24px (MD), 32px (LG+) | S01 → §5.4 → "Márgenes laterales" (L608) | OK | MEDIO | Visual regression | |
 | UI-LAY-004 | MUST | Smart Dock: bottom bar XS-MD, side rail LG+ | S01 → §6.3 → fila Smart Dock (L635) | OK | ALTO | E2E + Golden screenshots | |
 | UI-LAY-005 | MUST | Modales: fullscreen XS, centered 80% MD, centered 560px max LG | S01 → §6.3 → fila Modales (L637) | OK | MEDIO | E2E | |
 | UI-LAY-006 | MUST | Tablas: cards apiladas XS, responsive MD, completa LG | S01 → §6.3 → fila Tablas (L638) | OK | MEDIO | Visual regression | |
-| UI-LAY-007 | GAP | Dark mode: no hay definición de layouts/tokens para dark mode | — | GAP (DECIDED) | ALTO | — | Resolved by ADR-0005 (ACCEPTED) — Daniel. Pospuesto a Época 3+. |
+| UI-LAY-007 | GAP | Dark mode: no hay definición de layouts/tokens para dark mode | — | GAP (DECIDED) | ALTO | — | Resolved by ADR-0005 (ACCEPTED) — Daniel. Pospuesto a Época 3+. Decision taken; implementation pending Gate 5+. |
 
 ---
 
@@ -76,7 +77,7 @@
 | UI-NAV-005 | MUST | Tab bounce: scale 1.2→1, 150ms | S01 → §9.3 → "icon bounces" (L1154) | OK | BAJO | UI-kit Playwright | |
 | UI-NAV-006 | MUST | prefers-reduced-motion: corte directo | S01 → §9.3 → "corte directo sin animación" (L1158) | OK | ALTO | Test a11y | |
 | UI-NAV-007 | MUST | Breadcrumbs: máx 4 niveles, "← Volver" en mobile | S01 → §7 Nav → "Breadcrumbs" (L751) | OK | MEDIO | E2E | |
-| UI-NAV-008 | GAP | Falta ruta 404 | — | GAP (DECIDED) | ALTO | — | Resolved by ADR-0004 (ACCEPTED) — Daniel. 404 dentro de AppLayout. |
+| UI-NAV-008 | GAP | Falta ruta 404 | — | GAP (DECIDED) | ALTO | — | Resolved by ADR-0004 (ACCEPTED) — Daniel. 404 dentro de AppLayout. Decision taken; implementation pending Gate 5+. |
 
 ---
 
@@ -135,7 +136,7 @@
 | UI-STP-006 | MUST | offline.html digno con logo + capacidades + CTA | S03 → F-07 → "Dignidad = experiencia completa" (L365) | OK | ALTO | E2E | |
 | UI-STP-007 | MUST | CWV Tier LOW: FCP≤2.0s, LCP≤4.0s, TTI≤5.0s, CLS≤0.2 | S01 → §17.2 → tabla CWV (L1590) | OK | ALTO | Performance | Android Go target |
 | UI-STP-008 | MUST | Critical pack ≤800KB | S03 → F-07 → "CRITICAL_PACK_SIZE_KB: 800" (L383) | OK | ALTO | Performance | |
-| UI-STP-009 | GAP | Estados loading/error no implementados en Época 1 | — | GAP (DECIDED) | ALTO | — | Resolved by ADR-0006 (ACCEPTED) — Daniel. 5-state pattern obligatorio. |
+| UI-STP-009 | GAP | Estados loading/error no implementados en Época 1 | — | GAP (DECIDED) | ALTO | — | Resolved by ADR-0006 (ACCEPTED) — Daniel. 5-state pattern obligatorio. Decision taken; implementation pending Gate 5+. |
 
 ---
 
@@ -156,11 +157,11 @@
 
 | Métrica | Valor |
 |---------|-------|
-| **Total reglas** | 74 |
-| **OK** | 71 |
+| **Total reglas** | 75 |
+| **OK** | 72 |
 | **CONFLICTO** | 0 |
 | **GAP** | 0 |
 | **GAP (DECIDED)** | 3 |
 | **Sin DOCREF** | 0 |
 | **Categorías** | 10 |
-| **Resolved by ADR** | 5 |
+| **Resolved by ADR** | 6 |
