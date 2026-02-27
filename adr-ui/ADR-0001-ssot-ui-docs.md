@@ -1,6 +1,6 @@
 # ADR-0001: SSOT para Documentación UI
 
-- **Estado:** Aceptado
+- **Estado:** ACCEPTED
 - **Fecha:** 2026-02-24
 - **Autor:** Antigravity (Gate 1)
 - **Supersede:** Ninguno (ADR inaugural)

@@ -4,7 +4,7 @@
 - **Fecha:** 2026-02-25
 - **Daniel decision:** ACCEPTED — opción elegida: B (override + alias temporal de migración)
 - **Decision date:** 2026-02-26
-- **Autor:** Antigravity (para aprobación de Moska)
+- **Autor:** Antigravity (para aprobación de Daniel)
 - **Afecta:** UI-LAY-001, UI-LAY-004, UI-CMP-006 | CONFLICT-002
 - **Supersede:** —
 
@@ -19,9 +19,9 @@ El código de Época 1 usa Tailwind defaults. Esto genera CONFLICT-002 entre la 
 - **DOCREF:** S01 → §6.1 → tabla "Breakpoints Oficiales" (L618)
 - **DOCREF:** S01 → §6.2 → "Regla de Oro: si S4 (Android Go $50, 360px)..." (L629)
 
-## Decisión (propuesta)
+## Decisión
 
-Proponemos alinear la configuración de Tailwind con los breakpoints de S01 (DOCREF: S01 → §6.1, L618). **Moska elige estrategia al aprobar:** Opción A (alias sin override) u Opción B (override + alias temporal de migración) — ver sección "Compatibilidad / Migración" más abajo. **Ninguna opción se implementa sin aprobación explícita.**
+Proponemos alinear la configuración de Tailwind con los breakpoints de S01 (DOCREF: S01 → §6.1, L618). **Daniel eligió estrategia:** Opción B (override + alias temporal de migración) — ver sección "Compatibilidad / Migración" más abajo. **Ninguna opción se implementa sin aprobación explícita.**
 
 Configuración objetivo (Opción B, si se elige override):
 
@@ -68,7 +68,7 @@ screens: {
 
 ## Compatibilidad / Migración
 
-Dos estrategias posibles — **Moska elige cuál adoptar** al aprobar este ADR:
+Dos estrategias posibles — **Daniel eligió Opción B** al aprobar este ADR:
 
 ### Opción A: Segura (alias sin override)
 
@@ -121,4 +121,4 @@ screens: {
 
 ---
 
-> ✅ **Aprobación (Moska): PENDIENTE** — no ejecutar implementación hasta aprobación.
+> ✅ **Aprobación (Daniel): COMPLETADA** — se autoriza implementación según el plan (Gate 5+).

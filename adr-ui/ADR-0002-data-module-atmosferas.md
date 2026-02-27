@@ -4,7 +4,7 @@
 - **Fecha:** 2026-02-25
 - **Daniel decision:** ACCEPTED — opción elegida: A (única propuesta)
 - **Decision date:** 2026-02-26
-- **Autor:** Antigravity (para aprobación de Moska)
+- **Autor:** Antigravity (para aprobación de Daniel)
 - **Afecta:** UI-TOK-007, UI-NAV-004, UI-PAT-002 | CONFLICT-001
 - **Supersede:** —
 
@@ -19,7 +19,7 @@ El código de Época 1 **no implementa** `data-module`. El AppLayout y las vista
 - **DOCREF:** S01 → §2.7 → `[data-module='mi-civicum'] { --module-accent: var(--color-azul-500) }` (L355)
 - **DOCREF:** S01 → §9.3 → "Cada cambio de módulo es un cambio de atmósfera" (L1152)
 
-## Decisión (propuesta)
+## Decisión
 
 Implementar `data-module` en el contenedor raíz de cada módulo, asignando el atributo según la ruta activa. Los valores corresponden a los 6 módulos definidos en la spec (DOCREF: S01 → §2.7, L351-371 selectores CSS; S01 → §20, L1749-1754 estructura de carpetas):
 
@@ -72,4 +72,4 @@ Las CSS variables `--module-accent` y `--module-bg` se definirán con los select
 
 ---
 
-> ✅ **Aprobación (Moska): PENDIENTE** — no ejecutar implementación hasta aprobación.
+> ✅ **Aprobación (Daniel): COMPLETADA** — se autoriza implementación según el plan (Gate 5+).

@@ -4,7 +4,7 @@
 - **Fecha:** 2026-02-25
 - **Daniel decision:** ACCEPTED — opción elegida: A (única propuesta)
 - **Decision date:** 2026-02-26
-- **Autor:** Antigravity (para aprobación de Moska)
+- **Autor:** Antigravity (para aprobación de Daniel)
 - **Afecta:** UI-NAV-008 | GAP-001
 - **Supersede:** —
 
@@ -24,14 +24,14 @@ Ninguna fuente de diseño define explícitamente una pantalla 404, por lo que es
 - **Dentro de scope:** Este 404 es para rutas dentro de AppLayout (Smart Dock visible).
 - **Fuera de scope:** 404 para flujos standalone/onboarding queda fuera de scope y requerirá ADR separado si aparece el caso.
 
-## Decisión (propuesta)
+## Decisión
 
 Crear una pantalla 404 personalizada alineada al tono CIVICUM: empática, directa, no técnica, no culpabilizante (ref: UI-CNT-001, DOCREF: S01 → §15.1 L1500; UI-CNT-004, DOCREF: S01 → §15.4 L1532).
 
 Requisitos funcionales:
 
 1. **Logo CIVICUM** centrado
-2. **Copy principal y secundario:** *(Copy propuesto — requiere aprobación Moska)*
+2. **Copy principal y secundario:** *(Copy propuesto — requiere aprobación Daniel)*
    - "Esta página no existe — pero tu camino cívico sí."
    - "Quizás la dirección cambió o escribiste algo distinto."
 3. **CTA primario:** Acción que lleve al inicio (Dashboard)
@@ -71,7 +71,7 @@ Requisitos funcionales:
 1. Ruta catch-all: configurar ruta comodín (`path="*"`) en el router (ubicación TBD)
 2. Crear componente de pantalla 404 (nombre y ubicación TBD) con layout AppShell (Smart Dock visible)
    - Sugerencia: usar isotipo (no texto completo) — opción a validar con diseño
-3. Implementar copy y CTAs según decisión (pendiente aprobación Moska)
+3. Implementar copy y CTAs según decisión (pendiente aprobación Daniel)
 4. Capturar golden screenshots
 5. Agregar a `golden_screens.md` si se decide que es golden (ADR separado)
 
@@ -83,4 +83,4 @@ Requisitos funcionales:
 
 ---
 
-> ✅ **Aprobación (Moska): PENDIENTE** — no ejecutar implementación hasta aprobación.
+> ✅ **Aprobación (Daniel): COMPLETADA** — se autoriza implementación según el plan (Gate 5+).

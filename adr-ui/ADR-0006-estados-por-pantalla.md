@@ -4,7 +4,7 @@
 - **Fecha:** 2026-02-25
 - **Daniel decision:** ACCEPTED — opción elegida: A (única propuesta)
 - **Decision date:** 2026-02-26
-- **Autor:** Antigravity (para aprobación de Moska)
+- **Autor:** Antigravity (para aprobación de Daniel)
 - **Afecta:** UI-STP-001, UI-STP-002, UI-STP-003, UI-STP-004, UI-STP-005, UI-STP-009 | GAP-006
 - **Supersede:** —
 
@@ -21,7 +21,7 @@ GAP-006 identifica esta ausencia. Las reglas existen (UI-STP-001 a UI-STP-005) p
 - **DOCREF:** S01 → §12.3 → empty states por módulo (L1387)
 - **DOCREF:** `docs-ui/_gate2/gaps_log.md` → GAP-006
 
-## Decisión (propuesta)
+## Decisión
 
 Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar los 5 estados definidos en la spec (DOCREF: S01 → §12, L1356).
 
@@ -93,4 +93,4 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 
 ---
 
-> ✅ **Aprobación (Moska): PENDIENTE** — no ejecutar implementación hasta aprobación.
+> ✅ **Aprobación (Daniel): COMPLETADA** — se autoriza implementación según el plan (Gate 5+).

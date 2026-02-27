@@ -45,3 +45,7 @@ TODO: Describir la decisión
 
 - DOCREF: `docs-ui/XX_ARCHIVO.md` §sección
 - Link: [recurso externo](https://...)
+
+---
+
+> ✅ **Aprobación (Daniel): PENDIENTE** — no ejecutar implementación hasta aprobación.

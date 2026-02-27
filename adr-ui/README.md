@@ -64,9 +64,11 @@ Ejemplos:
 
 ## Cómo se decide "ACCEPTED"
 
+**Aprobador: Daniel.** ACCEPTED = aprobado por Daniel.
+
 1. El autor crea el ADR usando la plantilla `ADR-0000-template.md`
 2. Se revisa en el contexto del proyecto (coherencia con SSOT, impacto técnico)
-3. Si hay consenso, se cambia el estado a `ACCEPTED` y se fecha
+3. Si Daniel aprueba, se cambia el estado a `ACCEPTED` y se fecha
 4. El cambio correspondiente se implementa en código y se actualiza el archivo del pack (00–09) en `/docs-ui/`
 
 ---

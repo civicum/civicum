@@ -18,4 +18,4 @@
 - **CONFLICT-001** es código↔doc (más que doc↔doc). Se podría resolver como GAP de implementación, pero la escala del cambio (6 módulos) justifica ADR.
 - **CONFLICT-002** requiere decisión técnica: extender Tailwind con breakpoints custom (xs, sm) afecta todo el sistema.
 - Ambos conflictos son de impacto ALTO.
-- **Estado:** Pendiente aprobación (Moska). No marcar como resuelto hasta que los ADRs sean aceptados.
+- **Estado:** Pendiente aprobación (Daniel). No marcar como resuelto hasta que los ADRs sean aceptados.

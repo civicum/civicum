@@ -4,7 +4,7 @@
 - **Fecha:** 2026-02-25
 - **Daniel decision:** ACCEPTED — opción elegida: A (única propuesta)
 - **Decision date:** 2026-02-26
-- **Autor:** Antigravity (para aprobación de Moska)
+- **Autor:** Antigravity (para aprobación de Daniel)
 - **Afecta:** GAP-007
 - **Nota:** No existe UI_RULE_ID tipográfico en la matriz de trazabilidad; se consolidará en Gate 4 al crear regla en `01_TOKENS` con DOCREF.
 - **Supersede:** —
@@ -24,7 +24,7 @@ El código de Época 1 usa **Inter** como única fuente. No existe ADR ni fuente
 - **DOCREF:** S01 → §3.1 → "IBM Plex Sans — Body, Contenido Largo" (L396)
 - **DOCREF:** `docs-ui/_gate2/gaps_log.md` → GAP-007
 
-## Decisión (propuesta)
+## Decisión
 
 **Migrar a la tipografía de la spec** (Nunito Sans + IBM Plex Sans + IBM Plex Mono), con implementación por tiers:
 
@@ -82,4 +82,4 @@ Eliminar Inter del proyecto.
 
 ---
 
-> ✅ **Aprobación (Moska): PENDIENTE** — no ejecutar implementación hasta aprobación.
+> ✅ **Aprobación (Daniel): COMPLETADA** — se autoriza implementación según el plan (Gate 5+).
