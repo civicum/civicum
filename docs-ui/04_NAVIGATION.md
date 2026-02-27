@@ -27,7 +27,7 @@
 1. Ruta catch-all (`path="*"`) en el router
 2. Logo CIVICUM centrado
 3. Copy aprobado: "Esta página no existe — pero tu camino cívico sí." + "Quizás la dirección cambió o escribiste algo distinto."
-4. CTA primario: ir al Dashboard. CTA secundario: explorar módulos.
+4. CTA primario: ir al Dashboard. CTA secundario: explorar módulos. *(Nota: validar en Gate 5+ que "explorar módulos" sea accesible sin login; si requiere auth, usar guard o redirect.)*
 5. Smart Dock permanece visible (no standalone layout)
 6. 404 **no es golden por defecto**; se agrega a `golden_screens.md` solo vía ADR explícito.
 

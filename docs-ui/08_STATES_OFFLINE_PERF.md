@@ -32,7 +32,7 @@ Toda pantalla CIVICUM debe manejar 5 estados:
 | **Empty** | Ilustración + CTA por módulo (UI-STP-003) | Golden screenshots (solo si es estado estable de golden screen) |
 | **Error** | Toast Terracota + retry (UI-STP-004) | E2E Playwright |
 | **Offline** | Banner NO alarma + Tier LOW (UI-STP-005) | E2E Playwright |
-| **Success** | Confirmación según contexto (DOCREF: S01 → §12, L1361) | E2E Playwright |
+| **Success** | Mínimo según DOCREF (checkmark + texto + siguiente paso); variantes según contexto (S01 → §12, L1361) | E2E Playwright |
 
 **Performance:** Skeleton debe minimizar trabajo extra de JS; no debe introducir CLS. Se valida con Lighthouse en Gate 5+.
 

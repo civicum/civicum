@@ -6,6 +6,8 @@
 **Fuentes:** 4 documentos activos (ver `_gate2/source_map.md`)
 **Convenciones:** S01=UI/UX Definitivo, S02=Design System Terracota, S03=Decisiones F01-F47, S07=Anti-Dark-Patterns
 
+> **Nota:** Tipo=GAP se mantiene como marcador histórico del problema detectado; Estado=OK indica que la decisión está tomada (ADR ACCEPTED). Implementación se gestiona en Gate 5+.
+
 ---
 
 ## CONTRACT (00_UI_CONTRACT)
