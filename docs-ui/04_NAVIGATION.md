@@ -15,7 +15,7 @@
 
 ## Evidencia exigida en Gate 4
 
-> Toda ruta definida debe existir en `main.tsx`. Todo guard debe tener test E2E. El mapa de navegación debe coincidir con el de `epoch1_inventory.md §7`.
+> Toda ruta definida debe existir en el router entrypoint del proyecto (archivo donde se declara el router). Todo guard debe tener test E2E. El mapa de navegación debe coincidir con el de `epoch1_inventory.md §7`.
 
 ## Reglas consolidadas (Gate 4)
 

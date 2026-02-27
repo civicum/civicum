@@ -62,7 +62,7 @@
 | UI-LAY-004 | MUST | Smart Dock: bottom bar XS-MD, side rail LG+ | S01 → §6.3 → fila Smart Dock (L635) | OK | ALTO | E2E + Golden screenshots | |
 | UI-LAY-005 | MUST | Modales: fullscreen XS, centered 80% MD, centered 560px max LG | S01 → §6.3 → fila Modales (L637) | OK | MEDIO | E2E | |
 | UI-LAY-006 | MUST | Tablas: cards apiladas XS, responsive MD, completa LG | S01 → §6.3 → fila Tablas (L638) | OK | MEDIO | Visual regression | |
-| UI-LAY-007 | GAP | Dark mode: no hay definición de layouts/tokens para dark mode | — | GAP (DECIDED) | ALTO | — | Resolved by ADR-0005 (ACCEPTED) — Daniel. Pospuesto a Época 3+. Decision taken; implementation pending Gate 5+. |
+| UI-LAY-007 | GAP | Dark mode: no hay definición de layouts/tokens para dark mode | — | OK | ALTO | — | Decision: ADR-0005 (ACCEPTED) — Daniel. Pospuesto a Época 3+. Implementation pending Gate 5+. |
 
 ---
 
@@ -77,7 +77,7 @@
 | UI-NAV-005 | MUST | Tab bounce: scale 1.2→1, 150ms | S01 → §9.3 → "icon bounces" (L1154) | OK | BAJO | UI-kit Playwright | |
 | UI-NAV-006 | MUST | prefers-reduced-motion: corte directo | S01 → §9.3 → "corte directo sin animación" (L1158) | OK | ALTO | Test a11y | |
 | UI-NAV-007 | MUST | Breadcrumbs: máx 4 niveles, "← Volver" en mobile | S01 → §7 Nav → "Breadcrumbs" (L751) | OK | MEDIO | E2E | |
-| UI-NAV-008 | GAP | Falta ruta 404 | — | GAP (DECIDED) | ALTO | — | Resolved by ADR-0004 (ACCEPTED) — Daniel. 404 dentro de AppLayout. Decision taken; implementation pending Gate 5+. |
+| UI-NAV-008 | GAP | Falta ruta 404 | — | OK | ALTO | — | Decision: ADR-0004 (ACCEPTED) — Daniel. 404 dentro de AppLayout. Implementation pending Gate 5+. |
 
 ---
 
@@ -136,7 +136,7 @@
 | UI-STP-006 | MUST | offline.html digno con logo + capacidades + CTA | S03 → F-07 → "Dignidad = experiencia completa" (L365) | OK | ALTO | E2E | |
 | UI-STP-007 | MUST | CWV Tier LOW: FCP≤2.0s, LCP≤4.0s, TTI≤5.0s, CLS≤0.2 | S01 → §17.2 → tabla CWV (L1590) | OK | ALTO | Performance | Android Go target |
 | UI-STP-008 | MUST | Critical pack ≤800KB | S03 → F-07 → "CRITICAL_PACK_SIZE_KB: 800" (L383) | OK | ALTO | Performance | |
-| UI-STP-009 | GAP | Estados loading/error no implementados en Época 1 | — | GAP (DECIDED) | ALTO | — | Resolved by ADR-0006 (ACCEPTED) — Daniel. 5-state pattern obligatorio. Decision taken; implementation pending Gate 5+. |
+| UI-STP-009 | GAP | Estados loading/error no implementados en Época 1 | — | OK | ALTO | — | Decision: ADR-0006 (ACCEPTED) — Daniel. 5-state pattern obligatorio. Implementation pending Gate 5+. |
 
 ---
 
@@ -158,10 +158,9 @@
 | Métrica | Valor |
 |---------|-------|
 | **Total reglas** | 75 |
-| **OK** | 72 |
+| **OK** | 75 |
 | **CONFLICTO** | 0 |
 | **GAP** | 0 |
-| **GAP (DECIDED)** | 3 |
 | **Sin DOCREF** | 0 |
 | **Categorías** | 10 |
 | **Resolved by ADR** | 6 |

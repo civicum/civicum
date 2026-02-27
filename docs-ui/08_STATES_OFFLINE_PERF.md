@@ -5,7 +5,8 @@
 ## Decisiones que debe contener
 
 - [x] Estados obligatorios por pantalla: loading, empty, error, offline, success (5-state pattern — ADR-0006)
-- [ ] Success: confirmación según contexto (DOCREF: S01 → §12, L1361)
+- [x] Success requerido (mínimo): checkmark + texto confirmatorio + siguiente paso (DOCREF: S01 → §12, L1361)
+- [ ] Mapping de Success por pantalla (Gate 5+; depende del flujo)
 - [ ] Patrón de skeleton loading: cuándo usar, estructura visual
 - [ ] Patrón de error: mensajes según `soulful-copywriting`, botón retry, fallback
 - [ ] Patrón empty state: ilustración (opcional), mensaje empático, CTA de acción
