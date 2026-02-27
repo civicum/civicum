@@ -17,11 +17,28 @@
 
 > Toda ruta definida debe existir en `main.tsx`. Todo guard debe tener test E2E. El mapa de navegación debe coincidir con el de `epoch1_inventory.md §7`.
 
+## Reglas consolidadas (Gate 4)
+
+### Pantalla 404 (ADR-0004)
+
+**Scope:** Solo para rutas dentro de AppLayout (Smart Dock visible). 404 para flujos standalone/onboarding queda fuera de scope (requiere ADR separado).
+
+**Requisitos:**
+1. Ruta catch-all (`path="*"`) en el router
+2. Logo CIVICUM centrado
+3. Copy aprobado: "Esta página no existe — pero tu camino cívico sí." + "Quizás la dirección cambió o escribiste algo distinto."
+4. CTA primario: ir al Dashboard. CTA secundario: explorar módulos.
+5. Smart Dock permanece visible (no standalone layout)
+6. 404 **no es golden por defecto**; se agrega a `golden_screens.md` solo vía ADR explícito.
+
+> **DOCREF:** ADR-0004 (ACCEPTED) + UI-NAV-008 + S01 → §15.1 (L1500), §15.4 (L1532)
+
 ---
 
 ## TODO
 
 - Importar mapa de rutas de `epoch1_inventory.md §1 + §7`
 - Formalizar inconsistencia de labels detectada en G8 (Smart Dock "Reportar" vs Nav "Alza la Voz")
-- Definir ruta 404 (GAP G1 del inventario)
+- ~~Definir ruta 404 (GAP G1 del inventario)~~ → Resuelto por ADR-0004
 - Documentar cambio atmosférico `data-module` requerido por UI/UX §2.7 (GAP G9)
+

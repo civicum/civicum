@@ -18,11 +18,30 @@
 
 > Toda pantalla debe demostrar sus 4 estados (normal, loading, empty, error) en screenshots o tests. Performance budgets deben tener medición con Lighthouse CI.
 
+## Reglas consolidadas (Gate 4)
+
+### 5-state pattern obligatorio (ADR-0006)
+
+Toda pantalla CIVICUM debe manejar 5 estados:
+
+| Estado | Componente | Verificación |
+|--------|-----------|-------------|
+| **Loading** | Skeleton shimmer (UI-STP-002) | UI-kit Playwright |
+| **Empty** | Ilustración + CTA por módulo (UI-STP-003) | Golden screenshots (solo si es estado estable de golden screen) |
+| **Error** | Toast Terracota + retry (UI-STP-004) | E2E Playwright |
+| **Offline** | Banner NO alarma + Tier LOW (UI-STP-005) | E2E Playwright |
+| **Success** | Confirmación según contexto (DOCREF: S01 → §12, L1361) | E2E Playwright |
+
+**Performance:** Skeleton debe minimizar trabajo extra de JS; no debe introducir CLS. Se valida con Lighthouse en Gate 5+.
+
+> **DOCREF:** ADR-0006 (ACCEPTED) + S01 → §12 (L1356), §12.1 (L1357–1360), §12.3 (L1387)
+
 ---
 
 ## TODO
 
 - Importar performance budgets del Master Plan (§Época 4, Performance)
 - Importar 3 tiers offline de `CIVICUM_Anexo_Arquitectura_Tecnica_Completa.docx.md §1.2.4`
-- Documentar GAPs actuales: G2 (sin error en geolocation), G4/G7 (sin dark mode en Dashboard/Layout)
+- ~~Documentar GAPs actuales: G2 (sin error en geolocation), G4/G7 (sin dark mode en Dashboard/Layout)~~ → Dark mode resuelto por ADR-0005
 - Definir skeleton patterns para Dashboard y Perfil
+

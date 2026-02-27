@@ -17,6 +17,27 @@
 
 > Toda regla debe tener DOCREF (ej.: `docs/knowledge-base/CIVICUM_Anexo_Design_System_Terracota.docx.md §1-2`) o ADR.
 
+## Reglas consolidadas (Gate 4)
+
+### Tipografía (ADR-0007)
+
+Migrar de Inter (Época 1) a la tipografía de la spec:
+
+| Familia | Rol | DOCREF |
+|---------|-----|--------|
+| **Nunito Sans** | Headings, UI labels, botones | S01 → §3.1 (L394) |
+| **IBM Plex Sans** | Body, contenido largo | S01 → §3.1 (L396) |
+| **IBM Plex Mono** | Datos, códigos, tablas numéricas | S01 → §3.1 (L396) |
+
+**Tier system** (DOCREF: S01 → §3.3):
+- **HIGH:** 3 familias completas (~120KB estimado)
+- **MEDIUM:** Nunito Sans + IBM Plex Sans (sin Mono)
+- **LOW:** `system-ui` fallback
+
+**Verificación:** Peso total de fonts en tier HIGH debe validarse contra presupuesto critical pack (UI-STP-008: ≤800KB) en Gate 5+ con build + Lighthouse.
+
+> **DOCREF:** ADR-0007 (ACCEPTED) + S01 → §3.1 (L394–396), §3.3
+
 ---
 
 ## TODO
@@ -24,3 +45,4 @@
 - Extraer tokens de `CIVICUM_Anexo_Design_System_Terracota.docx.md`
 - Cruzar con `tailwind.config.ts` actual para detectar drift
 - Documentar mapeo dark mode (actualmente parcial según epoch1_inventory.md G4/G7)
+
