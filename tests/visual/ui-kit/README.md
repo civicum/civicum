@@ -14,6 +14,8 @@
 4. Guardar con naming: `COMPONENTE_VARIANTE_VIEWPORT.png`
    - Ejemplo: `skeleton_shimmer_desktop.png`, `spinner_terracota_sm_mobile.png`
 
+> **Aislar componentes sin Storybook:** Para evitar capturas contaminadas por layout u otros componentes, usar una ruta temporal `/ui-kit` (si existe) o una pantalla interna dedicada en Gate 5.3. Recortar manualmente NO está permitido (ver Reglas).
+
 ## Naming convention
 
 ```

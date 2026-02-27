@@ -9,6 +9,20 @@
 
 ## Orden de implementación
 
+### 5.0b — Instalar Playwright (prerrequisito)
+
+**Qué:** Instalar `@playwright/test` como devDependency en `/webapp`. No crear tests aún — solo infra.
+
+**Comando:** `cd webapp && npm install -D @playwright/test && npx playwright install --with-deps chromium`
+
+**Verificación:** `npx playwright --version` retorna versión sin error.
+
+**Rollback:** `git revert HEAD` + `npm install`
+
+> **Nota:** Este paso es prerequisito de 5.1+. Sin Playwright, toda verificación visual es manual.
+
+---
+
 ### 5.1 — Breakpoints (ADR-0003, Opción B)
 
 **Qué:**
