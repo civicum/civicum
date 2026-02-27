@@ -39,7 +39,7 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 
 ## Alternativas Consideradas
 
-### Alternativa A: 5 componentes reutilizables + integración en todas las pantallas (propuesta)
+### Alternativa A: 5 componentes reutilizables + integración en todas las pantallas (aceptada)
 - **Pros:** DRY, consistente, auditables vía Playwright, spec 1:1
 - **Contras:** ~8-12h implementación, requiere wrapper o HOC por pantalla
 

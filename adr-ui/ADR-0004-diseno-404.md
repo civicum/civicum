@@ -31,7 +31,7 @@ Crear una pantalla 404 personalizada alineada al tono CIVICUM: empática, direct
 Requisitos funcionales:
 
 1. **Logo CIVICUM** centrado
-2. **Copy principal y secundario:** *(Copy propuesto — requiere aprobación Daniel)*
+2. **Copy principal y secundario:** *(Copy aprobado en este ADR)*
    - "Esta página no existe — pero tu camino cívico sí."
    - "Quizás la dirección cambió o escribiste algo distinto."
 3. **CTA primario:** Acción que lleve al inicio (Dashboard)
@@ -71,7 +71,7 @@ Requisitos funcionales:
 1. Ruta catch-all: configurar ruta comodín (`path="*"`) en el router (ubicación TBD)
 2. Crear componente de pantalla 404 (nombre y ubicación TBD) con layout AppShell (Smart Dock visible)
    - Sugerencia: usar isotipo (no texto completo) — opción a validar con diseño
-3. Implementar copy y CTAs según decisión (pendiente aprobación Daniel)
+3. Implementar copy y CTAs según decisión aprobada
 4. Capturar golden screenshots
 5. Agregar a `golden_screens.md` si se decide que es golden (ADR separado)
 
