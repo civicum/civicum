@@ -1,8 +1,8 @@
 # 📊 Matriz de Trazabilidad UI — CIVICUM
 
 **Gate:** Gate 4 — Consolidación ADR → Pack
-**Fecha:** 2026-02-24
-**Total reglas:** 74
+**Fecha:** 2026-02-26
+**Total reglas:** 75
 **Fuentes:** 4 documentos activos (ver `_gate2/source_map.md`)
 **Convenciones:** S01=UI/UX Definitivo, S02=Design System Terracota, S03=Decisiones F01-F47, S07=Anti-Dark-Patterns
 
