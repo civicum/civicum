@@ -41,10 +41,10 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 
 ### Alternativa A: 5 componentes reutilizables + integración en todas las pantallas (aceptada)
 - **Pros:** DRY, consistente, auditables vía Playwright, spec 1:1
-- **Contras:** ~8-12h implementación, requiere wrapper o HOC por pantalla
+- **Contras:** ~8-12h implementación (estimación), requiere wrapper o HOC por pantalla
 
 ### Alternativa B: Implementar solo loading + error (mínimo viable)
-- **Pros:** Más rápido (~4h), cubre los 2 estados más visibles
+- **Pros:** Más rápido (~4h, estimación), cubre los 2 estados más visibles
 - **Contras:** Empty y offline quedan como deuda, no cumple spec completa, 3 de 5 estados sin resolver
 
 ### Alternativa C: Posponer todo a Época 2
@@ -54,7 +54,7 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 ## Consecuencias
 
 - **Positivas:** Cierra GAP-006, experiencia degradada digna (F-07), skeleton ayuda a reducir CLS si matchea layout real, retry reduce frustración
-- **Negativas:** ~8-12h implementación, posible cambio en golden screenshots existentes
+- **Negativas:** ~8-12h implementación (estimación), posible cambio en golden screenshots existentes
 - **Riesgos:** Skeleton layout debe coincidir con layout real para evitar CLS al cargar. Mitigación: diseñar skeleton que matchee estructura de cards/forms.
 
 ## Verificación (Gate 5+)

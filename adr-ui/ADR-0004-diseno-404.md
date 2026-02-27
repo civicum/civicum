@@ -41,7 +41,7 @@ Requisitos funcionales:
 
 ## Alternativas Consideradas
 
-### Alternativa A: Pantalla 404 personalizada con CTAs (propuesta)
+### Alternativa A: Pantalla 404 personalizada con CTAs (aceptada)
 - **Pros:** Digna, alineada a tono CIVICUM, recupera al usuario, detecta enlaces rotos
 - **Contras:** Requiere crear componente nuevo + ruta + copy aprobado
 
@@ -56,8 +56,8 @@ Requisitos funcionales:
 ## Consecuencias
 
 - **Positivas:** Cierra GAP-001, mejora UX de error, detecta enlaces rotos, alineada a F-02
-- **Negativas:** ~2h implementación, necesita copy aprobado
-- **Riesgos:** Copy debe validarse con tono CIVICUM (UI-CNT-001: empática, directa, cero paternalismo)
+- **Negativas:** ~2h implementación (estimación), copy aprobado en este ADR
+- **Riesgos:** Copy ya aprobado; validar legibilidad/a11y en implementación
 
 ## Verificación (Gate 5+)
 

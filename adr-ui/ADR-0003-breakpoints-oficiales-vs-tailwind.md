@@ -21,9 +21,9 @@ El código de Época 1 usa Tailwind defaults. Esto genera CONFLICT-002 entre la 
 
 ## Decisión
 
-Proponemos alinear la configuración de Tailwind con los breakpoints de S01 (DOCREF: S01 → §6.1, L618). **Daniel eligió estrategia:** Opción B (override + alias temporal de migración) — ver sección "Compatibilidad / Migración" más abajo. **Implementación autorizada en Gate 5+ según plan.**
+Se aprueba alinear la configuración de Tailwind con los breakpoints de S01 (DOCREF: S01 → §6.1, L618). **Daniel eligió estrategia:** Opción B (override + alias temporal de migración) — ver sección "Compatibilidad / Migración" más abajo. **Implementación autorizada en Gate 5+ según plan.**
 
-Configuración objetivo (Opción B, si se elige override):
+Configuración objetivo (Opción B, elegida por Daniel):
 
 ```js
 screens: {
