@@ -25,7 +25,9 @@
 
 **Qué:** Crear 1–2 tests básicos para validar que Playwright funciona con el dev server:
 1. Test: abrir `/` → confirmar que el título de la página existe
-2. Test: abrir `/ruta-inexistente` → confirmar que responde (preparación para 404)
+2. Test: abrir `/ruta-inexistente` → confirmar que NO crashea y que renderiza algún contenido (HTTP 200 en SPA)
+
+> **Nota:** El assert de copy/CTAs de la pantalla 404 se agrega en Gate 5.2.
 
 **Archivos:** `webapp/tests/smoke.spec.ts`, `webapp/playwright.config.ts`
 
@@ -51,7 +53,7 @@
 - Si hay más usos de `sm:` de los estimados, la migración toma más tiempo
 
 **Verificación:**
-- (desde `/webapp`) `npx tailwindcss --content ./src/**/*.tsx --no-minify | grep "480px"` (confirmar override)
+- (opcional/best-effort) (desde `/webapp`) `npx tailwindcss --content ./src/**/*.tsx --no-minify | grep "480px"` (confirmar override)
 - Golden screenshots: desktop + mobile (360px) para pantallas con Estado=Completo
 - Build OK: `npm run build` sin errores
 
@@ -163,19 +165,19 @@
 ```mermaid
 graph TD
     P1[5.1a Playwright infra] --> P2[5.1b Smoke tests]
-    P2 --> A[5.2 Breakpoints]
-    A --> B[5.3 404 Page]
-    B --> C[5.4 5-State Pattern]
-    C --> D[5.5 data-module]
-    D --> E[5.6 Tipografía]
+    P2 --> A[5.1 Breakpoints]
+    A --> B[5.2 404 Page]
+    B --> C[5.3 5-State Pattern]
+    C --> D[5.4 data-module]
+    D --> E[5.5 Tipografía]
 ```
 
 - **5.1a → 5.1b:** Instalar Playwright antes de crear smoke tests
-- **5.1b → 5.2:** Smoke tests validan que el dev server responde antes de tocar breakpoints
-- **5.2 → 5.3:** La pantalla 404 debe usar los breakpoints correctos
-- **5.3 → 5.4:** Los estados (loading/error) aplican a todas las pantallas incluyendo 404
-- **5.4 → 5.5:** data-module afecta visual regression; implementar DESPUÉS de que los estados estén estabilizados
-- **5.5 → 5.6:** Tipografía es el cambio más impactante visualmente; va al final cuando todo lo demás está estable
+- **5.1b → 5.1:** Smoke tests validan que el dev server responde antes de tocar breakpoints
+- **5.1 → 5.2:** La pantalla 404 debe usar los breakpoints correctos
+- **5.2 → 5.3:** Los estados (loading/error) aplican a todas las pantallas incluyendo 404
+- **5.3 → 5.4:** data-module afecta visual regression; implementar DESPUÉS de que los estados estén estabilizados
+- **5.4 → 5.5:** Tipografía es el cambio más impactante visualmente; va al final cuando todo lo demás está estable
 
 ## Infraestructura requerida (GAPs)
 
