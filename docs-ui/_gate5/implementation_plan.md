@@ -9,7 +9,7 @@
 
 ## Orden de implementación
 
-### 5.0b — Instalar Playwright (prerrequisito)
+### 5.1a — Playwright infra (instalar)
 
 **Qué:** Instalar `@playwright/test` como devDependency en `/webapp`. No crear tests aún — solo infra.
 
@@ -19,7 +19,21 @@
 
 **Rollback:** `git revert HEAD` + `npm install`
 
-> **Nota:** Este paso es prerequisito de 5.1+. Sin Playwright, toda verificación visual es manual.
+---
+
+### 5.1b — Playwright smoke tests (mínimos)
+
+**Qué:** Crear 1–2 tests básicos para validar que Playwright funciona con el dev server:
+1. Test: abrir `/` → confirmar que el título de la página existe
+2. Test: abrir `/ruta-inexistente` → confirmar que responde (preparación para 404)
+
+**Archivos:** `webapp/tests/smoke.spec.ts`, `webapp/playwright.config.ts`
+
+**Verificación:** `cd webapp && npx playwright test` pasa sin errores.
+
+**Rollback:** `git revert HEAD`
+
+> **Nota:** 5.1a + 5.1b son prerrequisitos de 5.2+. Sin Playwright, toda verificación visual es manual.
 
 ---
 
@@ -83,7 +97,8 @@
 - Cambio en golden screenshots existentes (Dashboard, Perfil)
 
 **Verificación:**
-- UI-kit Playwright (manual hasta CI): snapshot de cada componente aislado
+- UI-kit snapshots manuales (hasta que exista suite Playwright UI-kit): snapshot de cada componente aislado
+- Suite UI-kit Playwright se crea en Gate 5.3a (infra)
 - Golden screenshots: actualizar si skeleton/empty cambian layout de pantalla con Estado=Completo
 - E2E manual: forzar estados (disconnect network, vaciar datos, provocar error)
 - Build OK
@@ -147,16 +162,20 @@
 
 ```mermaid
 graph TD
-    A[5.1 Breakpoints] --> B[5.2 404 Page]
-    B --> C[5.3 5-State Pattern]
-    C --> D[5.4 data-module]
-    D --> E[5.5 Tipografía]
+    P1[5.1a Playwright infra] --> P2[5.1b Smoke tests]
+    P2 --> A[5.2 Breakpoints]
+    A --> B[5.3 404 Page]
+    B --> C[5.4 5-State Pattern]
+    C --> D[5.5 data-module]
+    D --> E[5.6 Tipografía]
 ```
 
-- **5.1 → 5.2:** La pantalla 404 debe usar los breakpoints correctos
-- **5.2 → 5.3:** Los estados (loading/error) aplican a todas las pantallas incluyendo 404
-- **5.3 → 5.4:** data-module afecta visual regression; implementar DESPUÉS de que los estados estén estabilizados
-- **5.4 → 5.5:** Tipografía es el cambio más impactante visualmente; va al final cuando todo lo demás está estable
+- **5.1a → 5.1b:** Instalar Playwright antes de crear smoke tests
+- **5.1b → 5.2:** Smoke tests validan que el dev server responde antes de tocar breakpoints
+- **5.2 → 5.3:** La pantalla 404 debe usar los breakpoints correctos
+- **5.3 → 5.4:** Los estados (loading/error) aplican a todas las pantallas incluyendo 404
+- **5.4 → 5.5:** data-module afecta visual regression; implementar DESPUÉS de que los estados estén estabilizados
+- **5.5 → 5.6:** Tipografía es el cambio más impactante visualmente; va al final cuando todo lo demás está estable
 
 ## Infraestructura requerida (GAPs)
 
