@@ -11,10 +11,11 @@ test.describe('Smoke — Home', () => {
         expect(count).toBeGreaterThan(0);
     });
 
-    test('mobile: "/" renders and can capture screenshot', async ({ page }) => {
+    test('mobile: "/" renders and can capture screenshot', async ({ page }, testInfo) => {
         await page.goto('/');
         await expect(page.locator('body')).not.toBeEmpty();
         // Screenshot for pipeline validation only — NOT a baseline yet
-        await page.screenshot({ path: 'tests/e2e/screenshots/home_mobile_smoke.png' });
+        // Output goes to test-results/ via testInfo.outputPath (not into repo tree)
+        await page.screenshot({ path: testInfo.outputPath('home_mobile_smoke.png') });
     });
 });

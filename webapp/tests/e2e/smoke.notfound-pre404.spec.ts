@@ -15,8 +15,11 @@ test.describe('Smoke — Not Found (pre-404)', () => {
     }) => {
         const response = await page.goto('/ruta-inexistente');
 
+        // Ensure navigation returned a response
+        expect(response, 'navigation response should not be null').not.toBeNull();
+
         // SPA should return 200 (client-side routing)
-        expect(response?.status()).toBe(200);
+        expect(response!.status()).toBe(200);
 
         // Page should render without crashing — body has content
         await expect(page.locator('body')).not.toBeEmpty();
