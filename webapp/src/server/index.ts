@@ -10,7 +10,7 @@ app.use('*', cors())
 app.get('/health', (c) => c.json({ status: 'ok', version: '1.0.0' }))
 
 // Auth middleware structure (L0-L4 validation)
-app.use('/api/protected/*', async (c, next) => {
+app.use('/api/protected/*', async (_c, next) => {
     // TODO: Implement JWT validation and Level authorization here
     await next()
 })
