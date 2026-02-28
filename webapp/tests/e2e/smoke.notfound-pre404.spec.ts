@@ -18,6 +18,11 @@ import { test, expect } from '@playwright/test';
  */
 test.describe('Smoke — Not Found (pre-404)', () => {
     test('"/ruta-inexistente" does not crash (HTTP 200 in SPA)', async ({ page }) => {
+        const pageErrors: Error[] = [];
+        page.on('pageerror', (e) => pageErrors.push(e));
+        const consoleErrors: string[] = [];
+        page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
+
         const response = await page.goto('/ruta-inexistente');
 
         // Ensure navigation returned a response
@@ -30,8 +35,11 @@ test.describe('Smoke — Not Found (pre-404)', () => {
         await expect(page.locator('#root')).toHaveCount(1);
 
         // NOTE: #root is currently EMPTY for unknown routes (no catch-all).
-        // This is the documented pre-Gate-5.2 state. Once 404 page is implemented,
-        // uncomment the assertion below:
+        // When Gate 5.2 adds a 404 catch-all page, uncomment:
         // await expect(page.locator('#root')).not.toBeEmpty();
+
+        // No JS errors should have occurred
+        expect(pageErrors, 'pageerror should be empty').toEqual([]);
+        expect(consoleErrors, 'console.error should be empty').toEqual([]);
     });
 });
