@@ -18,6 +18,8 @@ export default {
 		},
 		extend: {
 			screens: {
+				xs: '360px',
+				sm: '480px',
 				sm640: '640px',
 			},
 			colors: {
