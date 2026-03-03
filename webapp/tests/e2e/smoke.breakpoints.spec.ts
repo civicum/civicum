@@ -88,8 +88,10 @@ async function setupPage(page: import('@playwright/test').Page, width: number, h
 
     await page.goto('/');
 
-    // Wait for layout to render (avoids networkidle flakiness in SPAs)
-    await page.locator('header').first().waitFor({ state: 'attached', timeout: 10_000 });
+    // Wait for React to mount (route-independent — all content renders inside #root).
+    // Avoids networkidle flakiness in SPAs and doesn't depend on specific layout elements
+    // like <header>, which may not exist on every route (e.g. standalone onboarding).
+    await page.locator('#root > *').first().waitFor({ state: 'attached', timeout: 10_000 });
 
     return { pageErrors, consoleErrors };
 }
@@ -170,9 +172,13 @@ test.describe('Breakpoint Smoke — SSOT UI-LAY-004', () => {
             ['LG(1024)', 1024, 900],
         ] as const) {
             const pageErrors: Error[] = [];
-            page.on('pageerror', (e) => pageErrors.push(e));
+            const onPageError = (e: Error) => pageErrors.push(e);
             const consoleErrors: string[] = [];
-            page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
+            const onConsole = (msg: import('@playwright/test').ConsoleMessage) => {
+                if (msg.type() === 'error') consoleErrors.push(msg.text());
+            };
+            page.on('pageerror', onPageError);
+            page.on('console', onConsole);
 
             await page.setViewportSize({ width: w, height: h });
 
@@ -183,13 +189,14 @@ test.describe('Breakpoint Smoke — SSOT UI-LAY-004', () => {
             }, [ONBOARDING_STORAGE_KEY, bypassPayload] as const);
 
             await page.goto('/');
-            await page.locator('header').first().waitFor({ state: 'attached', timeout: 10_000 });
+            await page.locator('#root > *').first().waitFor({ state: 'attached', timeout: 10_000 });
 
             if (pageErrors.length > 0) allErrors.push(`${label}: pageerror(${pageErrors.length})`);
             if (consoleErrors.length > 0) allErrors.push(`${label}: console.error(${consoleErrors.length})`);
 
-            page.removeAllListeners('pageerror');
-            page.removeAllListeners('console');
+            // Remove only our own handlers (not all listeners on the event)
+            page.off('pageerror', onPageError);
+            page.off('console', onConsole);
         }
 
         expect(allErrors, 'No JS errors at any breakpoint').toEqual([]);
