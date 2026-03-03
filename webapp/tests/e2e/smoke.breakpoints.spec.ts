@@ -82,6 +82,13 @@ function buildOnboardingBypass(): string {
 //   - The onboarding bypass fixture is broken (schema/key changed)
 //   - The route does not render content (empty catch-all, 404 GAP)
 //   - A JS error prevented React from mounting
+//
+// EDGE CASE: childElementCount > 0 can false-fail if React mounts an empty
+// wrapper/fragment with no DOM children. If this happens in the future,
+// upgrade step 2 to a semantic signal:
+//   - Preferred: document.querySelector('#root [data-app-ready]')
+//     (add data-app-ready to AppLayout/OnboardingLayout root when implemented)
+//   - Fallback: document.querySelector('#root nav, #root header, #root main')
 // ---------------------------------------------------------------------------
 const REACT_MOUNT_TIMEOUT = 10_000;
 
