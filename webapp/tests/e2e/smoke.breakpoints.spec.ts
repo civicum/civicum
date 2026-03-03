@@ -38,6 +38,10 @@ import { test, expect } from '@playwright/test';
 // Smart Dock (mobile bottom nav): <nav class="fixed bottom-0 ... md:hidden">
 const SMART_DOCK = 'nav.fixed';
 
+// Side Rail (desktop LG+ nav) — placeholder selector.
+// TODO (Gate 5+): Add data-testid="side-rail" to SideRail component when it exists.
+const SIDE_RAIL = '[data-testid="side-rail"]';
+
 // ---------------------------------------------------------------------------
 // Onboarding bypass fixture — FRAGILE INTERNAL FIXTURE
 //
@@ -146,11 +150,9 @@ test.describe('Breakpoint Smoke — SSOT UI-LAY-004', () => {
 
         const { pageErrors, consoleErrors } = await setupPage(page, 1024, 900);
 
-        // When implemented, a side rail nav should be visible at LG
-        // Expected selector: page.getByTestId('side-rail') or equivalent
-        // For now, assert dock is visible (it should be, as side rail)
-        const dock = page.locator(SMART_DOCK).first();
-        await expect(dock, 'UI-LAY-004: Smart Dock should be side rail at LG (1024px)').toBeVisible();
+        // Assert side rail exists at LG — uses placeholder data-testid selector.
+        // TODO (Gate 5+): agregar data-testid="side-rail" al componente cuando exista.
+        await expect(page.locator(SIDE_RAIL), 'UI-LAY-004: side rail should exist at LG').toBeVisible();
 
         expect(pageErrors, 'pageerror should be empty at 1024px').toEqual([]);
         expect(consoleErrors, 'console.error should be empty at 1024px').toEqual([]);
