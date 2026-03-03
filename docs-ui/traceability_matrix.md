@@ -61,7 +61,7 @@
 | UI-LAY-001 | MUST | Breakpoints mobile-first: XS=360, SM=480, MD=768, LG=1024, XL=1280, 2XL=1536 | S01 → §6.1 → tabla "Breakpoints Oficiales" (L618) | OK | ALTO | Doc review | Resolved by ADR-0003 (ACCEPTED, Opción B) — Daniel. Breaking change: sm 640→480. Implementation pending Gate 5+. |
 | UI-LAY-002 | MUST | Grid: 12 columnas, gutter 24px desktop / 16px mobile, max-width 1280px | S01 → §5.4 → "Grid System" (L604) | OK | ALTO | Visual regression | |
 | UI-LAY-003 | MUST | Márgenes laterales: 16px (XS-SM), 24px (MD), 32px (LG+) | S01 → §5.4 → "Márgenes laterales" (L608) | OK | MEDIO | Visual regression | |
-| UI-LAY-004 | MUST | Smart Dock: bottom bar XS-MD, side rail LG+ | S01 → §6.3 → fila Smart Dock (L635) | OK | ALTO | E2E + Golden screenshots | |
+| UI-LAY-004 | MUST | Smart Dock: bottom bar XS-MD, side rail LG+ | S01 → §6.3 → fila Smart Dock (L635) | OK | ALTO | E2E + Golden screenshots | Implementation pending Gate 5+; tracked by smoke.breakpoints.spec.ts (expected-fail until implemented). |
 | UI-LAY-005 | MUST | Modales: fullscreen XS, centered 80% MD, centered 560px max LG | S01 → §6.3 → fila Modales (L637) | OK | MEDIO | E2E | |
 | UI-LAY-006 | MUST | Tablas: cards apiladas XS, responsive MD, completa LG | S01 → §6.3 → fila Tablas (L638) | OK | MEDIO | Visual regression | |
 | UI-LAY-007 | GAP | Dark mode: no hay definición de layouts/tokens para dark mode | — | OK | ALTO | — | Decision: ADR-0005 (ACCEPTED) — Daniel. Pospuesto a Época 3+. Implementation pending Gate 5+. |
