@@ -4,12 +4,12 @@
 
 ## Estado actual
 
-- **15 PNGs presentes** (capturados manualmente en Época 1)
+- **15 PNGs presentes** (recapturados con Playwright en Gate 5.1.2)
 - **12 pantallas registradas** en `docs-ui/golden_screens.md`
-  - 3 Completo (desktop + mobile)
-  - 8 Parcial (falta un viewport)
+  - 4 Completo (desktop + mobile): splash0, splash1, splash2, dashboard
+  - 7 Parcial (falta un viewport)
   - 1 Pendiente (sin screenshots)
-- **Método de captura:** Manual (DevTools screenshot)
+- **Método de captura:** Playwright headless (viewport exacto) desde Gate 5.1.2; manual (DevTools) en Época 1
 
 ## Pantallas golden
 
