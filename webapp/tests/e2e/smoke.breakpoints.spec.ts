@@ -69,6 +69,40 @@ function buildOnboardingBypass(): string {
 }
 
 // ---------------------------------------------------------------------------
+// Helper: dual-wait for React mount (route-independent)
+//
+// Avoids networkidle flakiness and does not depend on specific layout elements
+// like <header>, which may not exist on every route (e.g. standalone onboarding).
+//
+// Dual-wait pattern:
+//   1. Wait for #root to exist (always true in a React SPA)
+//   2. Wait for #root to have at least one child (React has mounted content)
+//
+// If step 2 times out, it likely means:
+//   - The onboarding bypass fixture is broken (schema/key changed)
+//   - The route does not render content (empty catch-all, 404 GAP)
+//   - A JS error prevented React from mounting
+// ---------------------------------------------------------------------------
+const REACT_MOUNT_TIMEOUT = 10_000;
+
+async function waitForReactMount(page: import('@playwright/test').Page) {
+    // Step 1: #root element exists (always present in index.html)
+    await page.locator('#root').waitFor({ state: 'attached', timeout: REACT_MOUNT_TIMEOUT });
+
+    // Step 2: React has mounted at least one child inside #root
+    await page.waitForFunction(
+        () => (document.querySelector('#root')?.childElementCount ?? 0) > 0,
+        { timeout: REACT_MOUNT_TIMEOUT },
+    ).catch(() => {
+        throw new Error(
+            `waitForReactMount: #root has no children after ${REACT_MOUNT_TIMEOUT}ms. ` +
+            'Possible causes: onboarding bypass fixture broken (check ONBOARDING_STORAGE_KEY / schema), ' +
+            'route renders nothing (404 GAP), or JS error prevented mount.'
+        );
+    });
+}
+
+// ---------------------------------------------------------------------------
 // Helper: setup error listeners, bypass onboarding, navigate to dashboard
 // ---------------------------------------------------------------------------
 async function setupPage(page: import('@playwright/test').Page, width: number, height: number) {
@@ -87,11 +121,7 @@ async function setupPage(page: import('@playwright/test').Page, width: number, h
     }, [ONBOARDING_STORAGE_KEY, bypassPayload] as const);
 
     await page.goto('/');
-
-    // Wait for React to mount (route-independent — all content renders inside #root).
-    // Avoids networkidle flakiness in SPAs and doesn't depend on specific layout elements
-    // like <header>, which may not exist on every route (e.g. standalone onboarding).
-    await page.locator('#root > *').first().waitFor({ state: 'attached', timeout: 10_000 });
+    await waitForReactMount(page);
 
     return { pageErrors, consoleErrors };
 }
@@ -189,7 +219,7 @@ test.describe('Breakpoint Smoke — SSOT UI-LAY-004', () => {
             }, [ONBOARDING_STORAGE_KEY, bypassPayload] as const);
 
             await page.goto('/');
-            await page.locator('#root > *').first().waitFor({ state: 'attached', timeout: 10_000 });
+            await waitForReactMount(page);
 
             if (pageErrors.length > 0) allErrors.push(`${label}: pageerror(${pageErrors.length})`);
             if (consoleErrors.length > 0) allErrors.push(`${label}: console.error(${consoleErrors.length})`);
