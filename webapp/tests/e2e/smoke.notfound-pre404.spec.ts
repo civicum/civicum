@@ -1,42 +1,68 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Pre-404 smoke test.
+ * 404 Not Found smoke test — ADR-0004 Verification
  *
- * Validates that navigating to a non-existent route does NOT crash the SPA.
- * In a client-side SPA, the server returns HTTP 200 for all routes;
- * the router handles unknown paths client-side.
+ * Validates that navigating to a non-existent route renders the 404 page
+ * inside AppLayout, with ADR-0004 copy and CTAs.
  *
- * CURRENT STATE: No catch-all route exists. React renders an empty #root
- * for unknown routes. This test validates:
- * - HTTP 200 (index.html served)
- * - #root container exists (React app mounted)
- * - No JS errors / crash
- *
- * NOTE: Gate 5.2 (ADR-0004) will add a catch-all 404 page, at which point
- * this test should be hardened to assert visible content inside #root.
+ * DOCREF: ADR-0004 (ACCEPTED) — Diseño de pantalla 404
+ * DOCREF: UI-NAV-008 (GAP cerrado)
  */
-test.describe('Smoke — Not Found (pre-404)', () => {
-    test('"/ruta-inexistente" does not crash (HTTP 200 in SPA)', async ({ page }) => {
+
+// Onboarding bypass (same fixture as breakpoint tests)
+const ONBOARDING_STORAGE_KEY = 'civicum-onboarding-storage';
+
+function buildOnboardingBypass(): string {
+    return JSON.stringify({
+        state: {
+            hasCompletedOnboarding: true,
+            currentStep: 5,
+            data: { interests: [] },
+        },
+        version: 0,
+    });
+}
+
+test.describe('Smoke — Not Found (404)', () => {
+    test('"/ruta-inexistente" renders 404 page with copy and CTAs', async ({ page }) => {
         const pageErrors: Error[] = [];
         page.on('pageerror', (e) => pageErrors.push(e));
         const consoleErrors: string[] = [];
         page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
 
+        // Bypass onboarding so ProtectedRoute lets us through
+        await page.goto('/onboarding');
+        const bypassPayload = buildOnboardingBypass();
+        await page.evaluate(([key, payload]) => {
+            localStorage.setItem(key, payload);
+        }, [ONBOARDING_STORAGE_KEY, bypassPayload] as const);
+
         const response = await page.goto('/ruta-inexistente');
 
-        // Ensure navigation returned a response
-        expect(response, 'navigation response should not be null').not.toBeNull();
-
         // SPA should return 200 (client-side routing serves index.html)
+        expect(response, 'navigation response should not be null').not.toBeNull();
         expect(response!.status()).toBe(200);
 
-        // React root container must exist (confirms index.html was served and React mounted)
-        await expect(page.locator('#root')).toHaveCount(1);
+        // #root must have mounted content (404 page, not empty)
+        await page.waitForFunction(
+            () => (document.querySelector('#root')?.childElementCount ?? 0) > 0,
+            { timeout: 10_000 },
+        );
 
-        // NOTE: #root is currently EMPTY for unknown routes (no catch-all).
-        // When Gate 5.2 adds a 404 catch-all page, uncomment:
-        // await expect(page.locator('#root')).not.toBeEmpty();
+        // ADR-0004 copy principal must be visible
+        await expect(
+            page.getByText('Esta página no existe'),
+            'ADR-0004 copy principal should be visible',
+        ).toBeVisible();
+
+        // CTA primario "Volver al inicio" must exist and be visible
+        const ctaPrimario = page.getByRole('link', { name: /volver al inicio/i });
+        await expect(ctaPrimario, 'CTA primario should be visible').toBeVisible();
+
+        // CTA secundario "Explorar módulos" must exist and be visible
+        const ctaSecundario = page.getByRole('link', { name: /explorar módulos/i });
+        await expect(ctaSecundario, 'CTA secundario should be visible').toBeVisible();
 
         // No JS errors should have occurred
         expect(pageErrors, 'pageerror should be empty').toEqual([]);
