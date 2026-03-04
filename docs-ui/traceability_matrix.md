@@ -79,7 +79,7 @@
 | UI-NAV-005 | MUST | Tab bounce: scale 1.2→1, 150ms | S01 → §9.3 → "icon bounces" (L1154) | OK | BAJO | UI-kit Playwright | |
 | UI-NAV-006 | MUST | prefers-reduced-motion: corte directo | S01 → §9.3 → "corte directo sin animación" (L1158) | OK | ALTO | Test a11y | |
 | UI-NAV-007 | MUST | Breadcrumbs: máx 4 niveles, "← Volver" en mobile | S01 → §7 Nav → "Breadcrumbs" (L751) | OK | MEDIO | E2E | |
-| UI-NAV-008 | GAP | Falta ruta 404 | — | OK | ALTO | — | Decision: ADR-0004 (ACCEPTED) — Daniel. 404 dentro de AppLayout. Implementation pending Gate 5+. |
+| UI-NAV-008 | GAP | Falta ruta 404 | ADR-0004 → §Decisión (requisitos funcionales) | OK | ALTO | E2E (Playwright) | Implemented Gate 5.2 (commit 7bb2c42): AppLayout catch-all + NotFoundPage; Verified by Playwright smoke.notfound. |
 
 ---
 
