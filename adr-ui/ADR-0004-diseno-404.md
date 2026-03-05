@@ -59,9 +59,9 @@ Requisitos funcionales:
 - **Negativas:** ~2h implementación (estimación), copy aprobado en este ADR
 - **Riesgos:** Copy ya aprobado; validar legibilidad/a11y en implementación
 
-## Verificación (Gate 5+)
+## Verificación
 
-- E2E: Playwright navega a `/ruta-que-no-existe`, verifica presencia de copy + CTAs
+- E2E: Playwright navega a `/ruta-inexistente`, verifica presencia de copy + CTAs
 - Golden screenshots: 404 desktop + mobile (candidata a golden screen vía ADR)
   - **Nota:** 404 no es golden por defecto; se agrega a `golden_screens.md` solo vía ADR explícito.
 - Test a11y: contraste, focus, aria-labels en CTAs
