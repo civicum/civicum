@@ -2,6 +2,7 @@
 
 **Gate:** Gate 4 — Consolidación ADR → Pack
 **Fecha:** 2026-02-26
+**Última actualización de implementación:** Gate 5.2b (2026-03-05)
 **Total reglas:** 75
 **Fuentes:** 4 documentos activos (ver `_gate2/source_map.md`)
 **Convenciones:** S01=UI/UX Definitivo, S02=Design System Terracota, S03=Decisiones F01-F47, S07=Anti-Dark-Patterns
@@ -58,7 +59,7 @@
 
 | UI_RULE_ID | Tipo | Regla | DOCREF | Estado | Impacto | Verificación | Notas |
 |------------|------|-------|--------|--------|---------|-------------|-------|
-| UI-LAY-001 | MUST | Breakpoints mobile-first: XS=360, SM=480, MD=768, LG=1024, XL=1280, 2XL=1536 | S01 → §6.1 → tabla "Breakpoints Oficiales" (L618) | OK | ALTO | Doc review | Resolved by ADR-0003 (ACCEPTED, Opción B) — Daniel. Breaking change: sm 640→480. Implementation pending Gate 5+. |
+| UI-LAY-001 | MUST | Breakpoints mobile-first: XS=360, SM=480, MD=768, LG=1024, XL=1280, 2XL=1536 | S01 → §6.1 → tabla "Breakpoints Oficiales" (L618) | OK | ALTO | E2E (Playwright) + Golden screenshots (Completo) | Resolved by ADR-0003 (ACCEPTED, Opción B) — Daniel. Breaking change: sm 640→480. Implemented Gate 5.1.2 (commit 1fc13bb): tailwind screens xs=360 sm=480 sm640=640. Verified by: Playwright smoke.breakpoints.spec.ts + golden recapture (Estado=Completo). |
 | UI-LAY-002 | MUST | Grid: 12 columnas, gutter 24px desktop / 16px mobile, max-width 1280px | S01 → §5.4 → "Grid System" (L604) | OK | ALTO | Visual regression | |
 | UI-LAY-003 | MUST | Márgenes laterales: 16px (XS-SM), 24px (MD), 32px (LG+) | S01 → §5.4 → "Márgenes laterales" (L608) | OK | MEDIO | Visual regression | |
 | UI-LAY-004 | MUST | Smart Dock: bottom bar XS-MD, side rail LG+ | S01 → §6.3 → fila Smart Dock (L635) | OK | ALTO | E2E + Golden screenshots | Implementation pending Gate 5+; tracked by smoke.breakpoints.spec.ts (expected-fail until implemented). |

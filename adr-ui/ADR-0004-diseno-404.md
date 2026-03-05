@@ -68,6 +68,8 @@ Requisitos funcionales:
 
 ## Plan de implementación (no ejecutar aún)
 
+> **(Histórico)** — ya implementado en Gate 5.2; ver [Implementation record](#implementation-record-gate-52) abajo.
+
 1. Ruta catch-all: configurar ruta comodín (`path="*"`) en el router (ubicación TBD)
 2. Crear componente de pantalla 404 (nombre y ubicación TBD) con layout AppShell (Smart Dock visible)
    - Sugerencia: usar isotipo (no texto completo) — opción a validar con diseño
@@ -84,3 +86,14 @@ Requisitos funcionales:
 ---
 
 > ✅ **Aprobación (Daniel): COMPLETADA** — se autoriza implementación según el plan (Gate 5+).
+
+---
+
+## Implementation record (Gate 5.2)
+
+- **Implemented in:** commit `7bb2c42` — catch-all `path="*"` inside AppLayout + `NotFoundPage.tsx`
+- **CTA primario:** "Volver al inicio" → navega a `/` (Dashboard)
+- **CTA secundario:** "Explorar módulos" → navega a `/alza-la-voz` (primer módulo disponible en Smart Dock)
+- **SmartDock extraction:** commit `34755fe` — componente independiente `SmartDock.tsx`
+- **Verified by:** Playwright `smoke.notfound.spec.ts` (commit `6cf97d6`) — asserts AppLayout header, exact ADR-0004 copy, CTA navigation, zero JS errors
+- **Traceability:** UI-NAV-008 actualizado en `docs-ui/traceability_matrix.md`
