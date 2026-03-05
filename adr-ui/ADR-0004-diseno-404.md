@@ -92,8 +92,10 @@ Requisitos funcionales:
 ## Implementation record (Gate 5.2)
 
 - **Implemented in:** commit `7bb2c42` — catch-all `path="*"` inside AppLayout + `NotFoundPage.tsx`
+  - Files: `webapp/src/main.tsx`, `webapp/src/pages/not-found/NotFoundPage.tsx`, `webapp/tests/e2e/smoke.notfound-pre404.spec.ts`
 - **CTA primario:** "Volver al inicio" → navega a `/` (Dashboard)
 - **CTA secundario:** "Explorar módulos" → navega a `/alza-la-voz` (primer módulo disponible en Smart Dock)
-- **SmartDock extraction:** commit `34755fe` — componente independiente `SmartDock.tsx`
 - **Verified by:** Playwright `smoke.notfound.spec.ts` (commit `6cf97d6`) — asserts AppLayout header, exact ADR-0004 copy, CTA navigation, zero JS errors
+  - Files: `webapp/tests/e2e/smoke.notfound.spec.ts` (created), `webapp/tests/e2e/smoke.notfound-pre404.spec.ts` (deleted/renamed), `docs-ui/traceability_matrix.md`
 - **Traceability:** UI-NAV-008 actualizado en `docs-ui/traceability_matrix.md`
+
