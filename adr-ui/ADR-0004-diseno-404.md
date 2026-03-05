@@ -92,10 +92,12 @@ Requisitos funcionales:
 ## Implementation record (Gate 5.2)
 
 - **Implemented in:** commit `7bb2c42` — catch-all `path="*"` inside AppLayout + `NotFoundPage.tsx`
-  - Files: `webapp/src/main.tsx`, `webapp/src/pages/not-found/NotFoundPage.tsx`, `webapp/tests/e2e/smoke.notfound-pre404.spec.ts`
+  - Files (src): `webapp/src/main.tsx`, `webapp/src/pages/not-found/NotFoundPage.tsx`
 - **CTA primario:** "Volver al inicio" → navega a `/` (Dashboard)
 - **CTA secundario:** "Explorar módulos" → navega a `/alza-la-voz` (primer módulo disponible en Smart Dock)
+  - Elegido porque es el primer módulo disponible en Smart Dock al momento de Gate 5.2; si el orden/rutas cambian, actualizar este record y el smoke test.
 - **Verified by:** Playwright `smoke.notfound.spec.ts` (commit `6cf97d6`) — asserts AppLayout header, exact ADR-0004 copy, CTA navigation, zero JS errors
-  - Files: `webapp/tests/e2e/smoke.notfound.spec.ts` (created), `webapp/tests/e2e/smoke.notfound-pre404.spec.ts` (deleted/renamed), `docs-ui/traceability_matrix.md`
+  - Test original: `smoke.notfound-pre404.spec.ts` (created in `7bb2c42`, renamed to `smoke.notfound.spec.ts` in `6cf97d6`)
+  - Files (commit `6cf97d6`): `webapp/tests/e2e/smoke.notfound.spec.ts` (created), `webapp/tests/e2e/smoke.notfound-pre404.spec.ts` (deleted), `docs-ui/traceability_matrix.md`
 - **Traceability:** UI-NAV-008 actualizado en `docs-ui/traceability_matrix.md`
 
