@@ -85,7 +85,7 @@ Requisitos funcionales:
 
 ---
 
-> ✅ **Aprobación (Daniel): COMPLETADA** — se autoriza implementación según el plan (Gate 5+).
+> ✅ **Aprobación (Daniel): COMPLETADA** — implementación realizada en Gate 5.2; ver Implementation record.
 
 ---
 
