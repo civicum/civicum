@@ -46,4 +46,5 @@ Toda pantalla CIVICUM debe manejar 5 estados:
 - Importar 3 tiers offline de `CIVICUM_Anexo_Arquitectura_Tecnica_Completa.docx.md §1.2.4`
 - ~~Documentar GAPs actuales: G2 (sin error en geolocation), G4/G7 (sin dark mode en Dashboard/Layout)~~ → Dark mode resuelto por ADR-0005
 - Definir skeleton patterns para Dashboard y Perfil
+- ~~Indicador de conectividad: banner, toast, o badge~~ → Gate 5.4 integró `OfflineBanner` en producción vía `AppLayout`; ver `traceability_matrix.md` UI-STP-005.
 

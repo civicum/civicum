@@ -57,16 +57,16 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 - **Negativas:** ~8-12h implementación (estimación), posible cambio en golden screenshots existentes
 - **Riesgos:** Skeleton layout debe coincidir con layout real para evitar CLS al cargar. Mitigación: diseñar skeleton que matchee estructura de cards/forms.
 
-## Verificación
+## Verificación (Gate 5.3+)
 
 - UI-kit Playwright: screenshots de cada componente (skeleton, empty, error, offline banner)
 - E2E: simular offline → verificar banner + funcionalidad; simular error → verificar toast + retry
 - Golden screenshots: solo aplican si Empty es estado estable de una golden screen; Loading se verifica en UI-kit Playwright (no en golden screenshots)
 - Performance: skeleton debe minimizar trabajo extra de JS; no debe introducir CLS; se valida con Lighthouse/Performance en Gate 5+
 
-## Plan de implementación (no ejecutar aún)
+## Plan de implementación (histórico)
 
-> **(Histórico)** — ya implementado en Gate 5.3; ver [Implementation record](#implementation-record-gate-53) abajo.
+> **(Histórico)** — ya implementado en Gate 5.3/5.4; ver [Implementation record](#implementation-record-gate-5354) abajo.
 
 1. **Componentes sugeridos** (nombres y ubicación TBD):
    - Skeleton screen, Empty state, Error state, Offline banner — como componentes reutilizables
@@ -95,11 +95,13 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 
 ---
 
-> ✅ **Aprobación (Daniel): COMPLETADA** — implementación realizada en Gate 5.3; ver Implementation record.
+> ✅ **Aprobación (Daniel): COMPLETADA** — implementación realizada en Gate 5.3/5.4; ver Implementation record.
 
 ---
 
-## Implementation record (Gate 5.3)
+## Implementation record (Gate 5.3/5.4)
+
+### Gate 5.3 — Componentes UI-kit
 
 - **Commit `fc42f22`** — `feat(gate5.3): 5-state feedback components + shimmer keyframe (ADR-0006)`
   - Files: `webapp/src/components/feedback/SkeletonScreen.tsx`, `EmptyState.tsx`, `ErrorState.tsx`, `OfflineBanner.tsx`, `SuccessState.tsx`, `webapp/tailwind.config.ts`
@@ -113,6 +115,23 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 - **Commit `32a6a54`** — `docs(gate5.3): SSOT closure — traceability_matrix UI-STP-001..009 implementation notes`
   - Files: `docs-ui/traceability_matrix.md`
   - Notas de implementación/verificación en UI-STP-001..005 y UI-STP-009.
+
+### Gate 5.4 — Integración en producción
+
+- **Commit `d5f0959`** — `feat(gate5.4): integrate OfflineBanner in AppLayout via real navigator.onLine (UI-STP-005)`
+  - Files: `webapp/src/lib/useNetworkStatus.ts` (NEW), `webapp/src/components/layout/AppLayout.tsx`, `webapp/tests/e2e/integration.5state.spec.ts` (NEW), `docs-ui/traceability_matrix.md`
+  - Hook `useNetworkStatus` usa `navigator.onLine` + event listeners `online`/`offline` (sin timers, sin polling). `AppLayout` renderiza `OfflineBanner` entre header y main cuando el navegador está offline. Playwright E2E verifica con `context.setOffline(true/false)`.
+
+### Evidence & specs
+
 - **Evidence canonical path:** `webapp/tests/visual/ui-kit/`
-- **Playwright spec:** `webapp/tests/e2e/ui-kit.states.spec.ts`
-- **Limitación documentada:** Dashboard usa datos estáticos hardcoded; no se introdujeron timers artificiales. Integración real de estados queda para cuando Dashboard tenga data fetching.
+- **UI-kit Playwright spec:** `webapp/tests/e2e/ui-kit.states.spec.ts`
+- **Production E2E spec:** `webapp/tests/e2e/integration.5state.spec.ts`
+
+### Limitaciones documentadas
+
+- **Offline:** ✅ Integrado en producción (`AppLayout` → `OfflineBanner` vía `useNetworkStatus`).
+- **Error/Loading/Empty/Success:** Permanecen solo en UI-kit. No existen condiciones reales suficientes hoy para integrarlos en producción sin inventar lógica.
+  - Dashboard y Profile usan datos hardcoded (sin fetch real).
+  - Onboarding tiene geolocalización simulada; integrar `ErrorState` requeriría geocoding inverso (lat/lng → comuna) que no existe en el codebase. El path de éxito no puede ser real → mezclar error real con éxito fake es deshonesto.
+- No se introdujeron timers artificiales en ningún Gate.
