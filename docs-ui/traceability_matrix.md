@@ -7,7 +7,7 @@
 **Fuentes:** 4 documentos activos (ver `_gate2/source_map.md`)
 **Convenciones:** S01=UI/UX Definitivo, S02=Design System Terracota, S03=Decisiones F01-F47, S07=Anti-Dark-Patterns
 
-> **Nota:** Tipo=GAP se mantiene como marcador histórico del problema detectado; Estado=OK indica que la decisión está tomada (ADR ACCEPTED). Implementación se gestiona en Gate 5+.
+> **Nota:** Tipo=GAP se mantiene como marcador histórico del problema detectado; Estado=OK indica que la decisión está tomada (ADR ACCEPTED). Implementación se gestiona en Gate 5+ y se registra en Notas con commit hash cuando aplica.
 
 ---
 
@@ -139,7 +139,7 @@
 | UI-STP-006 | MUST | offline.html digno con logo + capacidades + CTA | S03 → F-07 → "Dignidad = experiencia completa" (L365) | OK | ALTO | E2E | |
 | UI-STP-007 | MUST | CWV Tier LOW: FCP≤2.0s, LCP≤4.0s, TTI≤5.0s, CLS≤0.2 | S01 → §17.2 → tabla CWV (L1590) | OK | ALTO | Performance | Android Go target |
 | UI-STP-008 | MUST | Critical pack ≤800KB | S03 → F-07 → "CRITICAL_PACK_SIZE_KB: 800" (L383) | OK | ALTO | Performance | |
-| UI-STP-009 | GAP | Estados loading/error no implementados en Época 1 | — | OK | ALTO | — | Decision: ADR-0006 (ACCEPTED) — Daniel. 5-state pattern obligatorio. Implemented Gate 5.3 (commits fc42f22, c0481ad, cf61361, 32a6a54): 5 reusable components + `/ui-kit` route + Playwright evidence (10 PNGs in `webapp/tests/visual/ui-kit/`). |
+| UI-STP-009 | GAP | Estados loading/error no implementados en Época 1 | — | OK | ALTO | UI-kit Playwright + Doc review | Decision: ADR-0006 (ACCEPTED) — Daniel. 5-state pattern obligatorio. Implemented Gate 5.3 (commits fc42f22, c0481ad, cf61361, 32a6a54): 5 reusable components + `/ui-kit` route + Playwright evidence (10 PNGs in `webapp/tests/visual/ui-kit/`). |
 
 ---
 
