@@ -57,7 +57,7 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 - **Negativas:** ~8-12h implementación (estimación), posible cambio en golden screenshots existentes
 - **Riesgos:** Skeleton layout debe coincidir con layout real para evitar CLS al cargar. Mitigación: diseñar skeleton que matchee estructura de cards/forms.
 
-## Verificación (Gate 5+)
+## Verificación
 
 - UI-kit Playwright: screenshots de cada componente (skeleton, empty, error, offline banner)
 - E2E: simular offline → verificar banner + funcionalidad; simular error → verificar toast + retry
@@ -65,6 +65,8 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 - Performance: skeleton debe minimizar trabajo extra de JS; no debe introducir CLS; se valida con Lighthouse/Performance en Gate 5+
 
 ## Plan de implementación (no ejecutar aún)
+
+> **(Histórico)** — ya implementado en Gate 5.3; ver [Implementation record](#implementation-record-gate-53) abajo.
 
 1. **Componentes sugeridos** (nombres y ubicación TBD):
    - Skeleton screen, Empty state, Error state, Offline banner — como componentes reutilizables
@@ -93,4 +95,24 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 
 ---
 
-> ✅ **Aprobación (Daniel): COMPLETADA** — se autoriza implementación según el plan (Gate 5+).
+> ✅ **Aprobación (Daniel): COMPLETADA** — implementación realizada en Gate 5.3; ver Implementation record.
+
+---
+
+## Implementation record (Gate 5.3)
+
+- **Commit `fc42f22`** — `feat(gate5.3): 5-state feedback components + shimmer keyframe (ADR-0006)`
+  - Files: `webapp/src/components/feedback/SkeletonScreen.tsx`, `EmptyState.tsx`, `ErrorState.tsx`, `OfflineBanner.tsx`, `SuccessState.tsx`, `webapp/tailwind.config.ts`
+  - 5 componentes reutilizables presentacionales (composable, sin dependencia de pantalla). OfflineBanner es presentational (sin auto-detect). Shimmer keyframe 1.5s infinite.
+- **Commit `c0481ad`** — `feat(gate5.3): /ui-kit deterministic route for 5-state evidence`
+  - Files: `webapp/src/pages/ui-kit/UIKitPage.tsx`, `webapp/src/main.tsx`
+  - Ruta `/ui-kit` determinista (sin red, sin datos reales). Soporta `?state=loading|empty|error|offline|success` para mostrar 1 estado a la vez. Cada sección tiene `data-testid="state-X"` y `data-state="X"`.
+- **Commit `cf61361`** — `test(gate5.3): Playwright ui-kit snapshots — 10 PNGs for 5-state evidence`
+  - Files: `webapp/tests/e2e/ui-kit.states.spec.ts`, `webapp/tests/visual/ui-kit/*.png` (10 PNGs)
+  - Playwright navega a `/ui-kit?state=X`, captura per-section screenshot en desktop 1440×900 y mobile 360×800. Screenshots guardados en ruta canónica `webapp/tests/visual/ui-kit/`.
+- **Commit `32a6a54`** — `docs(gate5.3): SSOT closure — traceability_matrix UI-STP-001..009 implementation notes`
+  - Files: `docs-ui/traceability_matrix.md`
+  - Notas de implementación/verificación en UI-STP-001..005 y UI-STP-009.
+- **Evidence canonical path:** `webapp/tests/visual/ui-kit/`
+- **Playwright spec:** `webapp/tests/e2e/ui-kit.states.spec.ts`
+- **Limitación documentada:** Dashboard usa datos estáticos hardcoded; no se introdujeron timers artificiales. Integración real de estados queda para cuando Dashboard tenga data fetching.

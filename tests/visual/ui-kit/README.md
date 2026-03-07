@@ -1,48 +1,63 @@
 # UI-Kit Visual Evidence
 
-**Propósito:** Almacenar snapshots de componentes individuales (skeletons, spinners, toasts, badges, etc.) usados para verificar reglas de UI-kit (ej. UI-CMP-004, UI-CMP-005).
+**Propósito:** Almacenar snapshots de componentes individuales (skeletons, empty states, error, offline, success) usados para verificar reglas de UI-kit y 5-state pattern (ADR-0006).
 
-## Estado actual
+## Estado actual (Gate 5.3)
 
-**No existe infraestructura de tests visuales.** No hay Playwright, Storybook ni Vitest instalados. Los screenshots de esta carpeta se generan manualmente hasta que se instale tooling.
+**Playwright automatizado.** Los snapshots en este directorio son **de referencia manual / legacy**. La evidencia canónica generada por Playwright vive en:
 
-## Cómo generar snapshots (manual — Época 1)
+```
+webapp/tests/visual/ui-kit/
+```
 
-1. Ejecutar dev server: `cd webapp && npm run dev`
-2. Navegar al componente o pantalla que contiene el componente aislado
-3. Capturar screenshot con DevTools (Ctrl+Shift+P → "Capture screenshot") a viewport fijo
-4. Guardar con naming: `COMPONENTE_VARIANTE_VIEWPORT.png`
-   - Ejemplo: `skeleton_shimmer_desktop.png`, `spinner_terracota_sm_mobile.png`
+> **Canonical path:** `webapp/tests/visual/ui-kit/` — los 10 PNGs de 5-state evidence son generados por `webapp/tests/e2e/ui-kit.states.spec.ts` y committed en esa ubicación.
 
-> **Aislar componentes sin Storybook:** Para evitar capturas contaminadas por layout u otros componentes, usar una ruta temporal `/ui-kit` (si existe) o una pantalla interna dedicada en Gate 5.3. Recortar manualmente NO está permitido (ver Reglas).
+## PNGs canónicos (Gate 5.3)
+
+| Archivo | Regla | Estado | Viewport |
+|---------|-------|--------|----------|
+| `UI-STP-001_success_desktop.png` | UI-STP-001 | success | 1440×900 |
+| `UI-STP-001_success_mobile.png` | UI-STP-001 | success | 360×800 |
+| `UI-STP-002_loading_desktop.png` | UI-STP-002 | loading | 1440×900 |
+| `UI-STP-002_loading_mobile.png` | UI-STP-002 | loading | 360×800 |
+| `UI-STP-003_empty_desktop.png` | UI-STP-003 | empty | 1440×900 |
+| `UI-STP-003_empty_mobile.png` | UI-STP-003 | empty | 360×800 |
+| `UI-STP-004_error_desktop.png` | UI-STP-004 | error | 1440×900 |
+| `UI-STP-004_error_mobile.png` | UI-STP-004 | error | 360×800 |
+| `UI-STP-005_offline_desktop.png` | UI-STP-005 | offline | 1440×900 |
+| `UI-STP-005_offline_mobile.png` | UI-STP-005 | offline | 360×800 |
+
+## Cómo regenerar
+
+```bash
+pnpm -C webapp test:e2e -- --grep "UI-Kit"
+```
+
+Los PNGs se sobreescriben automáticamente en `webapp/tests/visual/ui-kit/`.
 
 ## Naming convention
 
 ```
-<componente>_<variante>_<viewport>.png
+UI-STP-{NNN}_{estado}_{viewport}.png
 ```
 
-- **componente:** nombre en snake_case (ej. `skeleton_shimmer`, `toast_error`, `badge_dot`)
-- **variante:** tamaño o estado (ej. `sm`, `md`, `lg`, `error`, `success`)
+- **NNN:** ID de regla en traceability_matrix (001, 002, …)
+- **estado:** `loading`, `empty`, `error`, `offline`, `success`
 - **viewport:** `desktop` (1440×900) o `mobile` (360×800)
-
-> Los snapshots deben capturarse con "Capture screenshot" (viewport), no full size. Para snapshots, lo crítico es el ancho; mantener altura fija por reproducibilidad.
-
-## Validación CI (GAP)
-
-> **GAP:** No existe CI pipeline ni test runner visual. Cuando se instale Playwright (recomendado para Gate 5.1+), este directorio será el output de `npx playwright test --update-snapshots` para el test suite de UI-kit.
 
 ## Reglas
 
 1. Los screenshots de **pantallas completas** van en `tests/visual/baseline/`, no aquí.
-2. Cada snapshot debe poder reproducirse siguiendo instrucciones documentadas.
+2. Cada snapshot debe poder reproducirse ejecutando el spec de Playwright.
 3. Si un componente cambia por ADR, se regenera el snapshot y se registra en el commit.
 
 ## Relación con la matriz
 
 | UI_RULE_ID | Componente | Verificación |
 |------------|-----------|-------------|
-| UI-CMP-004 | Skeleton shimmer | UI-kit Playwright (manual hasta CI) |
-| UI-CMP-005 | Spinner Terracota | UI-kit Playwright (manual hasta CI) |
-| UI-CMP-007 | Bottom Sheet | UI-kit Playwright (manual hasta CI) |
-| UI-STP-002 | Loading skeleton (5-state) | UI-kit Playwright (manual hasta CI) |
+| UI-STP-001 | 5-state pattern (all) | Playwright `ui-kit.states.spec.ts` |
+| UI-STP-002 | SkeletonScreen (loading) | Playwright `ui-kit.states.spec.ts` |
+| UI-STP-003 | EmptyState | Playwright `ui-kit.states.spec.ts` |
+| UI-STP-004 | ErrorState | Playwright `ui-kit.states.spec.ts` |
+| UI-STP-005 | OfflineBanner | Playwright `ui-kit.states.spec.ts` |
+| UI-CMP-004 | Skeleton shimmer | Playwright `ui-kit.states.spec.ts` |

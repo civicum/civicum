@@ -131,15 +131,15 @@
 
 | UI_RULE_ID | Tipo | Regla | DOCREF | Estado | Impacto | Verificación | Notas |
 |------------|------|-------|--------|--------|---------|-------------|-------|
-| UI-STP-001 | MUST | 5 estados por pantalla: loading, empty, error, offline, success | S01 → §12 → tabla estados (L1356) | OK | ALTO | E2E | Implemented Gate 5.3: 5 reusable components in `components/feedback/`. Verified by Playwright ui-kit snapshots (`tests/visual/ui-kit/`). |
-| UI-STP-002 | MUST | Loading: skeleton shimmer, no spinner vacío | S01 → §12.1 → "Skeleton screen con shimmer" (L1357) | OK | MEDIO | UI-kit Playwright | Implemented Gate 5.3: `SkeletonScreen.tsx`. Verified by Playwright (`UI-STP-002_loading_desktop/mobile.png`). |
-| UI-STP-003 | MUST | Empty: ilustración + CTA por módulo | S01 → §12.3 → tabla empty states (L1387) | OK | MEDIO | E2E | 6 variantes. Implemented Gate 5.3: `EmptyState.tsx`. Verified by Playwright (`UI-STP-003_empty_desktop/mobile.png`). |
-| UI-STP-004 | MUST | Error: toast Terracota + guardado + retry | S01 → §12.1 → fila Error (L1359) | OK | ALTO | E2E | Implemented Gate 5.3: `ErrorState.tsx` (copy default UI-CNT-004). Verified by Playwright (`UI-STP-004_error_desktop/mobile.png`). |
-| UI-STP-005 | MUST | Offline: banner NO alarma + funcionalidad Tier LOW | S01 → §12.1 → fila Offline (L1360) | OK | ALTO | E2E | F-07. Implemented Gate 5.3: `OfflineBanner.tsx` (presentational). Verified by Playwright (`UI-STP-005_offline_desktop/mobile.png`). |
+| UI-STP-001 | MUST | 5 estados por pantalla: loading, empty, error, offline, success | S01 → §12 → tabla estados (L1356) | OK | ALTO | E2E | Implemented Gate 5.3 (commits fc42f22, c0481ad, cf61361). 5 reusable components in `webapp/src/components/feedback/`. Verified by Playwright ui-kit snapshots (`webapp/tests/visual/ui-kit/`). |
+| UI-STP-002 | MUST | Loading: skeleton shimmer, no spinner vacío | S01 → §12.1 → "Skeleton screen con shimmer" (L1357) | OK | MEDIO | UI-kit Playwright | Implemented Gate 5.3 (commit fc42f22): `SkeletonScreen.tsx`. Verified by Playwright ui-kit snapshots (`webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png`, `…_mobile.png`). |
+| UI-STP-003 | MUST | Empty: ilustración + CTA por módulo | S01 → §12.3 → tabla empty states (L1387) | OK | MEDIO | UI-kit Playwright | 6 variantes. Implemented Gate 5.3 (commit fc42f22): `EmptyState.tsx`. Verified by Playwright ui-kit snapshots (`webapp/tests/visual/ui-kit/UI-STP-003_empty_desktop.png`, `…_mobile.png`). |
+| UI-STP-004 | MUST | Error: toast Terracota + guardado + retry | S01 → §12.1 → fila Error (L1359) | OK | ALTO | UI-kit Playwright | Implemented Gate 5.3 (commit fc42f22): `ErrorState.tsx` (copy default UI-CNT-004). Verified by Playwright ui-kit snapshots (`webapp/tests/visual/ui-kit/UI-STP-004_error_desktop.png`, `…_mobile.png`). |
+| UI-STP-005 | MUST | Offline: banner NO alarma + funcionalidad Tier LOW | S01 → §12.1 → fila Offline (L1360) | OK | ALTO | UI-kit Playwright | F-07. Implemented Gate 5.3 (commit fc42f22): `OfflineBanner.tsx` (presentational). Verified by Playwright ui-kit snapshots (`webapp/tests/visual/ui-kit/UI-STP-005_offline_desktop.png`, `…_mobile.png`). |
 | UI-STP-006 | MUST | offline.html digno con logo + capacidades + CTA | S03 → F-07 → "Dignidad = experiencia completa" (L365) | OK | ALTO | E2E | |
 | UI-STP-007 | MUST | CWV Tier LOW: FCP≤2.0s, LCP≤4.0s, TTI≤5.0s, CLS≤0.2 | S01 → §17.2 → tabla CWV (L1590) | OK | ALTO | Performance | Android Go target |
 | UI-STP-008 | MUST | Critical pack ≤800KB | S03 → F-07 → "CRITICAL_PACK_SIZE_KB: 800" (L383) | OK | ALTO | Performance | |
-| UI-STP-009 | GAP | Estados loading/error no implementados en Época 1 | — | OK | ALTO | — | Decision: ADR-0006 (ACCEPTED) — Daniel. 5-state pattern obligatorio. Implemented Gate 5.3: 5 reusable components + `/ui-kit` route + Playwright evidence (10 PNGs). |
+| UI-STP-009 | GAP | Estados loading/error no implementados en Época 1 | — | OK | ALTO | — | Decision: ADR-0006 (ACCEPTED) — Daniel. 5-state pattern obligatorio. Implemented Gate 5.3 (commits fc42f22, c0481ad, cf61361, 32a6a54): 5 reusable components + `/ui-kit` route + Playwright evidence (10 PNGs in `webapp/tests/visual/ui-kit/`). |
 
 ---
 
