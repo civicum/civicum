@@ -2,8 +2,12 @@ import { Outlet, NavLink } from "react-router-dom";
 import { CivicumLogo } from "../icons/CivicumLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { SmartDock } from "./SmartDock";
+import OfflineBanner from "../feedback/OfflineBanner";
+import { useNetworkStatus } from "@/lib/useNetworkStatus";
 
 export default function AppLayout() {
+    const { isOnline } = useNetworkStatus();
+
     return (
         <div className="flex min-h-screen w-full flex-col bg-slate-50">
             {/* 
@@ -54,6 +58,13 @@ export default function AppLayout() {
                     </NavLink>
                 </div>
             </header>
+
+            {/* Offline Banner — real navigator.onLine detection (UI-STP-005, ADR-0006) */}
+            {!isOnline && (
+                <div className="w-full max-w-7xl mx-auto px-4 pt-3 md:px-6">
+                    <OfflineBanner />
+                </div>
+            )}
 
             {/* 
         MAIN CONTENT AREA
