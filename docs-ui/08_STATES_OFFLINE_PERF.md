@@ -11,7 +11,7 @@
 - [ ] Patrón de error: mensajes según `soulful-copywriting`, botón retry, fallback
 - [ ] Patrón empty state: ilustración (opcional), mensaje empático, CTA de acción
 - [ ] Offline: 3 tiers (HIGH/MEDIUM/LOW), qué se muestra offline por tier
-- [ ] Indicador de conectividad: banner, toast, o badge (según estado de red)
+- [x] Indicador de conectividad: OfflineBanner integrado en producción vía AppLayout (Gate 5.4)
 - [ ] Performance budgets: FCP, LCP, TTI, CLS por tier (HIGH/MID/LOW)
 - [ ] Bundle size: < 800KB gzip total, presupuesto por chunk
 - [ ] Font loading: estrategia por tier (HIGH: web fonts, LOW: system-ui)
