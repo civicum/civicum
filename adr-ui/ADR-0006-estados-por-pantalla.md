@@ -99,7 +99,7 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 
 ---
 
-## Implementation record (Gate 5.3/5.4)
+## Implementation record (Gate 5.3/5.4/5.5)
 
 ### Gate 5.3 — Componentes UI-kit
 
@@ -128,10 +128,11 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 - **UI-kit Playwright spec:** `webapp/tests/e2e/ui-kit.states.spec.ts`
 - **Production E2E spec:** `webapp/tests/e2e/integration.5state.spec.ts`
 
-### Limitaciones documentadas
+### Limitaciones documentadas (Gate 5.5 Honest Stop)
 
-- **Offline:** ✅ Integrado en producción (`AppLayout` → `OfflineBanner` vía `useNetworkStatus`).
-- **Error/Loading/Empty/Success:** Permanecen solo en UI-kit. No existen condiciones reales suficientes hoy para integrarlos en producción sin inventar lógica.
+- **Gate 5.5 evaluation:** no honest production integration path found for Error / Empty / Loading / Success under current static architecture.
+- **Offline:** remains the only state integrated in production as of Gate 5.4 (`AppLayout` → `OfflineBanner` vía `useNetworkStatus`).
+- Remaining states stay in UI-kit until real async data flows / empty collections / completion flows exist.
   - Dashboard y Profile usan datos hardcoded (sin fetch real).
-  - Onboarding tiene geolocalización simulada; integrar `ErrorState` requeriría geocoding inverso (lat/lng → comuna) que no existe en el codebase. El path de éxito no puede ser real → mezclar error real con éxito fake es deshonesto.
-- No se introdujeron timers artificiales en ningún Gate.
+  - Onboarding tiene geolocalización simulada; integrar `ErrorState` requeriría geocoding inverso (lat/lng → comuna) que no existe. El path de éxito no puede ser real → mezclar error real con éxito fake es deshonesto.
+- No se introdujeron timers artificiales ni lógicas inventadas en ningún Gate.
