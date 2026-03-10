@@ -136,3 +136,10 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
   - Dashboard y Profile usan datos hardcoded (sin fetch real).
   - Onboarding tiene geolocalización simulada; integrar `ErrorState` requeriría geocoding inverso (lat/lng → comuna) que no existe. El path de éxito no puede ser real → mezclar error real con éxito fake es deshonesto.
 - No se introdujeron timers artificiales ni lógicas inventadas en ningún Gate.
+
+### Gate 5.6 evaluation outcome
+
+- Gate 5.6 intentó identificar la primera vertical real de datos.
+- No se encontró un camino honesto debido a la falta de backend y data wiring activo.
+- Offline sigue siendo el único estado integrado en producción.
+- Loading / Empty / Error / Success permanecen en UI-kit hasta que exista backend/data flow real.

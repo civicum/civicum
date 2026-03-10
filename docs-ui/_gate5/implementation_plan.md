@@ -160,6 +160,14 @@
 
 ---
 
+### 5.6 — Primera Vertical Real (BLOQUEADO)
+
+**Qué:** Integración en producción de estados Loading, Empty, Error y/o Success en una vertical real asíncrona.
+
+**Resultado:** Detenido por **Honest Stop**. Gate 5.6 blocked by lack of real backend/data vertical; next architectural unlock required before further state integration.
+
+---
+
 ## Dependencias entre pasos
 
 ```mermaid
