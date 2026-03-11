@@ -7,6 +7,11 @@ test.describe('Smoke — Home', () => {
         const consoleErrors: string[] = [];
         page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
 
+        // Stub /api/community-reports (backend not running during smoke tests)
+        await page.route('**/api/community-reports', (route) =>
+            route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ reports: [] }) })
+        );
+
         await page.goto('/');
         // Assert the page loaded and body has meaningful content
         await expect(page.locator('body')).not.toBeEmpty();
@@ -25,6 +30,11 @@ test.describe('Smoke — Home', () => {
         page.on('pageerror', (e) => pageErrors.push(e));
         const consoleErrors: string[] = [];
         page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
+
+        // Stub /api/community-reports (backend not running during smoke tests)
+        await page.route('**/api/community-reports', (route) =>
+            route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ reports: [] }) })
+        );
 
         await page.goto('/');
         await expect(page.locator('body')).not.toBeEmpty();

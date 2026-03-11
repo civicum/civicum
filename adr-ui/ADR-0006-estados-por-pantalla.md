@@ -143,3 +143,17 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 - No se encontró un camino honesto debido a la falta de backend y data wiring activo.
 - Offline sigue siendo el único estado integrado en producción.
 - Loading / Empty / Error / Success permanecen en UI-kit hasta que exista backend/data flow real.
+
+### Gate 5.7 implementation record
+
+- **Vertical:** Dashboard → Reportes Comunitarios (read-only `GET /api/community-reports`)
+- **Backend wiring:** Hono server entrypoint (`src/server/serve.ts`) + real Drizzle query sobre `communityReports` (`src/server/index.ts`) + Neon connection (`src/server/db.ts`)
+- **Frontend wiring:** `QueryClientProvider` en `main.tsx` + `useQuery` en `DashboardPage.tsx` + Vite proxy `/api → localhost:3001`
+- **Estados integrados en producción:**
+  - **Loading** → `SkeletonScreen` activado por request real pendiente (sin timer artificial)
+  - **Error** → `ErrorState` con `onRetry` → `refetch()` activado por fallo real del endpoint
+  - **Empty** → `EmptyState` activado cuando la consulta devuelve 0 reportes reales
+- **Success** queda fuera de scope (no hay mutación real en esta vertical read-only)
+- **Tests:** `integration.reports.spec.ts` (4 tests × 2 projects = 8 E2E tests)
+- **No se introdujeron timers artificiales, fake APIs, ni datos inventados**
+

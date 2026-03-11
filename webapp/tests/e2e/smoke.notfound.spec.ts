@@ -63,6 +63,11 @@ test.describe('Smoke — Not Found (404)', () => {
         page.on('pageerror', onPageError);
         page.on('console', onConsole);
 
+        // Stub /api/community-reports (backend not running during smoke tests)
+        await page.route('**/api/community-reports', (route) =>
+            route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ reports: [] }) })
+        );
+
         // ── Bypass onboarding (ProtectedRoute guard) ──
         await page.goto('/onboarding');
         const bypassPayload = buildOnboardingBypass();

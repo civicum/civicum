@@ -39,6 +39,11 @@ test.describe('Integration — 5-State Offline (Gate 5.4)', () => {
     // Bypass onboarding
     await page.goto('/onboarding');
     const bypassPayload = buildOnboardingBypass();
+
+    // Stub /api/community-reports (backend not running during this test)
+    await page.route('**/api/community-reports', (route) =>
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ reports: [] }) })
+    );
     await page.evaluate(([key, payload]) => {
       localStorage.setItem(key, payload);
     }, [ONBOARDING_STORAGE_KEY, bypassPayload] as const);

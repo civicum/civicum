@@ -120,6 +120,12 @@ async function setupPage(page: import('@playwright/test').Page, width: number, h
 
     await page.setViewportSize({ width, height });
 
+    // Stub /api/community-reports so proxy errors don't pollute console.error
+    // (backend is not running during smoke tests — this is NOT the vertical under test)
+    await page.route('**/api/community-reports', (route) =>
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ reports: [] }) })
+    );
+
     // Inject onboarding bypass fixture
     await page.goto('/onboarding');
     const bypassPayload = buildOnboardingBypass();
@@ -216,6 +222,11 @@ test.describe('Breakpoint Smoke — SSOT UI-LAY-004', () => {
             };
             page.on('pageerror', onPageError);
             page.on('console', onConsole);
+
+            // Stub /api/community-reports (backend not running during smoke tests)
+            await page.route('**/api/community-reports', (route) =>
+                route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ reports: [] }) })
+            );
 
             await page.setViewportSize({ width: w, height: h });
 
