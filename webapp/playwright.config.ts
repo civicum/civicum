@@ -30,11 +30,28 @@ export default defineConfig({
         },
     ],
 
-    /* Dev server: assumes `pnpm dev` is already running on port 5173 */
-    webServer: {
-        command: 'pnpm dev',
-        url: 'http://localhost:5173',
-        reuseExistingServer: !process.env.CI,
-        timeout: 30_000,
-    },
+    /*
+     * Dual web servers (Gate 5.7a):
+     *   1) Hono backend on port 3001 (real API for /api/community-reports)
+     *   2) Vite frontend on port 5173 (proxies /api → localhost:3001)
+     *
+     * Both start automatically when running `pnpm test:e2e`.
+     * The real backend is available for wiring-reality tests (no intercept).
+     * Intercept-based tests work regardless because route() takes priority.
+     */
+    webServer: [
+        {
+            command: 'pnpm dev:server',
+            url: 'http://localhost:3001/health',
+            reuseExistingServer: !process.env.CI,
+            timeout: 15_000,
+        },
+        {
+            command: 'pnpm dev',
+            url: 'http://localhost:5173',
+            reuseExistingServer: !process.env.CI,
+            timeout: 30_000,
+        },
+    ],
 });
+

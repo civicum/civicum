@@ -1,4 +1,5 @@
 import { Inbox } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 interface EmptyStateProps {
@@ -8,8 +9,10 @@ interface EmptyStateProps {
   description: string;
   /** CTA button label */
   ctaLabel?: string;
-  /** CTA click handler */
+  /** CTA click handler (renders a button) */
   onAction?: () => void;
+  /** CTA navigation target (renders a Link — preferred over onAction for navigation) */
+  ctaTo?: string;
   /** Custom icon (defaults to Inbox) */
   icon?: React.ReactNode;
   /** Additional CSS classes */
@@ -20,6 +23,9 @@ interface EmptyStateProps {
  * EmptyState — Empty data state component (UI-STP-003)
  *
  * Displays an illustrative icon + contextual copy + CTA.
+ * Supports two CTA modes:
+ *  - `ctaTo`: renders a real navigable Link (preferred for route navigation)
+ *  - `onAction`: renders a button with a click handler
  * DOCREF: S01 → §12.3 → tabla empty states (L1387)
  */
 export default function EmptyState({
@@ -27,6 +33,7 @@ export default function EmptyState({
   description,
   ctaLabel,
   onAction,
+  ctaTo,
   icon,
   className = '',
 }: EmptyStateProps) {
@@ -44,8 +51,17 @@ export default function EmptyState({
       <h3 className="text-lg font-semibold text-slate-800 mb-2">{title}</h3>
       <p className="text-sm text-slate-500 max-w-sm leading-relaxed">{description}</p>
 
-      {/* CTA */}
-      {ctaLabel && onAction && (
+      {/* CTA — Link-based navigation */}
+      {ctaLabel && ctaTo && (
+        <Link to={ctaTo} className="mt-6">
+          <Button className="bg-terracota-500 hover:bg-terracota-400 text-white">
+            {ctaLabel}
+          </Button>
+        </Link>
+      )}
+
+      {/* CTA — Action-based callback (only if no ctaTo) */}
+      {ctaLabel && onAction && !ctaTo && (
         <Button
           onClick={onAction}
           className="mt-6 bg-terracota-500 hover:bg-terracota-400 text-white"
@@ -56,3 +72,4 @@ export default function EmptyState({
     </div>
   );
 }
+

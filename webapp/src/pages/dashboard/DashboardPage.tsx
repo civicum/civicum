@@ -79,7 +79,7 @@ function CommunityReportsSection() {
                     description="Aún no hay reportes en tu zona. Sé el primero en alzar la voz por tu comunidad."
                     icon={<FileText className="w-10 h-10 text-slate-400" strokeWidth={1.5} />}
                     ctaLabel="Crear Reporte"
-                    onAction={() => { /* Navigation handled via Link below */ }}
+                    ctaTo="/alza-la-voz"
                 />
             </div>
         );

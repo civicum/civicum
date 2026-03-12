@@ -211,4 +211,98 @@ test.describe('Integration — Community Reports (Gate 5.7)', () => {
     // Zero JS errors
     expect(pageErrors, 'pageerror should be empty').toEqual([]);
   });
+
+  test('Empty CTA: "Crear Reporte" navigates to /alza-la-voz', async ({ page }) => {
+    const pageErrors: Error[] = [];
+    page.on('pageerror', (e) => pageErrors.push(e));
+
+    await setupOnboardingBypass(page);
+
+    // Intercept to force empty state
+    await page.route('**/api/community-reports', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ reports: [] }),
+      });
+    });
+
+    await page.goto('/');
+    await waitForReactMount(page);
+
+    // Wait for empty state
+    const emptySection = page.locator('[data-testid="reports-empty"]');
+    await expect(emptySection).toBeVisible({ timeout: 10_000 });
+
+    // Click the CTA link — should navigate to /alza-la-voz
+    const ctaLink = emptySection.locator('a', { hasText: 'Crear Reporte' });
+    await expect(ctaLink).toBeVisible();
+    await ctaLink.click();
+
+    await expect(page).toHaveURL('/alza-la-voz');
+
+    // Zero JS errors
+    expect(pageErrors, 'pageerror should be empty').toEqual([]);
+  });
 });
+
+// ---------------------------------------------------------------------------
+// Gate 5.7a — Real backend wiring tests (NO intercept)
+//
+// These tests exercise the real Hono backend started by Playwright's
+// webServer config. No route interception is used — every HTTP request
+// goes through the real Vite proxy → real Hono server.
+//
+// The backend will return a real 500 (DATABASE_URL not configured) or
+// real data/empty if a DB is connected. Both outcomes are valid.
+// ---------------------------------------------------------------------------
+
+test.describe('Real Backend Wiring (Gate 5.7a)', () => {
+  test('Backend /health returns real 200', async ({ request }) => {
+    // Direct HTTP request to the real Hono server (no browser, no intercept)
+    const response = await request.get('http://localhost:3001/health');
+    expect(response.status()).toBe(200);
+    const body = await response.json();
+    expect(body).toEqual({ status: 'ok', version: '1.0.0' });
+  });
+
+  test('Backend /api/community-reports returns real HTTP response', async ({ request }) => {
+    // Direct HTTP request to the real endpoint — no intercept
+    const response = await request.get('http://localhost:3001/api/community-reports');
+    // Accept either 200 (DB connected) or 500 (DB not configured) — both are honest
+    expect([200, 500]).toContain(response.status());
+
+    const body = await response.json();
+    if (response.status() === 200) {
+      expect(body).toHaveProperty('reports');
+      expect(Array.isArray(body.reports)).toBe(true);
+    } else {
+      expect(body).toHaveProperty('error');
+    }
+  });
+
+  test('Dashboard renders real state without intercept', async ({ page }) => {
+    const pageErrors: Error[] = [];
+    page.on('pageerror', (e) => pageErrors.push(e));
+
+    await setupOnboardingBypass(page);
+
+    // NO page.route — this is a real request through the Vite proxy to the real backend
+    await page.goto('/');
+    await waitForReactMount(page);
+
+    // Dashboard should render one of the three real states (no intercept)
+    const dataSection = page.locator('[data-testid="reports-data"]');
+    const emptySection = page.locator('[data-testid="reports-empty"]');
+    const errorSection = page.locator('[data-testid="reports-error"]');
+
+    // Wait for any of the three states to appear (real backend response)
+    await expect(
+      dataSection.or(emptySection).or(errorSection)
+    ).toBeVisible({ timeout: 20_000 });
+
+    // Zero JS errors
+    expect(pageErrors, 'pageerror should be empty').toEqual([]);
+  });
+});
+
