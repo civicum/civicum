@@ -154,6 +154,30 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
   - **Error** → `ErrorState` con `onRetry` → `refetch()` activado por fallo real del endpoint
   - **Empty** → `EmptyState` activado cuando la consulta devuelve 0 reportes reales
 - **Success** queda fuera de scope (no hay mutación real en esta vertical read-only)
-- **Tests:** `integration.reports.spec.ts` (4 tests × 2 projects = 8 E2E tests)
+- **Tests (Gate 5.7 inicial):** `integration.reports.spec.ts` — 4 tests con intercept (Loading, Error, Empty, Retry) × 2 projects = 8 E2E tests
+- **Commit:** ac0bd8e
 - **No se introdujeron timers artificiales, fake APIs, ni datos inventados**
+
+### Gate 5.7a implementation record
+
+- **Commit:** 3ee96e8
+- **EmptyState CTA resuelto:**
+  - Nuevo prop `ctaTo` en `EmptyState.tsx` → renderiza `<Link>` de react-router (navegación real)
+  - Dashboard `CommunityReportsSection` usa `ctaTo="/alza-la-voz"` en lugar del anterior `onAction` no-op
+- **Playwright dual webServer:**
+  - Backend Hono en puerto 3001 (verificado vía `/health`)
+  - Frontend Vite en puerto 5173 (proxy `/api → localhost:3001`)
+  - Ambos se levantan automáticamente al ejecutar `pnpm test:e2e`
+- **Real backend wiring tests (sin intercept):**
+  - `Backend /health returns real 200` — HTTP directo a `localhost:3001/health`
+  - `Backend /api/community-reports returns real HTTP response` — acepta 200 (DB conectada) o 500 honesto (DB no configurada)
+  - `Dashboard renders real state without intercept` — renderiza ErrorState real por `DATABASE_URL` ausente
+- **Test de CTA funcional:** `Empty CTA: "Crear Reporte" navigates to /alza-la-voz` (con intercept para forzar estado Empty)
+- **Spec total post-5.7a:** `integration.reports.spec.ts` — 8 tests de archivo (5 con intercept + 3 real wiring) × 2 projects = 16 E2E tests
+- **Clarificación de verificación:**
+  - Loading/Error/Empty: integrados en producción y validados por intercept sobre la request real del frontend
+  - Wiring del backend real: validado por tests sin intercept (HTTP directo + render sin mock)
+  - Empty UI con DB real vacía: no observado aún (no hay DB con 0 rows en entorno de test); la UI está lista para ese caso
+  - Success: sigue fuera de scope (vertical read-only, sin mutación)
+
 
