@@ -95,7 +95,7 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 
 ---
 
-> ✅ **Aprobación (Daniel): COMPLETADA** — implementación realizada en Gate 5.3/5.4; ver Implementation record.
+> ✅ **Aprobación (Daniel): COMPLETADA** — implementación base en Gate 5.3/5.4; primera integración vertical real verificada hasta Gate 5.7b. Ver Implementation record.
 
 ---
 
