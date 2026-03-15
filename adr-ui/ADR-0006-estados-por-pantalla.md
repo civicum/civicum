@@ -66,7 +66,7 @@ Adoptar un **5-state pattern** obligatorio: toda pantalla CIVICUM debe manejar l
 
 ## Plan de implementación (histórico)
 
-> **(Histórico)** — ya implementado progresivamente en Gate 5.3–5.7a; ver [Implementation record](#implementation-record-gate-53-57a) abajo.
+> **(Histórico)** — ya implementado progresivamente en Gate 5.3–5.7a; ver [Implementation record](#implementation-record-gate-5357a) abajo.
 
 1. **Componentes sugeridos** (nombres y ubicación TBD):
    - Skeleton screen, Empty state, Error state, Offline banner — como componentes reutilizables
