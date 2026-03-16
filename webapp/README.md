@@ -1,73 +1,63 @@
-# React + TypeScript + Vite
+# CIVICUM — Webapp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este es el frontend + proxy backend ligero (Hono) del proyecto CIVICUM.
 
-Currently, two official plugins are available:
+## 1. Prerequisitos
+- Node.js (preferiblemente v20+)
+- pnpm (gestor de paquetes)
+- Base de datos Postgres (Neon o local) para la capa de datos real.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 2. Instalación
+\`\`\`bash
+pnpm install
+\`\`\`
 
-## React Compiler
+## 3. Configuración de Entorno (.env)
+1. Copia el archivo \`.env.example\` a \`.env\`.
+2. Completa la variable \`DATABASE_URL\` con las credenciales de tu rama de Postgres de desarrollo.
+   > ⚠️ **NUNCA uses la base de datos de producción para desarrollo.**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 4. Base de Datos (Migraciones y Seed)
+Una vez configurado tu \`.env\` con una DB de desarrollo vacía:
 
-## Expanding the ESLint configuration
+1. **Generar migraciones** (si el schema cambió):
+   \`\`\`bash
+   pnpm db:generate
+   \`\`\`
+2. **Aplicar migraciones** (crear tablas en tu DB):
+   \`\`\`bash
+   pnpm db:migrate
+   \`\`\`
+3. **Poblar con datos de prueba (Seed)** (opcional):
+   \`\`\`bash
+   pnpm db:seed
+   \`\`\`
+   Esto insertará reportes iniciales en \`communityReports\`.
+4. **Vaciar la base de datos (Reset)** (para observar Empty State):
+   \`\`\`bash
+   pnpm db:reset
+   \`\`\`
+   Esto elimina todas las filas de \`communityReports\`.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 5. Levantar el Entorno de Desarrollo
+Para probar la aplicación completa con backend real, necesitas abrir **dos terminales**:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Terminal 1 (Backend Hono + Drizzle):**
+\`\`\`bash
+pnpm dev:server
+\`\`\`
+El backend correrá en el puerto \`3001\`.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+**Terminal 2 (Frontend Vite):**
+\`\`\`bash
+pnpm dev
+\`\`\`
+Vite correrá en el puerto \`5173\` y hará proxy de las llamadas \`/api\` al puerto \`3001\`.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 6. Validación de Estados en Dashboard (Community Reports)
+Para validar que la vertical real funciona:
+1. Asegúrate de tener \`DATABASE_URL\` configurado y ambos servidores corriendo.
+2. Navega al Dashboard en la UI.
+3. Si corriste \`pnpm db:seed\`, verás el estado de éxito con datos (si estuviera implementado) o simplemente las cards.
+4. Si corres \`pnpm db:reset\`, verás el **Empty State** real renderizado por el servidor que retorna 0 filas.
+5. Si no configuras \`DATABASE_URL\`, verás el **Error State** real (500) del backend.
