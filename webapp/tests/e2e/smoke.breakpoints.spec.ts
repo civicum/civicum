@@ -3,43 +3,29 @@ import { test, expect } from '@playwright/test';
 /**
  * Breakpoint Smoke Tests — SSOT UI-LAY-004 Verification
  *
- * Validates the SSOT layout contract for Smart Dock behavior across viewports.
+ * Validates the SSOT layout contract for navigation behavior across viewports.
  *
  * ┌─────────────────────────────────────────────────────────────────────┐
  * │ UI-LAY-004 (MUST): Smart Dock: bottom bar XS-MD, side rail LG+    │
  * │ DOCREF: S01 → §6.3 → fila Smart Dock (L635)                      │
- * │ SOURCE: docs-ui/traceability_matrix.md (line 64)                  │
+ * │ SOURCE: docs-ui/traceability_matrix.md (line 65)                  │
  * └─────────────────────────────────────────────────────────────────────┘
  *
  * Invariants under test (derived from UI-LAY-004):
  *   - 360px (XS): Smart Dock visible as bottom bar
  *   - 480px (SM): Smart Dock visible as bottom bar
- *   - 768px (MD): Smart Dock visible as bottom bar ← DRIFT: current code hides at md
- *   - 1024px (LG): Smart Dock should be side rail  ← GAP: side rail not implemented
+ *   - 768px (MD): Smart Dock visible as bottom bar
+ *   - 1024px (LG): Side rail visible as vertical navigation
  *   - All viewports: zero JS errors (pageerror + console.error)
- *
- * NOTE: This test does NOT assert "desktop nav visible/hidden" because
- * no UI_RULE_ID + DOCREF exists for that behavior in the traceability matrix.
  *
  * DOCREF: ADR-0003 (ACCEPTED, Opción B) — Verificación §63-67
  * DOCREF: docs-ui/03_LAYOUTS.md — Breakpoints oficiales §20-33
  */
 
 // ---------------------------------------------------------------------------
-// Selectors — implementation-coupled (no data-testid available yet)
-//
-// FRAGILITY NOTE: These selectors are tied to the current markup structure
-// in AppLayout.tsx. They will break if the markup changes semantically.
-//
-// TODO (Gate 5+): Add data-testid="smart-dock" to AppLayout.tsx,
-// then update to page.getByTestId('smart-dock').
+// Selectors — stable data-testid selectors (Gate 5.9a)
 // ---------------------------------------------------------------------------
-
-// Smart Dock (mobile bottom nav): <nav class="fixed bottom-0 ... md:hidden">
-const SMART_DOCK = 'nav.fixed';
-
-// Side Rail (desktop LG+ nav) — placeholder selector.
-// TODO (Gate 5+): Add data-testid="side-rail" to SideRail component when it exists.
+const SMART_DOCK = '[data-testid="smart-dock"]';
 const SIDE_RAIL = '[data-testid="side-rail"]';
 
 // ---------------------------------------------------------------------------
@@ -70,33 +56,12 @@ function buildOnboardingBypass(): string {
 
 // ---------------------------------------------------------------------------
 // Helper: dual-wait for React mount (route-independent)
-//
-// Avoids networkidle flakiness and does not depend on specific layout elements
-// like <header>, which may not exist on every route (e.g. standalone onboarding).
-//
-// Dual-wait pattern:
-//   1. Wait for #root to exist (always true in a React SPA)
-//   2. Wait for #root to have at least one child (React has mounted content)
-//
-// If step 2 times out, it likely means:
-//   - The onboarding bypass fixture is broken (schema/key changed)
-//   - The route does not render content (empty catch-all, 404 GAP)
-//   - A JS error prevented React from mounting
-//
-// EDGE CASE: childElementCount > 0 can false-fail if React mounts an empty
-// wrapper/fragment with no DOM children. If this happens in the future,
-// upgrade step 2 to a semantic signal:
-//   - Preferred: document.querySelector('#root [data-app-ready]')
-//     (add data-app-ready to AppLayout/OnboardingLayout root when implemented)
-//   - Fallback: document.querySelector('#root nav, #root header, #root main')
 // ---------------------------------------------------------------------------
 const REACT_MOUNT_TIMEOUT = 10_000;
 
 async function waitForReactMount(page: import('@playwright/test').Page) {
-    // Step 1: #root element exists (always present in index.html)
     await page.locator('#root').waitFor({ state: 'attached', timeout: REACT_MOUNT_TIMEOUT });
 
-    // Step 2: React has mounted at least one child inside #root
     await page.waitForFunction(
         () => (document.querySelector('#root')?.childElementCount ?? 0) > 0,
         { timeout: REACT_MOUNT_TIMEOUT },
@@ -121,7 +86,6 @@ async function setupPage(page: import('@playwright/test').Page, width: number, h
     await page.setViewportSize({ width, height });
 
     // Stub /api/community-reports so proxy errors don't pollute console.error
-    // (backend is not running during smoke tests — this is NOT the vertical under test)
     await page.route('**/api/community-reports', (route) =>
         route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ reports: [] }) })
     );
@@ -149,7 +113,7 @@ test.describe('Breakpoint Smoke — SSOT UI-LAY-004', () => {
     test('360px (XS): Smart Dock visible as bottom bar, no JS errors', async ({ page }) => {
         const { pageErrors, consoleErrors } = await setupPage(page, 360, 800);
 
-        const dock = page.locator(SMART_DOCK).first();
+        const dock = page.locator(SMART_DOCK);
         await expect(dock, 'UI-LAY-004: Smart Dock should be bottom bar at XS (360px)').toBeVisible();
 
         expect(pageErrors, 'pageerror should be empty at 360px').toEqual([]);
@@ -161,7 +125,7 @@ test.describe('Breakpoint Smoke — SSOT UI-LAY-004', () => {
     test('480px (SM): Smart Dock visible as bottom bar, no JS errors', async ({ page }) => {
         const { pageErrors, consoleErrors } = await setupPage(page, 480, 800);
 
-        const dock = page.locator(SMART_DOCK).first();
+        const dock = page.locator(SMART_DOCK);
         await expect(dock, 'UI-LAY-004: Smart Dock should be bottom bar at SM (480px)').toBeVisible();
 
         expect(pageErrors, 'pageerror should be empty at 480px').toEqual([]);
@@ -169,16 +133,12 @@ test.describe('Breakpoint Smoke — SSOT UI-LAY-004', () => {
     });
 
     // ── MD = 768px ─────────────────────────────────────────────────────
-    // UI-LAY-004: "bottom bar XS-MD" → dock should be visible at MD.
-    // DRIFT: Current implementation uses md:hidden, hiding dock at ≥768px.
-    // This test is expected to fail until AppLayout is fixed to show dock at MD.
-    // Debe convertirse en test passing cuando se implemente (Gate 5+).
-    test('768px (MD): Smart Dock visible as bottom bar — SSOT drift', async ({ page }) => {
-        test.fail(true, 'SSOT UI-LAY-004 drift: dock should be bottom bar at MD (768px) but current code uses md:hidden. Must fix in Gate 5+ to align with SSOT.');
-
+    // UI-LAY-004: "bottom bar XS-MD" → dock visible at MD ✅
+    // Gate 5.9a: md:hidden → lg:hidden fix — this test now passes.
+    test('768px (MD): Smart Dock visible as bottom bar, no JS errors', async ({ page }) => {
         const { pageErrors, consoleErrors } = await setupPage(page, 768, 900);
 
-        const dock = page.locator(SMART_DOCK).first();
+        const dock = page.locator(SMART_DOCK);
         await expect(dock, 'UI-LAY-004: Smart Dock should be bottom bar at MD (768px)').toBeVisible();
 
         expect(pageErrors, 'pageerror should be empty at 768px').toEqual([]);
@@ -186,18 +146,16 @@ test.describe('Breakpoint Smoke — SSOT UI-LAY-004', () => {
     });
 
     // ── LG = 1024px ────────────────────────────────────────────────────
-    // UI-LAY-004: "side rail LG+" → dock should be a side rail at LG.
-    // GAP: Side rail component does not exist yet.
-    // This test is expected to fail until side rail is implemented.
-    // Debe convertirse en test passing cuando se implemente (Gate 5+).
-    test('1024px (LG): Smart Dock visible as side rail — pending implementation', async ({ page }) => {
-        test.fail(true, 'SSOT UI-LAY-004 pending: side rail not yet implemented at LG+ (1024px). Must become passing test when SideRail component is added (Gate 5+).');
-
+    // UI-LAY-004: "side rail LG+" → side rail visible at LG ✅
+    // Gate 5.9a: SideRail component implemented.
+    test('1024px (LG): Side rail visible, Smart Dock hidden, no JS errors', async ({ page }) => {
         const { pageErrors, consoleErrors } = await setupPage(page, 1024, 900);
 
-        // Assert side rail exists at LG — uses placeholder data-testid selector.
-        // TODO (Gate 5+): agregar data-testid="side-rail" al componente cuando exista.
-        await expect(page.locator(SIDE_RAIL), 'UI-LAY-004: side rail should exist at LG').toBeVisible();
+        // Assert side rail exists at LG
+        await expect(page.locator(SIDE_RAIL), 'UI-LAY-004: side rail should be visible at LG (1024px)').toBeVisible();
+
+        // Assert Smart Dock is hidden at LG (lg:hidden)
+        await expect(page.locator(SMART_DOCK), 'UI-LAY-004: Smart Dock should be hidden at LG').toBeHidden();
 
         expect(pageErrors, 'pageerror should be empty at 1024px').toEqual([]);
         expect(consoleErrors, 'console.error should be empty at 1024px').toEqual([]);

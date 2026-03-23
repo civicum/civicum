@@ -2,7 +2,7 @@
 
 **Gate:** Gate 4 — Consolidación ADR → Pack
 **Fecha:** 2026-02-26
-**Última actualización de implementación:** Gate 5.7b (2026-03-13)
+**Última actualización de implementación:** Gate 5.9a (2026-03-23)
 **Total reglas:** 75
 **Fuentes:** 4 documentos activos (ver `_gate2/source_map.md`)
 **Convenciones:** S01=UI/UX Definitivo, S02=Design System Terracota, S03=Decisiones F01-F47, S07=Anti-Dark-Patterns
@@ -50,7 +50,7 @@
 | UI-CMP-003 | MUST | Iconos funcionales sin texto: aria-label descriptivo | S01 → §4.4 → "Icono funcional — sin texto" (L555) | OK | ALTO | Test a11y | WCAG obligatorio |
 | UI-CMP-004 | MUST | Skeleton shimmer: linear-gradient Gris100→200→100, 1.5s infinite | S01 → §12.2 → "Shimmer: linear-gradient" (L1381) | OK | MEDIO | UI-kit Playwright | |
 | UI-CMP-005 | MUST | Spinner Terracota 0.8s, SM(16)/MD(24)/LG(48)px | S01 → §7 Feedback → "Spinner" (L744) | OK | BAJO | UI-kit Playwright | |
-| UI-CMP-006 | MUST | Smart Dock: 5 tabs + "Más", badge = punto rojo 8px sin número | S01 → §9.1+§9.2 → "Badge: Punto rojo 8px (sin número — reduce ansiedad)" (L1146) | OK | ALTO | E2E + Golden screenshots | |
+| UI-CMP-006 | MUST | Smart Dock: 5 posiciones (pos 5 = "Más"), badge = punto rojo 8px sin número | S01 → §9.1+§9.2 → "Badge: Punto rojo 8px (sin número — reduce ansiedad)" (L1146) | OK | ALTO | E2E + Golden screenshots | **Gate 5.9a** (commit dc5fee0): 5ª posición "Más" agregada como button disabled placeholder en SmartDock y SideRail. Badge deferred (sin data source de notificaciones). |
 | UI-CMP-007 | SHOULD | Bottom Sheet: drag handle, snap points (25%/50%/90%), backdrop dim | S01 → §7 Nav → "Bottom Sheet" (L754) | OK | MEDIO | UI-kit Playwright | |
 
 ---
@@ -62,7 +62,7 @@
 | UI-LAY-001 | MUST | Breakpoints mobile-first: XS=360, SM=480, MD=768, LG=1024, XL=1280, 2XL=1536 | S01 → §6.1 → tabla "Breakpoints Oficiales" (L618) | OK | ALTO | E2E (Playwright) + Golden screenshots (Completo) | Resolved by ADR-0003 (ACCEPTED, Opción B) — Daniel. Breaking change: sm 640→480. Implemented Gate 5.1.2 (commit 1fc13bb): tailwind screens xs=360 sm=480 sm640=640. Verified by: Playwright smoke.breakpoints.spec.ts + golden recapture (Estado=Completo). |
 | UI-LAY-002 | MUST | Grid: 12 columnas, gutter 24px desktop / 16px mobile, max-width 1280px | S01 → §5.4 → "Grid System" (L604) | OK | ALTO | Visual regression | |
 | UI-LAY-003 | MUST | Márgenes laterales: 16px (XS-SM), 24px (MD), 32px (LG+) | S01 → §5.4 → "Márgenes laterales" (L608) | OK | MEDIO | Visual regression | |
-| UI-LAY-004 | MUST | Smart Dock: bottom bar XS-MD, side rail LG+ | S01 → §6.3 → fila Smart Dock (L635) | OK | ALTO | E2E + Golden screenshots | Implementation pending Gate 5+; tracked by smoke.breakpoints.spec.ts (expected-fail until implemented). |
+| UI-LAY-004 | MUST | Smart Dock: bottom bar XS-MD, side rail LG+ | S01 → §6.3 → fila Smart Dock (L635) | OK | ALTO | E2E + Golden screenshots | **Implemented Gate 5.9a** (commit dc5fee0): SmartDock `md:hidden`→`lg:hidden` (dock visible 360/480/768, hidden 1024+). New `SideRail.tsx` component (fixed left, top-16, 72px, `lg:flex`). AppLayout adjusted (`pb-24 lg:pb-6 lg:ml-[72px]`). Verified by `smoke.breakpoints.spec.ts` (5 tests × 2 projects = 10 passing, zero expected-fail). |
 | UI-LAY-005 | MUST | Modales: fullscreen XS, centered 80% MD, centered 560px max LG | S01 → §6.3 → fila Modales (L637) | OK | MEDIO | E2E | |
 | UI-LAY-006 | MUST | Tablas: cards apiladas XS, responsive MD, completa LG | S01 → §6.3 → fila Tablas (L638) | OK | MEDIO | Visual regression | |
 | UI-LAY-007 | GAP | Dark mode: no hay definición de layouts/tokens para dark mode | — | OK | ALTO | — | Decision: ADR-0005 (ACCEPTED) — Daniel. Pospuesto a Época 3+. Implementation pending Gate 5+. |
