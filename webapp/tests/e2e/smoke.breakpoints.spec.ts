@@ -148,7 +148,7 @@ test.describe('Breakpoint Smoke — SSOT UI-LAY-004', () => {
     // ── LG = 1024px ────────────────────────────────────────────────────
     // UI-LAY-004: "side rail LG+" → side rail visible at LG ✅
     // Gate 5.9a: SideRail component implemented.
-    test('1024px (LG): Side rail visible, Smart Dock hidden, no JS errors', async ({ page }) => {
+    test('1024px (LG): Side rail visible, Smart Dock hidden, zero overflow, no JS errors', async ({ page }, testInfo) => {
         const { pageErrors, consoleErrors } = await setupPage(page, 1024, 900);
 
         // Assert side rail exists at LG
@@ -157,9 +157,22 @@ test.describe('Breakpoint Smoke — SSOT UI-LAY-004', () => {
         // Assert Smart Dock is hidden at LG (lg:hidden)
         await expect(page.locator(SMART_DOCK), 'UI-LAY-004: Smart Dock should be hidden at LG').toBeHidden();
 
+        // Assert zero horizontal overflow — geometry proof, no overflow-x-hidden mask
+        const hasOverflow = await page.evaluate(() => {
+            const doc = document.documentElement;
+            return doc.scrollWidth > doc.clientWidth;
+        });
+        expect(hasOverflow, 'Zero horizontal overflow at 1024px (scrollWidth <= clientWidth)').toBe(false);
+
+        // Screenshot evidence for audit trail
+        const screenshotPath = testInfo.outputPath('lg-1024-no-overflow.png');
+        await page.screenshot({ path: screenshotPath, fullPage: true });
+        testInfo.attachments.push({ name: 'lg-1024-no-overflow', path: screenshotPath, contentType: 'image/png' });
+
         expect(pageErrors, 'pageerror should be empty at 1024px').toEqual([]);
         expect(consoleErrors, 'console.error should be empty at 1024px').toEqual([]);
     });
+
 
     // ── JS-only checks at all ADR-0003 breakpoints ─────────────────────
     // These ensure no viewport causes crashes, independent of layout assertions.

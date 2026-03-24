@@ -67,3 +67,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+/*
+ * Safe-area utility — UI-NAV-002 fix
+ *
+ * pb-safe was referenced in SmartDock.tsx but had NO CSS definition (no-op).
+ * This provides the real implementation for iOS safe area inset.
+ * Requires <meta name="viewport" content="viewport-fit=cover"> in index.html.
+ */
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}

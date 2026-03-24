@@ -80,4 +80,77 @@ test.describe('Integration — 5-State Offline (Gate 5.4)', () => {
     expect(pageErrors, 'pageerror should be empty').toEqual([]);
     expect(consoleErrors, 'console.error should be empty').toEqual([]);
   });
+
+  /**
+   * LG occlusion test — OfflineBanner must not be hidden under SideRail
+   *
+   * Compares bounding boxes dynamically: sideRail.right <= offlineBanner.left.
+   * Future-proof: resists rail width changes without hardcoded pixel values.
+   *
+   * Gate 5.9a audit fix: AppLayout wrapper applies lg:pl-[72px] to shift both
+   * OfflineBanner and main content clear of the SideRail.
+   */
+  test('1024px (LG): offline banner visible and not occluded by SideRail', async ({ page, context }, testInfo) => {
+    const pageErrors: Error[] = [];
+    page.on('pageerror', (e) => pageErrors.push(e));
+    const consoleErrors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') consoleErrors.push(msg.text());
+    });
+
+    // Set LG viewport
+    await page.setViewportSize({ width: 1024, height: 900 });
+
+    // Stub API
+    await page.route('**/api/community-reports', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ reports: [] }) })
+    );
+
+    // Bypass onboarding
+    await page.goto('/onboarding');
+    const bypassPayload = buildOnboardingBypass();
+    await page.evaluate(([key, payload]) => {
+      localStorage.setItem(key, payload);
+    }, [ONBOARDING_STORAGE_KEY, bypassPayload] as const);
+
+    await page.goto('/');
+    await waitForReactMount(page);
+
+    // Banner should NOT be visible when online
+    const banner = page.locator('[role="status"]').filter({ hasText: 'Sin conexión' });
+    await expect(banner).not.toBeVisible();
+
+    // Go offline
+    await context.setOffline(true);
+    await page.evaluate(() => window.dispatchEvent(new Event('offline')));
+
+    // Banner SHOULD appear
+    await expect(banner).toBeVisible({ timeout: 5_000 });
+
+    // SideRail should be visible at LG
+    const sideRail = page.locator('[data-testid="side-rail"]');
+    await expect(sideRail).toBeVisible();
+
+    // Geometric occlusion check: sideRail.right <= banner.left
+    const railBox = await sideRail.boundingBox();
+    const bannerBox = await banner.boundingBox();
+    expect(railBox, 'SideRail bounding box should exist at LG').not.toBeNull();
+    expect(bannerBox, 'OfflineBanner bounding box should exist at LG').not.toBeNull();
+    expect(
+      railBox!.x + railBox!.width <= bannerBox!.x,
+      `OfflineBanner must not be occluded by SideRail: rail.right (${railBox!.x + railBox!.width}) should be <= banner.left (${bannerBox!.x})`
+    ).toBe(true);
+
+    // Screenshot evidence
+    const screenshotPath = testInfo.outputPath('lg-offline-banner-no-occlusion.png');
+    await page.screenshot({ path: screenshotPath, fullPage: true });
+    testInfo.attachments.push({ name: 'lg-offline-banner-no-occlusion', path: screenshotPath, contentType: 'image/png' });
+
+    // Restore online
+    await context.setOffline(false);
+    await page.evaluate(() => window.dispatchEvent(new Event('online')));
+
+    expect(pageErrors, 'pageerror should be empty').toEqual([]);
+    expect(consoleErrors, 'console.error should be empty').toEqual([]);
+  });
 });

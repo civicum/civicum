@@ -2,7 +2,7 @@
 
 **Gate:** Gate 4 — Consolidación ADR → Pack
 **Fecha:** 2026-02-26
-**Última actualización de implementación:** Gate 5.9a (2026-03-23)
+**Última actualización de implementación:** Gate 5.9a audit fix (2026-03-24, commit 5b229da)
 **Total reglas:** 75
 **Fuentes:** 4 documentos activos (ver `_gate2/source_map.md`)
 **Convenciones:** S01=UI/UX Definitivo, S02=Design System Terracota, S03=Decisiones F01-F47, S07=Anti-Dark-Patterns
@@ -50,7 +50,7 @@
 | UI-CMP-003 | MUST | Iconos funcionales sin texto: aria-label descriptivo | S01 → §4.4 → "Icono funcional — sin texto" (L555) | OK | ALTO | Test a11y | WCAG obligatorio |
 | UI-CMP-004 | MUST | Skeleton shimmer: linear-gradient Gris100→200→100, 1.5s infinite | S01 → §12.2 → "Shimmer: linear-gradient" (L1381) | OK | MEDIO | UI-kit Playwright | |
 | UI-CMP-005 | MUST | Spinner Terracota 0.8s, SM(16)/MD(24)/LG(48)px | S01 → §7 Feedback → "Spinner" (L744) | OK | BAJO | UI-kit Playwright | |
-| UI-CMP-006 | MUST | Smart Dock: 5 posiciones (pos 5 = "Más"), badge = punto rojo 8px sin número | S01 → §9.1+§9.2 → "Badge: Punto rojo 8px (sin número — reduce ansiedad)" (L1146) | OK | ALTO | E2E + Golden screenshots | **Gate 5.9a** (commit dc5fee0): 5ª posición "Más" agregada como button disabled placeholder en SmartDock y SideRail. Badge deferred (sin data source de notificaciones). |
+| UI-CMP-006 | MUST | Smart Dock: 5 posiciones (pos 5 = "Más"), badge = punto rojo 8px sin número | S01 → §9.1+§9.2 → "Badge: Punto rojo 8px (sin número — reduce ansiedad)" (L1146) | **PARTIAL** | ALTO | E2E + Golden screenshots | **Gate 5.9a** (commit dc5fee0): 5 posiciones implementadas (pos 5 = "Más" como button disabled placeholder en SmartDock y SideRail). **Badge: NO implementado** — no existe data source de notificaciones ni componente badge (punto rojo 8px). Requiere: (1) backend de notificaciones, (2) componente visual badge. La regla se cumple parcialmente: estructura de 5 tabs OK, badge pendiente. |
 | UI-CMP-007 | SHOULD | Bottom Sheet: drag handle, snap points (25%/50%/90%), backdrop dim | S01 → §7 Nav → "Bottom Sheet" (L754) | OK | MEDIO | UI-kit Playwright | |
 
 ---
@@ -62,7 +62,7 @@
 | UI-LAY-001 | MUST | Breakpoints mobile-first: XS=360, SM=480, MD=768, LG=1024, XL=1280, 2XL=1536 | S01 → §6.1 → tabla "Breakpoints Oficiales" (L618) | OK | ALTO | E2E (Playwright) + Golden screenshots (Completo) | Resolved by ADR-0003 (ACCEPTED, Opción B) — Daniel. Breaking change: sm 640→480. Implemented Gate 5.1.2 (commit 1fc13bb): tailwind screens xs=360 sm=480 sm640=640. Verified by: Playwright smoke.breakpoints.spec.ts + golden recapture (Estado=Completo). |
 | UI-LAY-002 | MUST | Grid: 12 columnas, gutter 24px desktop / 16px mobile, max-width 1280px | S01 → §5.4 → "Grid System" (L604) | OK | ALTO | Visual regression | |
 | UI-LAY-003 | MUST | Márgenes laterales: 16px (XS-SM), 24px (MD), 32px (LG+) | S01 → §5.4 → "Márgenes laterales" (L608) | OK | MEDIO | Visual regression | |
-| UI-LAY-004 | MUST | Smart Dock: bottom bar XS-MD, side rail LG+ | S01 → §6.3 → fila Smart Dock (L635) | OK | ALTO | E2E + Golden screenshots | **Implemented Gate 5.9a** (commit dc5fee0): SmartDock `md:hidden`→`lg:hidden` (dock visible 360/480/768, hidden 1024+). New `SideRail.tsx` component (fixed left, top-16, 72px, `lg:flex`). AppLayout adjusted (`pb-24 lg:pb-6 lg:ml-[72px]`). Verified by `smoke.breakpoints.spec.ts` (5 tests × 2 projects = 10 passing, zero expected-fail). |
+| UI-LAY-004 | MUST | Smart Dock: bottom bar XS-MD, side rail LG+ | S01 → §6.3 → fila Smart Dock (L635) | OK | ALTO | E2E + Golden screenshots | **Implemented Gate 5.9a** (commit dc5fee0 + audit fix): SmartDock `lg:hidden` (visible 360/480/768, hidden 1024+). SideRail.tsx (fixed left, top-16, 72px, `lg:flex`). **Audit fix:** AppLayout refactored — removed per-element `lg:ml-[72px]` (defectuoso con `max-w-7xl mx-auto`); reemplazado por wrapper compartido `<div lg:pl-[72px]>` que envuelve OfflineBanner + main. Zero overflow horizontal verificado por E2E (`scrollWidth ≤ clientWidth` at 1024px). Oclusión OfflineBanner verificada por bounding-box (`sideRail.right ≤ banner.left`). 46 tests pass (smoke.breakpoints + integration.5state). |
 | UI-LAY-005 | MUST | Modales: fullscreen XS, centered 80% MD, centered 560px max LG | S01 → §6.3 → fila Modales (L637) | OK | MEDIO | E2E | |
 | UI-LAY-006 | MUST | Tablas: cards apiladas XS, responsive MD, completa LG | S01 → §6.3 → fila Tablas (L638) | OK | MEDIO | Visual regression | |
 | UI-LAY-007 | GAP | Dark mode: no hay definición de layouts/tokens para dark mode | — | OK | ALTO | — | Decision: ADR-0005 (ACCEPTED) — Daniel. Pospuesto a Época 3+. Implementation pending Gate 5+. |
@@ -73,9 +73,9 @@
 
 | UI_RULE_ID | Tipo | Regla | DOCREF | Estado | Impacto | Verificación | Notas |
 |------------|------|-------|--------|--------|---------|-------------|-------|
-| UI-NAV-001 | MUST | Dock order: Home, Aprende, Civia, Reporta, Más | S01 → §9.1 → tabla posiciones 1-5 (L1129) | OK | ALTO | E2E | |
-| UI-NAV-002 | MUST | Dock altura 56px + safe area iOS | S01 → §9.2 → "Altura: 56px" (L1141) | OK | MEDIO | Golden screenshots | |
-| UI-NAV-003 | MUST | Icono activo: color módulo + filled variant | S01 → §9.2 → "Icono activo: Color módulo, filled variant" (L1144) | OK | MEDIO | Visual regression | |
+| UI-NAV-001 | MUST | Dock order: Home, Aprende, Civia, Reporta, Más | S01 → §9.1 → tabla posiciones 1-5 (L1129) | **PARTIAL** | ALTO | E2E | **Parcial:** Orden de 5 posiciones respetado. Labels implementados: Inicio, Alza la Voz, Círculos, Mi Perfil, Más. **NO coinciden con SSOT** (Home, Aprende, Civia, Reporta, Más). Requiere: alineación de labels a SSOT §9.1 o actualización del SSOT para reflejar labels definitivos. |
+| UI-NAV-002 | MUST | Dock altura 56px + safe area iOS | S01 → §9.2 → "Altura: 56px" (L1141) | OK | MEDIO | Golden screenshots | **Gate 5.9a audit fix (final):** Estructura precisa: `<nav pb-safe>` → `<div h-[56px]>` (zona útil) → items. Total exterior = 56px + env(safe-area-inset-bottom). Histórico: `h-16` (64px) era incorrecto, `pb-safe` era **no-op** (sin CSS). Fix: (1) CSS utility `.pb-safe` real en `index.css`, (2) `viewport-fit=cover` en `index.html`, (3) wrapper interno `h-[56px]` separa zona útil del inset. |
+| UI-NAV-003 | MUST | Icono activo: color módulo + filled variant | S01 → §9.2 → "Icono activo: Color módulo, filled variant" (L1144) | **PARTIAL** | MEDIO | Visual regression | **Parcial:** Estado activo aplica `text-terracota-500` (color único para todos los módulos). **No implementado:** (1) Color por módulo — requiere `data-module` + CSS vars `--module-accent` (ver UI-TOK-007). (2) Filled variant — Lucide React usa outlined por defecto; filled requiere importar variante separada o cambiar iconSet. |
 | UI-NAV-004 | MUST | Cambio módulo = cambio atmósfera cromática (150ms ease-in-out) | S01 → §9.3 → "cambio de atmósfera" (L1152) | OK | ALTO | E2E | data-module CSS var |
 | UI-NAV-005 | MUST | Tab bounce: scale 1.2→1, 150ms | S01 → §9.3 → "icon bounces" (L1154) | OK | BAJO | UI-kit Playwright | |
 | UI-NAV-006 | MUST | prefers-reduced-motion: corte directo | S01 → §9.3 → "corte directo sin animación" (L1158) | OK | ALTO | Test a11y | |
@@ -136,7 +136,7 @@
 | UI-STP-003 | MUST | Empty: ilustración + CTA por módulo | S01 → §12.3 → tabla empty states (L1387) | OK | MEDIO | UI-kit Playwright + E2E | Implemented Gate 5.3 (commit fc42f22): `EmptyState.tsx`. **Gate 5.7:** Integrated in production on Dashboard — renders when `communityReports` endpoint returns `{ reports: [] }`. **Gate 5.7a:** CTA funcional via `ctaTo` → `Link` real a `/alza-la-voz`. Verificación: Empty UI validado por E2E con intercept sobre request real (`integration.reports.spec.ts` Empty + CTA tests); wiring real del backend probado por separado en tests sin intercept. No se ha observado DB real vacía; la UI está lista para ese caso. |
 | UI-STP-004 | MUST | Error: toast Terracota + guardado + retry | S01 → §12.1 → fila Error (L1359) | OK | ALTO | UI-kit Playwright + E2E | Implemented Gate 5.3 (commit fc42f22): `ErrorState.tsx`. **Gate 5.7:** Integrated in production on Dashboard with real `onRetry` wired to `refetch()`. Verified by E2E `integration.reports.spec.ts` Error + Retry tests (intercept → 500, then retry → success). |
 | UI-STP-005 | MUST | Offline: banner NO alarma + funcionalidad Tier LOW | S01 → §12.1 → fila Offline (L1360) | OK | ALTO | UI-kit Playwright + E2E | F-07. Implemented Gate 5.3 (`OfflineBanner.tsx` presentational). **Integrated in production Gate 5.4** (commit d5f0959): `AppLayout.tsx` via `useNetworkStatus` hook (real `navigator.onLine`). Verified by Playwright E2E `integration.5state.spec.ts` (`context.setOffline`). |
-| UI-STP-006 | MUST | offline.html digno con logo + capacidades + CTA | S03 → F-07 → "Dignidad = experiencia completa" (L365) | OK | ALTO | E2E | |
+| UI-STP-006 | MUST | offline.html digno con logo + capacidades + CTA | S03 → F-07 → "Dignidad = experiencia completa" (L365) | **NO IMPL** | ALTO | — | **No implementado:** `offline.html` estático no existe. Service Worker y Web App Manifest están ausentes. La app no tiene capacidad offline real (PWA). OfflineBanner (UI-STP-005) cubre solo la detección visual en-app via `navigator.onLine`. Esta regla requiere: (1) offline.html con logo + CTA, (2) Service Worker para servir fallback, (3) manifest.json. Todo fuera de scope actual. |
 | UI-STP-007 | MUST | CWV Tier LOW: FCP≤2.0s, LCP≤4.0s, TTI≤5.0s, CLS≤0.2 | S01 → §17.2 → tabla CWV (L1590) | OK | ALTO | Performance | Android Go target |
 | UI-STP-008 | MUST | Critical pack ≤800KB | S03 → F-07 → "CRITICAL_PACK_SIZE_KB: 800" (L383) | OK | ALTO | Performance | |
 | UI-STP-009 | GAP | Estados loading/error no implementados en Época 1 | — | OK | ALTO | UI-kit Playwright + E2E | Decision: ADR-0006 (ACCEPTED) — Daniel. **Gap cerrado Gate 5.7:** Loading, Error, and Empty integrados en producción vía Dashboard `CommunityReportsSection` → real `GET /api/community-reports`. Success fuera de scope (vertical read-only). **Gate 5.7a cierre:** (1) Backend real levantado en suite automatizada vía dual `webServer` en `playwright.config.ts` (Hono 3001 + Vite 5173). (2) `/health` y `/api/community-reports` probados sin intercept (acepta 200 o 500 honesto). (3) Dashboard render real sin intercept (confirma que ErrorState aparece por `DATABASE_URL` ausente). (4) Estados UI validados por intercept sobre request real. Spec total: 8 tests de archivo (5 intercept + 3 real wiring) × 2 projects = 16 E2E. |
@@ -161,9 +161,12 @@
 | Métrica | Valor |
 |---------|-------|
 | **Total reglas** | 75 |
-| **OK** | 75 |
+| **OK** | 71 |
+| **PARTIAL** | 3 |
+| **NO IMPL** | 1 |
 | **CONFLICTO** | 0 |
 | **GAP** | 0 |
 | **Sin DOCREF** | 0 |
 | **Categorías** | 10 |
 | **Resolved by ADR** | 6 |
+

@@ -10,7 +10,7 @@ export default function AppLayout() {
     const { isOnline } = useNetworkStatus();
 
     return (
-        <div className="flex min-h-screen w-full flex-col bg-slate-50">
+        <div className="flex min-h-screen flex-col bg-slate-50">
             {/* 
         TOP NAVBAR
         Sticky top nav with brand and profile access.
@@ -33,22 +33,30 @@ export default function AppLayout() {
                 </div>
             </header>
 
-            {/* Offline Banner — real navigator.onLine detection (UI-STP-005, ADR-0006) */}
-            {!isOnline && (
-                <div className="w-full max-w-7xl mx-auto px-4 pt-3 md:px-6">
-                    <OfflineBanner />
-                </div>
-            )}
-
-            {/* 
-        MAIN CONTENT AREA
-        Renders the active route's component.
-        - pb-24: bottom padding for SmartDock (XS-MD)
-        - lg:pb-6 + lg:ml-[72px]: at LG+, dock is gone (side rail instead), offset for rail width
+            {/*
+        LG SHELL WRAPPER — shared offset for SideRail (Gate 5.9a audit fix)
+        Applies lg:pl-[72px] once so both OfflineBanner and main are correctly
+        offset from the 72px SideRail. Avoids per-element lg:ml-[72px] which
+        conflicted with max-w-7xl mx-auto centering logic.
       */}
-            <main className="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 pb-24 lg:pb-6 lg:ml-[72px]">
-                <Outlet />
-            </main>
+            <div className="flex-1 flex flex-col lg:pl-[72px]">
+                {/* Offline Banner — real navigator.onLine detection (UI-STP-005, ADR-0006) */}
+                {!isOnline && (
+                    <div className="w-full max-w-7xl mx-auto px-4 pt-3 md:px-6">
+                        <OfflineBanner />
+                    </div>
+                )}
+
+                {/* 
+          MAIN CONTENT AREA
+          Renders the active route's component.
+          - pb-24: bottom padding for SmartDock (XS-MD)
+          - lg:pb-6: at LG+, dock is gone (side rail instead)
+        */}
+                <main className="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 pb-24 lg:pb-6">
+                    <Outlet />
+                </main>
+            </div>
 
             {/* SIDE RAIL — Desktop LG+ vertical navigation (UI-LAY-004) */}
             <SideRail />
