@@ -29,7 +29,10 @@ Toda entrega final debe usar este formato exacto:
 - **D. Archivos modificados:** Lista exclusiva de archivos alterados en la misión.
 - **E. Evidencia obligatoria:** Diff real del commit, tests ejecutados, artefactos visuales concretos, output nativo limpio.
 - **F. Riesgos residuales:** Qué sigue abierto en el macro-scope de la entrega.
-- **G. Dictamen honesto:** EXACTAMENTE UNA de estas 3 opciones: `CERRADO`, `CERRADO CON RESERVAS`, `NO CERRADO`.
+- **G. Dictamen honesto:** EXACTAMENTE UNA de estas 3 opciones:
+  - `CERRADO`: 100% test passing, sin impacto colateral negativo, alineación total con SSOT.
+  - `CERRADO CON RESERVAS`: Fix principal funcional y probado, pero quedan gaps identificados e ingresados al backlog (ej. `PARTIAL` aceptable no bloqueante).
+  - `NO CERRADO`: Tests fallan, desalineación crítica con SSOT, o falta de evidencia.
 
 ## 5. Sincronización Obligatoria de Trazabilidad
 Es mandatorio que, en el mismo commit/entrega donde se altera el estado de una regla, se sincronicen simultáneamente:
@@ -42,13 +45,15 @@ Es mandatorio que, en el mismo commit/entrega donde se altera el estado de una r
 Si una implementación no coincide con el SSOT, se elegirá y documentará de inmediato una de las siguientes rutas:
 - **Ruta A:** Corregir el código para alinearlo al SSOT.
 - **Ruta B:** Promover un ADR formal para revisión del Owner, dejando la regla parcial/en conflicto mientras se dirime.
-- **Ruta C:** Mantener abierto explícitamente como **CONFLICTO** permanente.
+- **Ruta C:** Declararlo como estado excepcional (**CONFLICTO**) de manera temporal, hasta lograr la resolución formal (vía ADR) o el retiro explícito/deprecación de la regla original.
 
 ## 7. Reglas de Estados de Trazabilidad
 - **OK:** Implementado al 100% interactivo/visual y validado con prueba dura irrefutable.
 - **PARTIAL:** Parcialmente implementado; faltan piezas, dependencias, refactors o datos.
+  *Ejemplo:* El Tab de Navegación funciona ("Inicio"), pero falta programar el comportamiento dinámico "Filled variant" dictado por la regla.
 - **NO IMPL:** Elemento enteramente diferido o ausente.
-- **CONFLICTO:** Implementación activa diverge materialmente de la fuente formal.
+- **CONFLICTO:** Implementación activa diverge estructuradamente de la fuente formal.
+  *Ejemplo:* El SSOT exige explícitamente un "Toast", pero el equipo programó un "Modal de pantalla completa". No es que le falte una pieza (Partial), es que se implementó un paradigma distinto.
 
 ## 8. Regla de Evidencia Estricta
 Ninguna descripción narrativa reemplaza la prueba material.
@@ -68,3 +73,8 @@ Se debe investigar y declarar el impacto lateral antes de la implementación. Al
 El responsable de desarrollo revisará el documento `non_conformities_backlog.md`:
 1. **Antes de la Pre-validación:** Para no duplicar esfuerzos ni ignorar deudas estructurales que bloqueen la nueva feature.
 2. **Antes de Emitir un Cierre General (Gate):** Ningún Gate o hito principal avanza si hay elementos sin clasificar en el backlog o si el entregable ignora deudas críticas listadas ahí.
+
+## 11. Regla de Escalamiento por Antigüedad
+Para evitar la fosilización de la deuda técnica, el backlog está sujeto a escalamiento temporal:
+- Si una regla en estado **CONFLICTO** o **NO IMPL** permanece abierta superando **2 Gates consecutivos** o **15 días calendario** desde su captura inicial, se gatilla una "Delegación Forzosa".
+- En este evento, se debe exigir al Owner (Daniel) una resolución formal inmediata: ya sea la promoción de un ADR (blanqueo oficial) o la baja explícita del feature. No se permite el arrastre infinito.
