@@ -3,26 +3,13 @@
 Documento vivo para rastrear todas las reglas que no poseen un estado `OK` puro, garantizando visibilidad de la deuda técnica, gaps documentales y dependencias no resueltas. 
 **Revisión Obligatoria:** En cada nueva iteración y estrictamente antes de emitir un dictamen de "CERRADO" para cualquier Gate.
 
-Última actualización: 2026-03-24 (Gate 5.9a)
+Última actualización: 2026-03-25 (Gate 5.9b)
 
 ---
 
 ## 🔴 CONFLICTO
 
-### UI-STP-004 (Error State vs Toast)
-- **Estado Actual:** CONFLICTO
-- **Fuente Formal (SSOT §12.1):** Exige "toast Terracota + guardado + retry".
-- **Implementación (ADR-0006):** Pantalla completa `ErrorState.tsx`.
-- **Root Cause:** Reemplazo de interacción local (toast) por estado global de pantalla (componente reutilizable), sin la debida actualización/aprobación explícita sobre la línea del SSOT original.
-- **Prioridad:** ALTA
-- **Owner:** Antigravity (Desarrollo) / Daniel (Aprobado/ADR)
-- **Ruta de Cierre:** Ruta B (Sustitución por ADR)
-- **Siguiente Acción Concreta:** Redactar propuesta de ADR oficial revocando el mandato "toast" e institucionalizando la pantalla completa para someterlo a aprobación de Daniel.
-- **Dependencia / Bloqueador:** Confirmación directa del Owner de producto de que prefiere la pantalla completa sobre el Toast.
-- **Gate / Release Objetivo:** Gate 5.9b (Resolución Documental)
-- **Fecha de Apertura:** 2026-03-24 (Auditoría 5.9a)
-- **Última Revisión:** 2026-03-24
-- **Evidencia Asociada:** `traceability_matrix.md` (Linea UI-STP-004), UI-Kit Test (`tests/visual/ui-kit/UI-STP-004_error_desktop.png`).
+*(No hay conflictos en curso tras la formalización de ADR-0008 en Gate 5.9b).*
 
 ---
 
@@ -91,3 +78,19 @@ Documento vivo para rastrear todas las reglas que no poseen un estado `OK` puro,
 - **Fecha de Apertura:** 2026-02-28
 - **Última Revisión:** 2026-03-24
 - **Evidencia Asociada:** `traceability_matrix.md` (UI-STP-006)
+
+### UI-STP-004B (Error Transaccional / Toast)
+- **Estado Actual:** NO IMPL
+- **Fuente Formal (ADR-0008 / SSOT §12.1):** Exige "Toast Terracota + persistencia + retry funcional" para fallos en writes/mutaciones.
+- **Implementación:** Inexistente.
+- **Root Cause:** El foco del MVP ha sido flujos read-only y resiliencia de carga inicial; la infraestructura para estado transaccional y toasts globales no se ha abordado.
+- **Prioridad:** ALTA (Prevención de pérdida de datos del usuario).
+- **Owner:** Antigravity (Frontend)
+- **Alcance Exacto:** Interacciones de guardado de datos (ej. formularios de reporte, profile edits) donde una falla de red o de DB rechace el guardado. La UI temporal debe persistir en el cliente y ofrecer opción nativa de reintento, notificando vía Toast/Banner sin navegar ni desechar el progreso de la pantalla.
+- **Superficies Incluidas:** Formularios de creación/edición, panel de configuraciones, interacciones de submit asíncronas no esenciales que devuelven estados distintos a 2xx.
+- **Exclusiones:** Fetch inicial de página, cargas críticas donde la UI no puede inicializarse (cubierto por UI-STP-004A ErrorState completo).
+- **Ruta de Cierre:** Ruta A (Implementación Genuina) - Infraestructura de Toast system global ligada a providers de red.
+- **Gate / Release Objetivo:** Época 3 (Mutaciones e Interacciones Complex).
+- **Fecha de Apertura:** 2026-03-25
+- **Última Revisión:** 2026-03-25
+- **Evidencia Asociada:** `traceability_matrix.md` (Línea UI-STP-004B)

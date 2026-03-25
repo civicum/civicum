@@ -8,7 +8,7 @@
 - [x] Success requerido (mínimo): checkmark + texto confirmatorio + siguiente paso (DOCREF: S01 → §12, L1361)
 - [ ] Mapping de Success por pantalla (Gate 5+; depende del flujo)
 - [ ] Patrón de skeleton loading: cuándo usar, estructura visual
-- [ ] Patrón de error: mensajes según `soulful-copywriting`, botón retry, fallback
+- [x] Patrón dual de error: definido estructuralmente vía ADR-0008 (bloqueante vs transaccional)
 - [ ] Patrón empty state: ilustración (opcional), mensaje empático, CTA de acción
 - [ ] Offline: 3 tiers (HIGH/MEDIUM/LOW), qué se muestra offline por tier
 - [x] Indicador de conectividad: OfflineBanner integrado en producción vía AppLayout (Gate 5.4)
@@ -30,7 +30,8 @@ Toda pantalla CIVICUM debe manejar 5 estados:
 |--------|-----------|-------------|
 | **Loading** | Skeleton shimmer (UI-STP-002) | UI-kit Playwright |
 | **Empty** | Ilustración + CTA por módulo (UI-STP-003) | Golden screenshots (solo si es estado estable de golden screen) |
-| **Error** | Toast Terracota + retry (UI-STP-004) | E2E Playwright |
+| **Error (Crit/Fetch)** | Full-screen ErrorState (UI-STP-004A) | UI-kit Playwright + E2E |
+| **Error (Trans/Sub)** | Toast Terracota + persistencia + retry (UI-STP-004B) | E2E Playwright |
 | **Offline** | Banner NO alarma + Tier LOW (UI-STP-005) | E2E Playwright (evidencia en producción vía AppLayout; ver `traceability_matrix.md`) |
 | **Success** | Mínimo según DOCREF (checkmark + texto + siguiente paso); variantes según contexto (S01 → §12, L1361) | E2E Playwright |
 

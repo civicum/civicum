@@ -1,9 +1,9 @@
 # 📊 Matriz de Trazabilidad UI — CIVICUM
 
 **Gate:** Gate 4 — Consolidación ADR → Pack
-**Fecha:** 2026-02-26
-**Última actualización de implementación:** Gate 5.9a audit fix (2026-03-24, commit 9512a19)
-**Total reglas:** 75
+**Fecha:** 2026-03-25
+**Última actualización de implementación:** Gate 5.9b dual pattern (2026-03-25, commit 125c168)
+**Total reglas:** 76
 **Fuentes:** 4 documentos activos (ver `_gate2/source_map.md`)
 **Convenciones:** S01=UI/UX Definitivo, S02=Design System Terracota, S03=Decisiones F01-F47, S07=Anti-Dark-Patterns
 
@@ -134,7 +134,8 @@
 | UI-STP-001 | MUST | 5 estados por pantalla: loading, empty, error, offline, success | S01 → §12 → tabla estados (L1356) | OK | ALTO | UI-kit Playwright + E2E | Implemented Gate 5.3 (commits fc42f22, c0481ad, cf61361): 5 reusable components in `webapp/src/components/feedback/`. **Gate 5.4:** Offline integrated via `OfflineBanner`. **Gate 5.7:** Loading, Error, and Empty integrated in production on Dashboard via real `GET /api/community-reports` endpoint. Verified by `integration.reports.spec.ts` (8 tests × desktop+mobile). |
 | UI-STP-002 | MUST | Loading: skeleton shimmer, no spinner vacío | S01 → §12.1 → "Skeleton screen con shimmer" (L1357) | OK | MEDIO | UI-kit Playwright + E2E | Implemented Gate 5.3 (commit fc42f22): `SkeletonScreen.tsx`. **Gate 5.7:** Integrated in production on Dashboard `CommunityReportsSection` via real pending `useQuery` request. Verified by E2E `integration.reports.spec.ts` Loading test (route delay intercept). |
 | UI-STP-003 | MUST | Empty: ilustración + CTA por módulo | S01 → §12.3 → tabla empty states (L1387) | OK | MEDIO | UI-kit Playwright + E2E | Implemented Gate 5.3 (commit fc42f22): `EmptyState.tsx`. **Gate 5.7:** Integrated in production on Dashboard — renders when `communityReports` endpoint returns `{ reports: [] }`. **Gate 5.7a:** CTA funcional via `ctaTo` → `Link` real a `/alza-la-voz`. Verificación: Empty UI validado por E2E con intercept sobre request real (`integration.reports.spec.ts` Empty + CTA tests); wiring real del backend probado por separado en tests sin intercept. No se ha observado DB real vacía; la UI está lista para ese caso. |
-| UI-STP-004 | MUST | Error: toast Terracota + guardado + retry | S01 → §12.1 → fila Error (L1359) | **CONFLICTO** | ALTO | UI-kit Playwright + E2E | **Conflicto documental:** SSOT pide un "toast Terracota" (superpuesto transitorio). La implementación (ADR-0006) unificó los 5 estados como componentes de pantalla completa (`ErrorState.tsx`). ADR-0006 no declara explícitamente el reemplazo del patrón toast. Existe una desviación estructural de interacción que el ADR no cierra formalmente. |
+| UI-STP-004A | MUST | Error Crítico/Fetch Inicial: Full-screen ErrorState | ADR-0008 | OK | ALTO | UI-kit Playwright + E2E | Implemented Gate 5.3 (`ErrorState.tsx`). Integrado en producción Gate 5.7 vía Dashboard. Valida fallback estructural tras fallo de DB sin romper layout. |
+| UI-STP-004B | MUST | Error Transaccional: Toast Terracota + persistencia + retry | S01 → §12.1 (L1359) / ADR-0008 | **NO IMPL** | ALTO | E2E | **No Implementado:** Lógica de retry con toast para fallos en mutaciones de datos o submit de formularios. Diferido formalmente según ADR-0008. |
 | UI-STP-005 | MUST | Offline: banner NO alarma + funcionalidad Tier LOW | S01 → §12.1 → fila Offline (L1360) | OK | ALTO | UI-kit Playwright + E2E | F-07. Implemented Gate 5.3 (`OfflineBanner.tsx` presentational). **Integrated in production Gate 5.4** (commit d5f0959): `AppLayout.tsx` via `useNetworkStatus` hook (real `navigator.onLine`). Verified by Playwright E2E `integration.5state.spec.ts` (`context.setOffline`). |
 | UI-STP-006 | MUST | offline.html digno con logo + capacidades + CTA | S03 → F-07 → "Dignidad = experiencia completa" (L365) | **NO IMPL** | ALTO | — | **No implementado:** `offline.html` estático no existe. Service Worker y Web App Manifest están ausentes. La app no tiene capacidad offline real (PWA). OfflineBanner (UI-STP-005) cubre solo la detección visual en-app via `navigator.onLine`. Esta regla requiere: (1) offline.html con logo + CTA, (2) Service Worker para servir fallback, (3) manifest.json. Todo fuera de scope actual. |
 | UI-STP-007 | MUST | CWV Tier LOW: FCP≤2.0s, LCP≤4.0s, TTI≤5.0s, CLS≤0.2 | S01 → §17.2 → tabla CWV (L1590) | OK | ALTO | Performance | Android Go target |
@@ -160,13 +161,13 @@
 
 | Métrica | Valor |
 |---------|-------|
-| **Total reglas** | 75 |
-| **OK** | 70 |
+| **Total reglas** | 76 |
+| **OK** | 71 |
 | **PARTIAL** | 3 |
-| **NO IMPL** | 1 |
-| **CONFLICTO** | 1 |
+| **NO IMPL** | 2 |
+| **CONFLICTO** | 0 |
 | **GAP** | 0 |
 | **Sin DOCREF** | 0 |
 | **Categorías** | 10 |
-| **Resolved by ADR** | 6 |
+| **Resolved by ADR** | 7 |
 
