@@ -38,7 +38,7 @@
 ## TODO
 
 - Importar mapa de rutas de `epoch1_inventory.md §1 + §7`
-- Formalizar inconsistencia de labels detectada en G8 (Smart Dock "Reportar" vs Nav "Alza la Voz")
+- ~~Formalizar inconsistencia de labels detectada en G8 (Smart Dock "Reportar" vs Nav "Alza la Voz")~~ → Resuelto por ADR-0009
 - ~~Definir ruta 404 (GAP G1 del inventario)~~ → Resuelto por ADR-0004
 - Documentar cambio atmosférico `data-module` requerido por UI/UX §2.7 (GAP G9)
 
