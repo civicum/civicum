@@ -27,8 +27,10 @@ createRoot(document.getElementById('root')!).render(
 
           <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route path="/" element={<DashboardPage />} />
+            <Route path="/academia" element={<div className="p-6">Módulo Academia (En construcción)</div>} />
+            <Route path="/civia" element={<div className="p-6">Módulo Civia (En construcción)</div>} />
             <Route path="/alza-la-voz" element={<div className="p-6">Módulo Alza la Voz (En construcción)</div>} />
-            <Route path="/circulos" element={<div className="p-6">Módulo Círculos de Acción (En construcción)</div>} />
+            <Route path="/circulos" element={<Navigate to="/alza-la-voz" replace />} />
             <Route path="/perfil" element={<ProfilePage />} />
             <Route path="/ui-kit" element={<UIKitPage />} />
             <Route path="*" element={<NotFoundPage />} />

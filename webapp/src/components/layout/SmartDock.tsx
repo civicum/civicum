@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
-import { Home, Lightbulb, UserRound, UsersRound, MoreHorizontal } from "lucide-react";
+import { Home, Lightbulb, GraduationCap, Bot } from "lucide-react";
+import { MoreMenu } from "./MoreMenu";
 
 /**
  * SmartDock — Bottom navigation bar (XS-MD)
@@ -29,6 +30,26 @@ export function SmartDock() {
                 </NavLink>
 
                 <NavLink
+                    to="/academia"
+                    className={({ isActive }) =>
+                        `flex flex-col items-center justify-center gap-1 w-16 h-full transition-colors ${isActive ? "text-terracota-500" : "text-slate-500 hover:text-slate-900"}`
+                    }
+                >
+                    <GraduationCap className="h-5 w-5" />
+                    <span className="text-[10px] font-medium">Academia</span>
+                </NavLink>
+
+                <NavLink
+                    to="/civia"
+                    className={({ isActive }) =>
+                        `flex flex-col items-center justify-center gap-1 w-16 h-full transition-colors ${isActive ? "text-terracota-500" : "text-slate-500 hover:text-slate-900"}`
+                    }
+                >
+                    <Bot className="h-5 w-5" />
+                    <span className="text-[10px] font-medium">Civia</span>
+                </NavLink>
+
+                <NavLink
                     to="/alza-la-voz"
                     className={({ isActive }) =>
                         `flex flex-col items-center justify-center gap-1 w-16 h-full transition-colors ${isActive ? "text-terracota-500" : "text-slate-500 hover:text-slate-900"}`
@@ -38,36 +59,8 @@ export function SmartDock() {
                     <span className="text-[10px] font-medium">Alza la Voz</span>
                 </NavLink>
 
-                <NavLink
-                    to="/circulos"
-                    className={({ isActive }) =>
-                        `flex flex-col items-center justify-center gap-1 w-16 h-full transition-colors ${isActive ? "text-terracota-500" : "text-slate-500 hover:text-slate-900"}`
-                    }
-                >
-                    <UsersRound className="h-5 w-5" />
-                    <span className="text-[10px] font-medium">Círculos</span>
-                </NavLink>
-
-                <NavLink
-                    to="/perfil"
-                    className={({ isActive }) =>
-                        `flex flex-col items-center justify-center gap-1 w-16 h-full transition-colors ${isActive ? "text-terracota-500" : "text-slate-500 hover:text-slate-900"}`
-                    }
-                >
-                    <UserRound className="h-5 w-5" />
-                    <span className="text-[10px] font-medium">Mi Perfil</span>
-                </NavLink>
-
-                {/* Position 5: "Más" — placeholder button until bottom sheet is implemented */}
-                <button
-                    type="button"
-                    disabled
-                    aria-label="Más opciones (próximamente)"
-                    className="flex flex-col items-center justify-center gap-1 w-16 h-full text-slate-400 cursor-not-allowed"
-                >
-                    <MoreHorizontal className="h-5 w-5" />
-                    <span className="text-[10px] font-medium">Más</span>
-                </button>
+                {/* Tab 5: "Más" — Bottom Sheet Overlay */}
+                <MoreMenu isDesktop={false} />
             </div>
         </nav>
     );

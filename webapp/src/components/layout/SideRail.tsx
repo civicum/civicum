@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
-import { Home, Lightbulb, UserRound, UsersRound, MoreHorizontal } from "lucide-react";
+import { Home, Lightbulb, GraduationCap, Bot } from "lucide-react";
+import { MoreMenu } from "./MoreMenu";
 
 /**
  * SideRail — Desktop navigation (LG+ / 1024px+)
@@ -23,31 +24,23 @@ export function SideRail() {
                 <span className="text-[10px] font-medium">Inicio</span>
             </NavLink>
 
+            <NavLink to="/academia" className={linkClass}>
+                <GraduationCap className="h-5 w-5" />
+                <span className="text-[10px] font-medium">Academia</span>
+            </NavLink>
+
+            <NavLink to="/civia" className={linkClass}>
+                <Bot className="h-5 w-5" />
+                <span className="text-[10px] font-medium">Civia</span>
+            </NavLink>
+
             <NavLink to="/alza-la-voz" className={linkClass}>
                 <Lightbulb className="h-5 w-5" />
                 <span className="text-[10px] font-medium">Alza la Voz</span>
             </NavLink>
 
-            <NavLink to="/circulos" className={linkClass}>
-                <UsersRound className="h-5 w-5" />
-                <span className="text-[10px] font-medium">Círculos</span>
-            </NavLink>
-
-            <NavLink to="/perfil" className={linkClass}>
-                <UserRound className="h-5 w-5" />
-                <span className="text-[10px] font-medium">Mi Perfil</span>
-            </NavLink>
-
-            {/* Position 5: "Más" — placeholder until bottom sheet / submenu */}
-            <button
-                type="button"
-                disabled
-                aria-label="Más opciones (próximamente)"
-                className="flex flex-col items-center justify-center gap-1 w-full py-3 text-slate-400 cursor-not-allowed"
-            >
-                <MoreHorizontal className="h-5 w-5" />
-                <span className="text-[10px] font-medium">Más</span>
-            </button>
+            {/* Position 5: "Más" — Popover dropdown */}
+            <MoreMenu isDesktop={true} />
         </nav>
     );
 }
