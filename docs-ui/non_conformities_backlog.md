@@ -3,7 +3,21 @@
 Documento vivo para rastrear todas las reglas que no poseen un estado `OK` puro, garantizando visibilidad de la deuda técnica, gaps documentales y dependencias no resueltas. 
 **Revisión Obligatoria:** En cada nueva iteración y estrictamente antes de emitir un dictamen de "CERRADO" para cualquier Gate.
 
-Última actualización: 2026-03-25 (Gate 5.9b)
+Última actualización: 2026-03-26 (Validación UI-NAV-001)
+
+---
+
+## 🎯 ORDEN DE PRIORIZACIÓN VIGENTE
+
+
+1. **UI-STP-006** — primera prioridad, solo si ya se destrabó Base URLs + routing Hono
+   *Motivo:* deuda importante de offline real/PWA, pero con bloqueador técnico previo.
+2. **UI-NAV-003** — segunda prioridad
+   *Motivo:* mejora técnica/UI dependiente de una taxonomía de navegación ya estabilizada.
+3. **UI-STP-004B** — tercera prioridad
+   *Motivo:* sistema de errores transaccionales/toasts; conviene abordarlo cuando entren mutaciones y formularios reales.
+4. **UI-CMP-006** — cuarta prioridad
+   *Motivo:* depende de backend de notificaciones e in-app messaging; no conviene adelantarlo artificialmente.
 
 ---
 
@@ -15,20 +29,6 @@ Documento vivo para rastrear todas las reglas que no poseen un estado `OK` puro,
 
 ## 🟡 PARTIAL
 
-### UI-NAV-001 (Desviación de Copy en Smart Dock)
-- **Estado Actual:** PARTIAL
-- **Fuente Formal (SSOT §9.1):** Textos: *Home, Aprende, Civia, Reporta, Más*.
-- **Implementación:** Textos: *Inicio, Alza la Voz, Círculos, Mi Perfil, Más*.
-- **Root Cause:** El SSOT mantiene el copy de la versión original conceptual, mientras el producto pivotó sus secciones.
-- **Prioridad:** MEDIA
-- **Owner:** Producto / UX
-- **Ruta de Cierre:** Ruta B (Actualizar SSOT/Copywriting manual)
-- **Siguiente Acción Concreta:** Modificar la tabla L1129 en SSOT §9.1 o abrir un PR actualizando los labels en `SmartDock.tsx` y `SideRail.tsx`.
-- **Dependencia / Bloqueador:** Decisión de producto sobre cuál es el taxonomy oficial de CIVICUM.
-- **Gate / Release Objetivo:** Epoca 2 / Gate 6
-- **Fecha de Apertura:** 2026-03-23
-- **Última Revisión:** 2026-03-24
-- **Evidencia Asociada:** `webapp/src/components/layout/SmartDock.tsx`
 
 ### UI-NAV-003 (Iconografía Activa Incompleta)
 - **Estado Actual:** PARTIAL
@@ -48,12 +48,12 @@ Documento vivo para rastrear todas las reglas que no poseen un estado `OK` puro,
 ### UI-CMP-006 (Ausencia de Notificaciones / Badge)
 - **Estado Actual:** PARTIAL
 - **Fuente Formal (SSOT §9.1+9.2):** Exige "Punto rojo 8px sin número" en "Más".
-- **Implementación:** "Más" existe como disabled state, el Badge de notificaciones es inexistente.
-- **Root Cause:** La infraestructura de notificaciones / polling y el datasource necesario para el badge no existen.
+- **Implementación:** El "Más" evolucionó a un disparador de Overlay (`MoreMenu.tsx`) e incluye visualmente el RedDotBadge estipulado, pero carece de un data source dinámico para activarse/desactivarse.
+- **Root Cause:** La infraestructura de notificaciones / polling y el datasource necesario para comandar el badge no existen.
 - **Prioridad:** MEDIA (Features core diferidos)
 - **Owner:** Antigravity (Fullstack)
 - **Ruta de Cierre:** Ruta A (Implementación diferida)
-- **Siguiente Acción Concreta:** Modelar BD para notificaciones transaccionales y construir el `RedDotBadge` puro visualmente.
+- **Siguiente Acción Concreta:** Construir BD / in-app messaging y atar la visibilidad del badge en `MoreMenu.tsx` al estado del usuario logueado.
 - **Dependencia / Bloqueador:** Definición funcional del backend de Notificaciones e in-app messaging.
 - **Gate / Release Objetivo:** Época 3
 - **Fecha de Apertura:** 2026-03-23
