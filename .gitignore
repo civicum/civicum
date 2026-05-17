@@ -1,0 +1,27 @@
+# Local historical/private context
+/bitacora_antigravity.txt
+
+# Local run outputs
+/e2e_ui_nav_001_output.txt
+
+# Playwright transient outputs
+/test-results/
+/playwright-report/
+/webapp/test-results/
+/webapp/playwright-report/
+
+# Logs
+/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.template
+!.env.sample
