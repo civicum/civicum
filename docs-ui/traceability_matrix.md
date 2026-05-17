@@ -2,7 +2,7 @@
 
 **Gate:** Gate 4 — Consolidación ADR → Pack
 **Fecha:** 2026-03-25
-**Última actualización de implementación:** Gate 6 - Taxonomía UI-NAV-001 (Hash pendiente de tu commit local)
+**Última actualización de implementación:** Gate 6 - Taxonomía UI-NAV-001 (ADR-0009: 0c57451; implementación Ruta C: 0718d26)
 **Total reglas:** 76
 **Fuentes:** 4 documentos activos (ver `_gate2/source_map.md`)
 **Convenciones:** S01=UI/UX Definitivo, S02=Design System Terracota, S03=Decisiones F01-F47, S07=Anti-Dark-Patterns
