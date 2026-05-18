@@ -9,14 +9,8 @@ import ProfilePage from './pages/profile/ProfilePage'
 import NotFoundPage from './pages/not-found/NotFoundPage'
 import UIKitPage from './pages/ui-kit/UIKitPage'
 import OnboardingFlow from './pages/onboarding/OnboardingFlow'
-import { useOnboardingStore } from './store/useOnboardingStore'
+import ProtectedRoute from './components/routing/ProtectedRoute'
 import './index.css'
-
-// Rutas protegidas que requieren onboarding
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const hasCompletedOnboarding = useOnboardingStore((state) => state.hasCompletedOnboarding);
-  return hasCompletedOnboarding ? <>{children}</> : <Navigate to="/onboarding" />;
-};
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -40,4 +34,3 @@ createRoot(document.getElementById('root')!).render(
     </QueryClientProvider>
   </StrictMode>,
 )
-

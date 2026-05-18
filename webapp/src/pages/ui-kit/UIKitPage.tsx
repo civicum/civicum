@@ -5,8 +5,7 @@ import ErrorState from '@/components/feedback/ErrorState';
 import OfflineBanner from '@/components/feedback/OfflineBanner';
 import SuccessState from '@/components/feedback/SuccessState';
 
-const ALL_STATES = ['loading', 'empty', 'error', 'offline', 'success'] as const;
-type StateName = typeof ALL_STATES[number];
+type StateName = 'loading' | 'empty' | 'error' | 'offline' | 'success';
 
 /**
  * UIKitPage — Deterministic showcase of all 5 feedback states (Gate 5.3)
