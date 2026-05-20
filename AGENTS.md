@@ -185,7 +185,32 @@ Luego: verificar con comandos apropiados.
 
 Luego: resumir qué cambió, riesgos restantes y próximos pasos.
 
-### 14. No Hacer Sin Aprobación Explícita
+### 14. CIVICUM_RECOVERY.md y continuidad
+
+`CIVICUM_RECOVERY.md` es el documento principal de recuperacion del proyecto.
+
+Debe mantenerse bajo 30.000 caracteres.
+
+No debe contener prompts completos, logs completos ni transcripciones.
+
+Debe registrar solo estado, decisiones, comandos relevantes, resultados, riesgos y proximo paso.
+
+Codex debe proponer actualizarlo despues de cada hito relevante, por ejemplo:
+
+- commit nuevo
+- test importante ejecutado
+- decision visual tomada
+- stash revisado
+- ventana de `bitacora_antigravity.txt` procesada
+- riesgo abierto o cerrado
+- cambio de arquitectura
+- cambio del proximo paso exacto
+
+Si el working tree esta sucio, Codex debe pedir aprobacion antes de actualizarlo.
+
+Codex nunca debe mezclar cambios de `CIVICUM_RECOVERY.md` con cambios funcionales, visuales o de codigo sin aprobacion explicita.
+
+### 15. No Hacer Sin Aprobación Explícita
 
 No editar, crear, borrar ni mover archivos cuando el árbol esté sucio o cuando la acción afecte archivos sensibles.
 
