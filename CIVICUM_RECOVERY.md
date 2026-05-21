@@ -9,10 +9,9 @@ Ultima actualizacion: 2026-05-20.
 - Proyecto: Civicum.
 - Ruta local: `C:\Users\daniel.aguirre\Proyectos\civicum`.
 - Rama actual: `ui-architecture-foundation`.
-- Working tree conocido al crear este documento:
-  - `M webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png`
-- Ese PNG fue modificado por una prueba visual acotada y no debe commitearse ni restaurarse sin inspeccion previa.
-- No hay decision tomada aun sobre conservar o descartar ese PNG.
+- Working tree conocido: limpio.
+- Decision visual tomada: `webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png` fue restaurado desde HEAD por ruido de shimmer.
+- No hay PNGs modificados pendientes al momento de esta actualizacion.
 
 ## 2. Ultimos commits relevantes
 
@@ -23,6 +22,10 @@ Ultima actualizacion: 2026-05-20.
 - `9f3468c docs: add repository safety guidance`
 - `0718d26 feat(gate6): implement Ruta C navigation taxonomy and Mas overlay`
 - `0c57451 docs(ui-nav-001): officialize navigation taxonomy via ADR-0009`
+
+Hitos breves no necesariamente commiteados en este documento:
+
+- Decision visual: `UI-STP-002_loading_desktop.png` restaurado desde HEAD por ruido de shimmer; repo limpio.
 
 ## 3. Reglas criticas
 
@@ -125,10 +128,12 @@ Resultado:
 - Estado ejecutado: `loading`.
 - Archivo modificado:
   - `webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png`
+- Decision posterior: el cambio fue clasificado como ruido de captura del shimmer y restaurado desde HEAD.
+- Estado posterior: working tree limpio.
 
 Regla actual:
 
-- No commitear ni restaurar `webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png` sin inspeccion previa.
+- No commitear PNGs generados por `ui-kit.states.spec.ts` sin inspeccion visual y autorizacion explicita.
 - No ejecutar el spec visual completo sin plan visual.
 
 PNGs versionados que `ui-kit.states.spec.ts` puede sobrescribir:
@@ -174,7 +179,6 @@ Regla:
 
 ## 11. Riesgos abiertos
 
-- `webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png` esta modificado y pendiente de inspeccion contra HEAD.
 - `ui-kit.states.spec.ts` escribe directamente en `webapp/tests/visual/ui-kit/`, una ruta versionada.
 - La suite visual completa puede sobrescribir 10 PNGs versionados.
 - `DATABASE_URL` no esta configurado localmente; backend real funciona en modo error controlado para `/api/community-reports`.
@@ -194,20 +198,18 @@ git diff --name-status
 git log --oneline -5
 ```
 
-2. Inspeccionar el PNG modificado sin restaurarlo ni commitearlo:
+2. Preparar estrategia visual segura para `ui-kit.states.spec.ts` completo, o decidir si se pospone la suite visual y se avanza a otro frente.
 
 ```powershell
-git diff --stat -- webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png
-git diff --summary -- webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png
+pnpm -C webapp exec playwright test tests/e2e/ui-kit.states.spec.ts --list
 ```
 
-3. Si se necesita comparacion visual, preparar un plan antes de ejecutar comandos que extraigan o generen imagenes desde HEAD.
+3. Antes de ejecutar visuales, definir si se aceptara un dirty tree temporal con revision/restauracion posterior o si se modificara el spec para escribir evidencia en una ruta no versionada.
 
 Decision pendiente:
 
-- Conservar `webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png`.
-- Restaurarlo desde HEAD.
-- Regenerar visuales bajo una estrategia mas amplia.
+- Ejecutar o posponer `ui-kit.states.spec.ts` completo.
+- Regenerar visuales bajo una estrategia controlada.
 - Cambiar el spec para escribir en una ruta no versionada, solo si se autoriza editar tests.
 
 ## 13. Politica de actualizacion
