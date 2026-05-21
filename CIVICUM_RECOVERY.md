@@ -10,6 +10,10 @@ Ultima actualizacion: 2026-05-20.
 - Ruta local: `C:\Users\daniel.aguirre\Proyectos\civicum`.
 - Rama actual: `ui-architecture-foundation`.
 - Working tree conocido: limpio.
+- Origin confirmado: `https://github.com/civicum/civicum.git`.
+- Rama remota: `origin/ui-architecture-foundation`.
+- Upstream configurado correctamente: `ui-architecture-foundation` trackea `origin/ui-architecture-foundation`.
+- Ultimo commit local/remoto confirmado: `2eaf97e docs: update recovery after visual snapshot decision`.
 - Decision visual tomada: `webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png` fue restaurado desde HEAD por ruido de shimmer.
 - No hay PNGs modificados pendientes al momento de esta actualizacion.
 
@@ -26,6 +30,7 @@ Ultima actualizacion: 2026-05-20.
 Hitos breves no necesariamente commiteados en este documento:
 
 - Decision visual: `UI-STP-002_loading_desktop.png` restaurado desde HEAD por ruido de shimmer; repo limpio.
+- Backup remoto: rama `ui-architecture-foundation` subida a `origin` y vinculada a `origin/ui-architecture-foundation`.
 
 ## 3. Reglas criticas
 
@@ -38,7 +43,7 @@ Hitos breves no necesariamente commiteados en este documento:
 - No versionar `bitacora_antigravity.txt`.
 - No leer `bitacora_antigravity.txt` completa salvo autorizacion explicita.
 - No ejecutar `ui-kit.states.spec.ts` completo sin plan visual.
-- No hacer `git add` ni `git commit` hasta resolver primero el estado del PNG visual modificado.
+- No hacer `git add` ni `git commit` sin aprobacion explicita y staging por rutas especificas.
 - No mostrar secretos completos si se detectan.
 
 ## 4. Arquitectura resumida
@@ -198,7 +203,7 @@ git diff --name-status
 git log --oneline -5
 ```
 
-2. Preparar estrategia visual segura para `ui-kit.states.spec.ts` completo, o decidir si se pospone la suite visual y se avanza a otro frente.
+2. Preparar estrategia visual segura para `ui-kit.states.spec.ts` completo, o decidir conscientemente si se pospone la suite visual y se avanza a otro frente.
 
 ```powershell
 pnpm -C webapp exec playwright test tests/e2e/ui-kit.states.spec.ts --list
