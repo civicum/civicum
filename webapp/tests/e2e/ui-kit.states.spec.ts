@@ -1,6 +1,4 @@
 import { test, expect } from '@playwright/test';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 const STATES = [
   { name: 'loading', testId: 'state-loading', rule: 'UI-STP-002' },
@@ -9,11 +7,6 @@ const STATES = [
   { name: 'offline', testId: 'state-offline', rule: 'UI-STP-005' },
   { name: 'success', testId: 'state-success', rule: 'UI-STP-001' },
 ] as const;
-
-// Resolve absolute output directory for committed PNGs
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const VISUAL_DIR = path.resolve(__dirname, '..', '..', 'tests', 'visual', 'ui-kit');
 
 // ---------------------------------------------------------------------------
 // Onboarding bypass — same pattern as smoke.notfound.spec.ts
@@ -70,9 +63,9 @@ test.describe('UI-Kit — 5-State Pattern (Gate 5.3)', () => {
       // Determine viewport label from project name
       const viewport = testInfo.project.name.includes('mobile') ? 'mobile' : 'desktop';
 
-      // Capture per-section screenshot to committed path
+      // Capture per-section screenshot to Playwright's ignored test output path
       const filename = `${rule}_${name}_${viewport}.png`;
-      await section.screenshot({ path: path.join(VISUAL_DIR, filename) });
+      await section.screenshot({ path: testInfo.outputPath(filename) });
 
       // Zero JS errors
       expect(pageErrors, 'pageerror should be empty').toEqual([]);
