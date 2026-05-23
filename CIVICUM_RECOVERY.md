@@ -13,7 +13,11 @@ Ultima actualizacion: 2026-05-20.
 - Origin confirmado: `https://github.com/civicum/civicum.git`.
 - Rama remota: `origin/ui-architecture-foundation`.
 - Upstream configurado correctamente: `ui-architecture-foundation` trackea `origin/ui-architecture-foundation`.
-- Ultimo commit local/remoto confirmado: `2eaf97e docs: update recovery after visual snapshot decision`.
+- Ultimo commit local/remoto confirmado antes de registrar el PR: `7562149 docs: update recovery after remote backup`.
+- Draft PR creado: `https://github.com/civicum/civicum/pull/1`.
+- Estado PR: `OPEN / Draft`.
+- Base PR: `main`.
+- Head PR: `ui-architecture-foundation`.
 - Decision visual tomada: `webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png` fue restaurado desde HEAD por ruido de shimmer.
 - No hay PNGs modificados pendientes al momento de esta actualizacion.
 
@@ -31,6 +35,7 @@ Hitos breves no necesariamente commiteados en este documento:
 
 - Decision visual: `UI-STP-002_loading_desktop.png` restaurado desde HEAD por ruido de shimmer; repo limpio.
 - Backup remoto: rama `ui-architecture-foundation` subida a `origin` y vinculada a `origin/ui-architecture-foundation`.
+- Draft PR creado: `https://github.com/civicum/civicum/pull/1` como checkpoint de fase, no candidato final de merge.
 
 ## 3. Reglas criticas
 
@@ -203,16 +208,30 @@ git diff --name-status
 git log --oneline -5
 ```
 
-2. Preparar estrategia visual segura para `ui-kit.states.spec.ts` completo, o decidir conscientemente si se pospone la suite visual y se avanza a otro frente.
+2. Revisar el Draft PR como checkpoint de fase:
+
+```text
+https://github.com/civicum/civicum/pull/1
+```
+
+3. Decidir conscientemente el proximo frente:
+
+- A) estrategia visual segura para `ui-kit.states.spec.ts`
+- B) `bitacora_antigravity.txt` por ventanas
+- C) stashes antiguos en solo lectura
+- D) primera tarea funcional pequena
+
+Referencia si se elige frente visual:
 
 ```powershell
 pnpm -C webapp exec playwright test tests/e2e/ui-kit.states.spec.ts --list
 ```
 
-3. Antes de ejecutar visuales, definir si se aceptara un dirty tree temporal con revision/restauracion posterior o si se modificara el spec para escribir evidencia en una ruta no versionada.
+Antes de ejecutar visuales, definir si se aceptara un dirty tree temporal con revision/restauracion posterior o si se modificara el spec para escribir evidencia en una ruta no versionada.
 
 Decision pendiente:
 
+- Revisar el Draft PR como checkpoint de fase.
 - Ejecutar o posponer `ui-kit.states.spec.ts` completo.
 - Regenerar visuales bajo una estrategia controlada.
 - Cambiar el spec para escribir en una ruta no versionada, solo si se autoriza editar tests.
