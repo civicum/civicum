@@ -2,8 +2,10 @@
 
 **Fecha:** 2026-04-14
 **Regla:** UI-NAV-001 (MUST)
-**Estado actual en matriz:** PARTIAL
+**Estado histórico en matriz al redactar memo:** PARTIAL
 **Decisor esperado:** Daniel (Product Owner)
+
+> **Nota de vigencia:** Memo histórico/no normativo. La fuente vigente para UI-NAV-001 es ADR-0009 junto con la matriz actual del PR Draft.
 
 ---
 
@@ -41,7 +43,7 @@
 ## 3. Justificación observable
 
 - **Gate 6 / Ruta C** implementó la taxonomía actual tras evaluación de tres opciones (Ruta A, B, C). Ruta C fue aprobada operativamente en conversación `92e6c97e`.
-- **Evidencia documental:** `traceability_matrix.md` fila UI-NAV-001 registra "Gate 6 (Ruta C) implementado". `local_close_ui_nav_001_runbook.md` existe como runbook de cierre.
+- **Evidencia documental:** `traceability_matrix.md` fila UI-NAV-001 registra "Gate 6 (Ruta C) implementado". `local_close_ui_nav_001_runbook.md` queda como referencia histórica fuera del PR/en cuarentena; no debe usarse como evidencia activa de cierre.
 - **No reconciliado:** El Anexo MVP §2 (documento SSOT fuente) no fue actualizado. La aprobación de Ruta C fue operativa, no documental.
 
 ---
@@ -94,4 +96,3 @@ Argumento: La taxonomía actual (Inicio/Academia/Civia/Alza la Voz/Más) es más
 > La recomendación original de este memo (Opción 1: editar Anexo MVP) fue descartada tras verificar que el Anexo no es fuente normativa para navegación según `docs-ui/README.md`.
 >
 > **Fecha de cierre:** 2026-04-15
-
