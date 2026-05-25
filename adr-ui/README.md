@@ -84,3 +84,5 @@ Ejemplos:
 | [ADR-0005](./ADR-0005-dark-mode-especificacion-minima.md) | Dark mode — especificación mínima | ACCEPTED | 2026-02-26 |
 | [ADR-0006](./ADR-0006-estados-por-pantalla.md) | Estados obligatorios por pantalla (5-state) | ACCEPTED | 2026-02-26 |
 | [ADR-0007](./ADR-0007-tipografia-decision.md) | Tipografía — Inter vs Nunito Sans + IBM Plex | ACCEPTED | 2026-02-26 |
+| [ADR-0008](./ADR-0008-dual-error-state-pattern.md) | Patrón Dual de Estados de Error | ACCEPTED | 2026-03-25 |
+| [ADR-0009](./ADR-0009-taxonomia-navegacion-oficial.md) | Taxonomía de Navegación Oficial | ACCEPTED | 2026-04-15 |

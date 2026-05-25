@@ -1,8 +1,10 @@
 # 📦 UI Architecture Pack — Versión
 
-**Versión actual:** `0.1.0`
-**Fecha:** 2026-02-24
-**Gate activo:** Gate 1 (SSOT + ADR + Skeleton)
+**Versión actual:** `0.2.0`
+**Fecha:** 2026-05-25
+**Estado:** checkpoint documental de rama / PR Draft; no release final.
+**Gate actual:** Gate 6 (alineación documental en curso)
+**Gates transitados:** Gate 4 / Gate 5 / Gate 6
 
 ---
 
@@ -24,4 +26,5 @@
 
 | Versión | Fecha | Gate | Descripción |
 |---------|-------|------|-------------|
+| `0.2.0` | 2026-05-25 | Gate 6 checkpoint | Bump MINOR para registrar avance del pack por Gate 4/Gate 5/Gate 6 y alinear metadata del PR Draft; no representa release final |
 | `0.1.0` | 2026-02-24 | Gate 1 | Skeleton completo 00–09, SSOT declarado, ADR system, golden_screens, governance |
