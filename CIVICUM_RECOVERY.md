@@ -2,18 +2,18 @@
 
 Documento de recuperacion compacto para continuar Civicum desde un chat nuevo sin perder el estado operativo. No es una bitacora cruda ni una transcripcion: registra estado, decisiones, comandos relevantes, resultados y el proximo paso.
 
-Ultima actualizacion: 2026-05-23.
+Ultima actualizacion: 2026-05-25.
 
 ## 1. Estado actual
 
 - Proyecto: Civicum.
 - Ruta local: `C:\Users\daniel.aguirre\Proyectos\civicum`.
 - Rama actual: `ui-architecture-foundation`.
-- Working tree conocido: limpio.
+- Working tree conocido antes de esta actualizacion: limpio.
 - Origin confirmado: `https://github.com/civicum/civicum.git`.
 - Rama remota: `origin/ui-architecture-foundation`.
 - Upstream configurado correctamente: `ui-architecture-foundation` trackea `origin/ui-architecture-foundation`.
-- Ultimo commit local/remoto confirmado: `aba7c8b test: write ui kit visuals to playwright output`.
+- Ultimo commit local/remoto confirmado: `25782e3 docs(ui): clarify evidence hashes and navigation memo`.
 - Draft PR creado: `https://github.com/civicum/civicum/pull/1`.
 - Estado PR: `OPEN / Draft`.
 - Base PR: `main`.
@@ -23,6 +23,10 @@ Ultima actualizacion: 2026-05-23.
 
 ## 2. Ultimos commits relevantes
 
+- `25782e3 docs(ui): clarify evidence hashes and navigation memo`
+- `a66196b docs(ui): align pack metadata and ADR index`
+- `6ef648f docs(reentry): mark stale evidence snapshots obsolete`
+- `d205aba docs: update recovery after visual output strategy`
 - `aba7c8b test: write ui kit visuals to playwright output`
 - `835c303 docs: record draft PR in recovery`
 - `d1dcc05 fix: resolve webapp lint errors`
@@ -39,6 +43,7 @@ Hitos breves no necesariamente commiteados en este documento:
 - Backup remoto: rama `ui-architecture-foundation` subida a `origin` y vinculada a `origin/ui-architecture-foundation`.
 - Draft PR creado: `https://github.com/civicum/civicum/pull/1` como checkpoint de fase, no candidato final de merge.
 - Estrategia visual segura aplicada: `ui-kit.states.spec.ts` escribe evidencia en output ignorado, visual completo 10 passed, sin modificar PNGs versionados.
+- Limpieza documental PR #1 aplicada y subida en tres commits: `6ef648f docs(reentry): mark stale evidence snapshots obsolete`, `a66196b docs(ui): align pack metadata and ADR index`, `25782e3 docs(ui): clarify evidence hashes and navigation memo`.
 
 ## 3. Reglas criticas
 
@@ -87,6 +92,13 @@ Puntos de entrada principales:
 Estado documental relevante:
 
 - UI-NAV-001 quedo cerrado en contenido por ADR-0009 y codigo alineado.
+- Limpieza documental PR #1 aplicada:
+  - `_reentry` obsoleto/no normativo queda neutralizado para no ser evidencia vigente.
+  - `PACK_VERSION.md` refleja `0.2.0`, Gate 6 checkpoint, PR Draft/no release final.
+  - `docs-ui/02_COMPONENTS.md` registra `/ui-kit` como UI Kit activo y evidencia visual nueva via `testInfo.outputPath(...)` hacia output ignorado.
+  - `adr-ui/README.md` indexa ADR-0008 y ADR-0009.
+  - `docs-ui/traceability_matrix.md` usa `Hash de hito/verificacion` cuando corresponde.
+  - `docs-ui/_reentry/UI_NAV_001_RECONCILIATION_MEMO.md` queda historico/no normativo.
 - La referencia documental de "Hash pendiente" en `docs-ui/traceability_matrix.md` fue reemplazada por:
   - ADR-0009: `0c57451`
   - implementacion Ruta C: `0718d26`
@@ -202,10 +214,13 @@ Regla:
 
 ## 11. Riesgos abiertos
 
+- PR #1 sigue siendo grande y debe mantenerse Draft hasta revisar por secciones y/o ejecutar validaciones finales autorizadas.
 - `DATABASE_URL` no esta configurado localmente; backend real funciona en modo error controlado para `/api/community-reports`.
 - Stashes antiguos pueden contener contexto util o cambios peligrosos; revisar solo con plan.
 - `bitacora_antigravity.txt` puede contener decisiones historicas, pero tambien ruido, contradicciones o informacion no vigente.
 - La evidencia visual nueva de `ui-kit.states.spec.ts` queda en output ignorado por Git; si se decide actualizar snapshots versionados, requiere revision visual y autorizacion explicita.
+- Riesgo documental `_reentry` obsoleto/ruidoso reducido: los artefactos stale quedaron marcados obsoletos/no normativos y no deben usarse como evidencia vigente.
+- No marcar PR #1 ready-for-review sin revision por secciones y validaciones autorizadas.
 
 ## 12. Proximo paso exacto
 
@@ -219,17 +234,10 @@ git diff --name-status
 git log --oneline -5
 ```
 
-2. Decidir conscientemente el proximo frente:
+2. Proximo frente recomendado:
 
-- A) revisar Draft PR #1 como checkpoint de fase: `https://github.com/civicum/civicum/pull/1`
-- B) procesar `bitacora_antigravity.txt` por ventanas
-- C) revisar stashes antiguos en solo lectura
-- D) primera tarea funcional pequena
-
-Decision pendiente:
-
-- Elegir el proximo frente A/B/C/D.
-- Mantener el PR en Draft hasta decidir cierre de fase.
+- Revisar PR #1 por secciones o ejecutar validaciones finales autorizadas.
+- Mantener PR #1 en Draft por ahora; no marcar ready-for-review todavia.
 - No actualizar snapshots versionados salvo decision explicita y revision visual.
 
 ## 13. Politica de actualizacion
