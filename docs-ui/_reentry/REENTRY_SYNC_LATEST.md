@@ -1,3 +1,13 @@
+# OBSOLETO / NO NORMATIVO
+
+Este archivo fue generado el 2026-03-22 y corresponde al HEAD `6321401`.
+
+Fue superseded por `CIVICUM_RECOVERY.md`, `adr-ui/ADR-0009-taxonomia-navegacion-oficial.md`, la matriz de trazabilidad actual y el PR #1.
+
+No debe usarse como estado `LATEST` actual, evidencia limpia ni fuente de cierre formal.
+
+---
+
 # RE-ENTRY SYNC v2 — Estado canónico + delta de implementación
 
 **Fecha generación:** 2026-03-22T14:28-03:00

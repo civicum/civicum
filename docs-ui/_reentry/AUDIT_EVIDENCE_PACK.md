@@ -1,3 +1,13 @@
+# OBSOLETO / NO NORMATIVO
+
+Este archivo fue generado el 2026-03-22 y corresponde al HEAD `6321401`.
+
+Contiene evidencia historica/cruda y conclusiones superadas por Gate 5.9a y Gate 6.
+
+No debe usarse como evidencia limpia ni como estado actual del PR.
+
+---
+
 # AUDIT_EVIDENCE_PACK v1 — Evidencia cruda para auditoría rigurosa
 
 **Fecha generación:** 2026-03-22T15:34-03:00
