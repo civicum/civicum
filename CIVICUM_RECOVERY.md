@@ -2,7 +2,7 @@
 
 Documento de recuperacion compacto para continuar Civicum desde un chat nuevo sin perder el estado operativo. No es una bitacora cruda ni una transcripcion: registra estado, decisiones, comandos relevantes, resultados y el proximo paso.
 
-Ultima actualizacion: 2026-05-25.
+Ultima actualizacion: 2026-05-26.
 
 ## 1. Estado actual
 
@@ -13,7 +13,8 @@ Ultima actualizacion: 2026-05-25.
 - Origin confirmado: `https://github.com/civicum/civicum.git`.
 - Rama remota: `origin/ui-architecture-foundation`.
 - Upstream configurado correctamente: `ui-architecture-foundation` trackea `origin/ui-architecture-foundation`.
-- Ultimo commit local/remoto confirmado: `25782e3 docs(ui): clarify evidence hashes and navigation memo`.
+- Ultimo commit funcional validado y pusheado antes de esta actualizacion: `3584d2f fix(webapp): harden db scripts and api defaults`.
+- Esta actualizacion de Recovery aun no esta commiteada al momento de editar este documento.
 - Draft PR creado: `https://github.com/civicum/civicum/pull/1`.
 - Estado PR: `OPEN / Draft`.
 - Base PR: `main`.
@@ -23,6 +24,7 @@ Ultima actualizacion: 2026-05-25.
 
 ## 2. Ultimos commits relevantes
 
+- `3584d2f fix(webapp): harden db scripts and api defaults`
 - `25782e3 docs(ui): clarify evidence hashes and navigation memo`
 - `a66196b docs(ui): align pack metadata and ADR index`
 - `6ef648f docs(reentry): mark stale evidence snapshots obsolete`
@@ -44,6 +46,9 @@ Hitos breves no necesariamente commiteados en este documento:
 - Draft PR creado: `https://github.com/civicum/civicum/pull/1` como checkpoint de fase, no candidato final de merge.
 - Estrategia visual segura aplicada: `ui-kit.states.spec.ts` escribe evidencia en output ignorado, visual completo 10 passed, sin modificar PNGs versionados.
 - Limpieza documental PR #1 aplicada y subida en tres commits: `6ef648f docs(reentry): mark stale evidence snapshots obsolete`, `a66196b docs(ui): align pack metadata and ADR index`, `25782e3 docs(ui): clarify evidence hashes and navigation memo`.
+- Fix backend/DB aplicado y subido en `3584d2f`: `db:reset` y `db:seed` quedan bloqueados por defecto, rechazan `NODE_ENV=production`, evitan URLs prod/staging sospechosas; `/api/protected/*` responde 501 hasta auth real; errores DB publicos son genericos; CORS/proxy/env quedaron parametrizados.
+- Validacion local controlada post-fix: `pnpm -C webapp lint` paso, `pnpm -C webapp build` paso, backend dev levanto en `http://localhost:3001`, frontend dev levanto en `http://localhost:5173`, `/health` respondio 200, `/api/protected/profile` respondio 501 esperado, `/`, `/dashboard`, `/ui-kit` y `/no-existe` respondieron 200 HTML Vite/React.
+- Error previo `ERR_CONNECTION_REFUSED` no se reprodujo con servidores dev activos; causa probable: no habia servidor escuchando al abrir la vista previa.
 
 ## 3. Reglas criticas
 
@@ -111,10 +116,21 @@ Comandos ejecutados y resultado:
 - `pnpm -C webapp lint`: paso.
 - `pnpm -C webapp build`: paso.
 - `pnpm -C webapp exec playwright test --list`: paso; detecto 46 tests.
+- Post-fix backend/DB `3584d2f`: `pnpm -C webapp lint` paso.
+- Post-fix backend/DB `3584d2f`: `pnpm -C webapp build` paso.
 
 Nota de build:
 
 - El build paso con advertencia no bloqueante de Vite sobre chunks mayores a 500 kB.
+
+Validacion local dev controlada post-push:
+
+- `pnpm -C webapp dev:server`: backend levanto en `http://localhost:3001`.
+- `pnpm -C webapp dev`: frontend levanto en `http://localhost:5173`.
+- `/health`: HTTP 200 con `{ "status": "ok", "version": "1.0.0" }`.
+- `/api/protected/profile`: HTTP 501 esperado.
+- Frontend `/`, `/dashboard`, `/ui-kit` y `/no-existe`: HTTP 200 HTML Vite/React.
+- DB real no validada y `/api/community-reports` no validado contra DB real.
 
 ## 7. Estado E2E
 
@@ -215,11 +231,14 @@ Regla:
 ## 11. Riesgos abiertos
 
 - PR #1 sigue siendo grande y debe mantenerse Draft hasta revisar por secciones y/o ejecutar validaciones finales autorizadas.
-- `DATABASE_URL` no esta configurado localmente; backend real funciona en modo error controlado para `/api/community-reports`.
+- Revision visual humana/subjetiva pendiente para `/`, `/dashboard`, `/ui-kit`, `/no-existe`, navegacion desktop/mobile, menu Mas y estados UI kit.
+- DB real no validada; `DATABASE_URL` no esta configurado localmente y `/api/community-reports` no fue validado contra DB real.
+- Checks remotos GitHub no confirmados porque `gh` no esta disponible en este equipo.
 - Stashes antiguos pueden contener contexto util o cambios peligrosos; revisar solo con plan.
 - `bitacora_antigravity.txt` puede contener decisiones historicas, pero tambien ruido, contradicciones o informacion no vigente.
 - La evidencia visual nueva de `ui-kit.states.spec.ts` queda en output ignorado por Git; si se decide actualizar snapshots versionados, requiere revision visual y autorizacion explicita.
 - Riesgo documental `_reentry` obsoleto/ruidoso reducido: los artefactos stale quedaron marcados obsoletos/no normativos y no deben usarse como evidencia vigente.
+- No ejecutar `db:*`, migraciones, seed/reset ni comandos DB sin autorizacion explicita.
 - No marcar PR #1 ready-for-review sin revision por secciones y validaciones autorizadas.
 
 ## 12. Proximo paso exacto
@@ -236,7 +255,8 @@ git log --oneline -5
 
 2. Proximo frente recomendado:
 
-- Revisar PR #1 por secciones o ejecutar validaciones finales autorizadas.
+- Revisar y commitear esta actualizacion de `CIVICUM_RECOVERY.md` si el diff es correcto.
+- Luego completar revision visual humana/manual controlada del PR #1.
 - Mantener PR #1 en Draft por ahora; no marcar ready-for-review todavia.
 - No actualizar snapshots versionados salvo decision explicita y revision visual.
 
