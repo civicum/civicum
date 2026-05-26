@@ -6,9 +6,10 @@ import { getDb } from './db'
 import { communityReports } from '../db/schema'
 
 const app = new Hono()
+const corsOrigin = process.env.CIVICUM_CORS_ORIGIN ?? 'http://localhost:5173'
 
 app.use('*', logger())
-app.use('*', cors())
+app.use('*', cors({ origin: corsOrigin }))
 
 app.get('/health', (c) => c.json({ status: 'ok', version: '1.0.0' }))
 
@@ -34,20 +35,19 @@ app.get('/api/community-reports', async (c) => {
         const message = error instanceof Error ? error.message : 'Error desconocido'
         console.error('[community-reports] Query failed:', message)
         return c.json(
-            { error: 'No se pudieron cargar los reportes comunitarios.', detail: message },
+            { error: 'No se pudieron cargar los reportes comunitarios.' },
             500
         )
     }
 })
 
 // Auth middleware structure (L0-L4 validation)
-app.use('/api/protected/*', async (_c, next) => {
-    // TODO: Implement JWT validation and Level authorization here
-    await next()
+app.use('/api/protected/*', async (c) => {
+    return c.json({ error: 'Protected API is not implemented yet.' }, 501)
 })
 
 app.get('/api/protected/profile', (c) => {
-    return c.json({ message: 'Profile data protected by L2 validation' })
+    return c.json({ error: 'Protected API is not implemented yet.' }, 501)
 })
 
 export default app
