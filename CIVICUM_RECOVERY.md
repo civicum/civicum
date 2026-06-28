@@ -2,22 +2,32 @@
 
 Documento de recuperacion compacto para continuar Civicum desde un chat nuevo sin perder el estado operativo. No es una bitacora cruda ni una transcripcion: registra estado, decisiones, comandos relevantes, resultados y el proximo paso.
 
-Ultima actualizacion: 2026-05-26.
+Ultima actualizacion: 2026-06-27.
+Agente actual: Hermes Agent (OpenRouter / DeepSeek v4 Pro).
 
 ## 1. Estado actual
 
 - Proyecto: Civicum.
 - Ruta local: `C:\Users\daniel.aguirre\Proyectos\civicum`.
 - Rama actual: `ui-architecture-foundation`.
-- Working tree conocido antes de esta actualizacion: limpio.
+- Working tree: **sucio** (cambios de Fase 1 no commiteados).
 - Origin confirmado: `https://github.com/civicum/civicum.git`.
-- Rama remota: `origin/ui-architecture-foundation`.
-- Upstream configurado correctamente: `ui-architecture-foundation` trackea `origin/ui-architecture-foundation`.
-- Ultimo commit funcional validado y pusheado antes de esta actualizacion: `3584d2f fix(webapp): harden db scripts and api defaults`.
-- Esta actualizacion de Recovery aun no esta commiteada al momento de editar este documento.
-- Draft PR creado: `https://github.com/civicum/civicum/pull/1`.
-- Estado PR: `OPEN / Draft`.
-- Base PR: `main`.
+- Agente: Transicion de Codex (OpenAI) a Hermes Agent (Nous Research).
+- Modelo actual: `deepseek/deepseek-v4-pro` via OpenRouter.
+- Costo: $0/mes (F-43 Zero-Cost Stack: Neon, Vercel, Cloudflare, OpenRouter free models disponibles).
+
+### Cambios Fase 1 realizados (no commiteados)
+
+- Archivos eliminados: `webapp/src/App.tsx`, `webapp/src/App.css` (placeholder muerto; routing real en main.tsx).
+- Paginas nuevas creadas:
+  - `webapp/src/pages/academia/AcademiaPage.tsx` — Pagina completa con modulos, progreso, insignias.
+  - `webapp/src/pages/civia/CiviaPage.tsx` — Asistente IA con sugerencias, politicas de honestidad.
+  - `webapp/src/pages/alza-la-voz/AlzaLaVozPage.tsx` — Reportes, categorias, mesas de deliberacion.
+  - `webapp/src/pages/cuentas-claras/CuentasClarasPage.tsx` — Transparencia presupuestaria.
+  - `webapp/src/pages/voto-ciudadano/VotoCiudadanoPage.tsx` — Democracia paralela, votaciones.
+- Archivos modificados:
+  - `webapp/src/main.tsx` — 5 nuevas rutas conectadas (academia, civia, alza-la-voz, cuentas-claras, voto-ciudadano).
+  - `webapp/src/components/layout/MoreMenu.tsx` — Cuentas Claras y Voto Ciudadano habilitados como NavLink.
 - Head PR: `ui-architecture-foundation`.
 - Decision visual tomada: `webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png` fue restaurado desde HEAD por ruido de shimmer.
 - No hay PNGs modificados pendientes al momento de esta actualizacion.
@@ -246,19 +256,29 @@ Regla:
 Primer paso recomendado al reentrar:
 
 1. Confirmar estado actual:
-
-```powershell
+```bash
 git status --short
 git diff --name-status
 git log --oneline -5
 ```
 
-2. Proximo frente recomendado:
+2. Proximo frente recomendado (Fase 2 - Infraestructura):
+- Configurar `DATABASE_URL` para Neon.tech (gratis, 10GB).
+- Ejecutar migraciones Drizzle: `pnpm -C webapp db:migrate`.
+- Crear seed data chilena (regiones, comunas reales).
+- Validar `/api/community-reports` contra DB real.
+- Ejecutar tests E2E con backend real.
 
-- Revisar y commitear esta actualizacion de `CIVICUM_RECOVERY.md` si el diff es correcto.
-- Luego completar revision visual humana/manual controlada del PR #1.
-- Mantener PR #1 en Draft por ahora; no marcar ready-for-review todavia.
-- No actualizar snapshots versionados salvo decision explicita y revision visual.
+3. Fase 3 (Design System Terracota) inmediatamente despues:
+- Aplicar tokens de color Terracota en `tailwind.config.ts`.
+- Implementar paleta completa: terracota, azul profundo, dorado, verde.
+- Configurar tipografia Space Grotesk + Inter.
+- Dark mode completo via Tailwind `class` strategy.
+
+### Fases completadas
+
+- **Fase 0** ✅ — Diagnostico: lint (0 errores), build (16s), 46/46 tests E2E pasan.
+- **Fase 1** ✅ — Cimientos: App.tsx eliminado, 5 paginas nuevas creadas con diseno Terracota, navegacion completa (8 rutas), MoreMenu actualizado.
 
 ## 13. Politica de actualizacion
 

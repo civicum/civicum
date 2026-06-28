@@ -63,12 +63,12 @@ export function MoreMenu({ isDesktop = false }: MoreMenuProps) {
                             <NavLink to="/perfil" className={linkClass} onClick={closeMenu}>
                                 <UserRound className="h-5 w-5 text-slate-400" /> Mi Perfil
                             </NavLink>
-                            <button disabled className={`${linkClass} opacity-50 cursor-not-allowed`} onClick={closeMenu}>
+                            <NavLink to="/cuentas-claras" className={linkClass} onClick={closeMenu}>
                                 <PieChart className="h-5 w-5 text-slate-400" /> Cuentas Claras
-                            </button>
-                            <button disabled className={`${linkClass} opacity-50 cursor-not-allowed`} onClick={closeMenu}>
+                            </NavLink>
+                            <NavLink to="/voto-ciudadano" className={linkClass} onClick={closeMenu}>
                                 <Vote className="h-5 w-5 text-slate-400" /> Voto Ciudadano
-                            </button>
+                            </NavLink>
                             <div className="h-px bg-slate-100 mx-2 my-1" />
                             <button disabled className={`${linkClass} opacity-50 cursor-not-allowed`} onClick={closeMenu}>
                                 <Settings className="h-5 w-5 text-slate-400" /> Configuración

@@ -9,6 +9,11 @@ import ProfilePage from './pages/profile/ProfilePage'
 import NotFoundPage from './pages/not-found/NotFoundPage'
 import UIKitPage from './pages/ui-kit/UIKitPage'
 import OnboardingFlow from './pages/onboarding/OnboardingFlow'
+import AcademiaPage from './pages/academia/AcademiaPage'
+import CiviaPage from './pages/civia/CiviaPage'
+import AlzaLaVozPage from './pages/alza-la-voz/AlzaLaVozPage'
+import CuentasClarasPage from './pages/cuentas-claras/CuentasClarasPage'
+import VotoCiudadanoPage from './pages/voto-ciudadano/VotoCiudadanoPage'
 import ProtectedRoute from './components/routing/ProtectedRoute'
 import './index.css'
 
@@ -21,9 +26,11 @@ createRoot(document.getElementById('root')!).render(
 
           <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route path="/" element={<DashboardPage />} />
-            <Route path="/academia" element={<div className="p-6">Módulo Academia (En construcción)</div>} />
-            <Route path="/civia" element={<div className="p-6">Módulo Civia (En construcción)</div>} />
-            <Route path="/alza-la-voz" element={<div className="p-6">Módulo Alza la Voz (En construcción)</div>} />
+            <Route path="/academia" element={<AcademiaPage />} />
+            <Route path="/civia" element={<CiviaPage />} />
+            <Route path="/alza-la-voz" element={<AlzaLaVozPage />} />
+            <Route path="/cuentas-claras" element={<CuentasClarasPage />} />
+            <Route path="/voto-ciudadano" element={<VotoCiudadanoPage />} />
             <Route path="/circulos" element={<Navigate to="/alza-la-voz" replace />} />
             <Route path="/perfil" element={<ProfilePage />} />
             <Route path="/ui-kit" element={<UIKitPage />} />
