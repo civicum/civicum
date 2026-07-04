@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Font imports */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -29,6 +32,34 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    /* Terracota */
+    --terracota-50: #fdf3f1;
+    --terracota-100: #fae3df;
+    --terracota-200: #f6ccc5;
+    --terracota-300: #efa99c;
+    --terracota-400: #e57a67;
+    --terracota-500: #c2503a;
+    --terracota-600: #b7402a;
+    --terracota-700: #993320;
+    --terracota-800: #802e1f;
+    --terracota-900: #6a2a1e;
+    /* Azul Profundo */
+    --azul-50: #f3f6f8;
+    --azul-100: #e1e8ed;
+    --azul-200: #c6d4dc;
+    --azul-300: #9db8c5;
+    --azul-400: #6c94a8;
+    --azul-500: #264653;
+    --azul-600: #3c697c;
+    --azul-700: #335565;
+    --azul-800: #2d4855;
+    --azul-900: #283e4a;
+    /* Verde Esperanza */
+    --verde-500: #0D7A5F;
+    /* Dorado */
+    --dorado-500: #D4872E;
+    /* Azul Protección */
+    --proteccion-500: #2563EB;
   }
 
   .dark {
@@ -64,13 +95,20 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+  }
+  code, pre, kbd, samp {
+    font-family: 'IBM Plex Mono', monospace;
   }
 }
 
 /*
  * Safe-area utility — UI-NAV-002 fix
- *
+ * 
  * pb-safe was referenced in SmartDock.tsx but had NO CSS definition (no-op).
  * This provides the real implementation for iOS safe area inset.
  * Requires <meta name="viewport" content="viewport-fit=cover"> in index.html.
@@ -79,4 +117,18 @@
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
+}
+
+/* Utility classes for our semantic colors */
+@layer utilities {
+  .text-terracota-500 { color: var(--terracota-500); }
+  .bg-terracota-500 { background-color: var(--terracota-500); }
+  .text-azul-500 { color: var(--azul-500); }
+  .bg-azul-500 { background-color: var(--azul-500); }
+  .text-verde-500 { color: var(--verde-500); }
+  .bg-verde-500 { background-color: var(--verde-500); }
+  .text-dorado-500 { color: var(--dorado-500); }
+  .bg-dorado-500 { background-color: var(--dorado-500); }
+  .text-proteccion-500 { color: var(--proteccion-500); }
+  .bg-proteccion-500 { background-color: var(--proteccion-500); }
 }

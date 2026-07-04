@@ -3,22 +3,23 @@
 Documento de recuperacion compacto para continuar Civicum desde un chat nuevo sin perder el estado operativo. No es una bitacora cruda ni una transcripcion: registra estado, decisiones, comandos relevantes, resultados y el proximo paso.
 
 Ultima actualizacion: 2026-06-27.
-Agente actual: Hermes Agent (OpenRouter / DeepSeek v4 Pro).
+Agente actual: Hermes Agent (OpenRouter / nvidia/nemotron-3-super-120b-a12b:free).
 
 ## 1. Estado actual
 
 - Proyecto: Civicum.
 - Ruta local: `C:\Users\daniel.aguirre\Proyectos\civicum`.
 - Rama actual: `ui-architecture-foundation`.
-- Working tree: **sucio** (cambios de Fase 1 no commiteados).
+- Working tree: **limpio** (Fase 1 y Fase 2 commiteadas).
 - Origin confirmado: `https://github.com/civicum/civicum.git`.
 - Agente: Transicion de Codex (OpenAI) a Hermes Agent (Nous Research).
-- Modelo actual: `deepseek/deepseek-v4-pro` via OpenRouter.
+- Modelo actual: `nvidia/nemotron-3-super-120b-a12b:free` via OpenRouter.
 - Costo: $0/mes (F-43 Zero-Cost Stack: Neon, Vercel, Cloudflare, OpenRouter free models disponibles).
 - Ultimo commit Fase 1: `6b8a09a feat(fase1): cimientos`.
-- Working tree actual: cambios Fase 2 pendientes (schema.ts, seed-geo.ts).
+- Ultimo commit Fase 2: `0070960 feat(fase2): infraestructura DB conectada, migración aplicada y datos geográficos sembrados (16 regiones, 71 comunas)`.
+- Working tree actual: **limpio**.
 
-### Cambios Fase 1 realizados (no commiteados)
+### Cambios Fase 1 realizados (commiteados en 6b8a09a)
 
 - Archivos eliminados: `webapp/src/App.tsx`, `webapp/src/App.css` (placeholder muerto; routing real en main.tsx).
 - Paginas nuevas creadas:
@@ -30,24 +31,26 @@ Agente actual: Hermes Agent (OpenRouter / DeepSeek v4 Pro).
 - Archivos modificados:
   - `webapp/src/main.tsx` — 5 nuevas rutas conectadas (academia, civia, alza-la-voz, cuentas-claras, voto-ciudadano).
   - `webapp/src/components/layout/MoreMenu.tsx` — Cuentas Claras y Voto Ciudadano habilitados como NavLink.
-- Head PR: `ui-architecture-foundation`.
-- Decision visual tomada: `webapp/tests/visual/ui-kit/UI-STP-002_loading_desktop.png` fue restaurado desde HEAD por ruido de shimmer.
-- No hay PNGs modificados pendientes al momento de esta actualizacion.
 
-## 2. Ultimos commits relevantes
+### Cambios Fase 2 realizados (commiteados en 0070960)
 
-- `3584d2f fix(webapp): harden db scripts and api defaults`
-- `25782e3 docs(ui): clarify evidence hashes and navigation memo`
-- `a66196b docs(ui): align pack metadata and ADR index`
-- `6ef648f docs(reentry): mark stale evidence snapshots obsolete`
-- `d205aba docs: update recovery after visual output strategy`
-- `aba7c8b test: write ui kit visuals to playwright output`
-- `835c303 docs: record draft PR in recovery`
-- `d1dcc05 fix: resolve webapp lint errors`
-- `8b1de77 docs: replace pending traceability hash`
-- `1ef25ce docs: align non-conformities backlog with navigation status`
-- `a4851f7 chore: add root gitignore for local artifacts`
-- `9f3468c docs: add repository safety guidance`
+- `webapp/src/db/schema.ts` — IDs semánticos (text) para regions/communes, FK ajustada en community_reports.
+- `webapp/src/db/seed-geo.ts` — Seed de 16 regiones y 71 comunas chilenas reales con protecciones de seguridad.
+- `webapp/src/db/migrations/0001_organic_mantis.sql` — Migración Drizzle: UUID → text, FKs recreadas en orden correcto.
+- `webapp/src/db/_verify.ts` — Script de verificación de datos geográficos.
+- `webapp/.env` — DATABASE_URL configurado para Neon (Civicum Plataforma Acción Cívica).
+- Migración aplicada y seed ejecutado exitosamente: 16 regiones, 71 comunas.
+- Backend validado: `/health` 200 OK, `/api/community-reports` 200 [].
+
+### Validaciones técnicas realizadas
+
+Comandos ejecutados y resultado:
+
+- `pnpm -C webapp lint`: paso (0 errores).
+- `pnpm -C webapp build`: paso (1m 6s).
+- `npx playwright test --reporter=line`: 46/46 tests E2E pasaron.
+- `npx tsx src/db/_verify.ts`: 16 regiones, 71 comunas confirmadas.
+- Backend health check: `/health` 200, `/api/community-reports` 200 [].
 - `0718d26 feat(gate6): implement Ruta C navigation taxonomy and Mas overlay`
 - `0c57451 docs(ui-nav-001): officialize navigation taxonomy via ADR-0009`
 
