@@ -8,6 +8,13 @@
       "when": 1773687098726,
       "tag": "0000_daily_northstar",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782661294660,
+      "tag": "0001_organic_mantis",
+      "breakpoints": true
     }
   ]
 }

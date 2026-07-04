@@ -15,6 +15,8 @@ Agente actual: Hermes Agent (OpenRouter / DeepSeek v4 Pro).
 - Agente: Transicion de Codex (OpenAI) a Hermes Agent (Nous Research).
 - Modelo actual: `deepseek/deepseek-v4-pro` via OpenRouter.
 - Costo: $0/mes (F-43 Zero-Cost Stack: Neon, Vercel, Cloudflare, OpenRouter free models disponibles).
+- Ultimo commit Fase 1: `6b8a09a feat(fase1): cimientos`.
+- Working tree actual: cambios Fase 2 pendientes (schema.ts, seed-geo.ts).
 
 ### Cambios Fase 1 realizados (no commiteados)
 
