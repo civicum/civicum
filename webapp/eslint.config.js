@@ -20,4 +20,17 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    files: [
+      'src/components/ui/badge.tsx',
+      'src/components/ui/button.tsx',
+      'src/components/ui/form.tsx',
+    ],
+    rules: {
+      'react-refresh/only-export-components': [
+        'error',
+        { allowExportNames: ['badgeVariants', 'buttonVariants', 'useFormField'] },
+      ],
+    },
+  },
 ])

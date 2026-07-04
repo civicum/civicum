@@ -1,0 +1,13 @@
+OBSOLETO / NO NORMATIVO
+
+Este archivo fue neutralizado porque contenía salida cruda de Playwright ilegible, ruidosa o no apta para revisión formal.
+
+No debe usarse como evidencia limpia del PR ni como fuente normativa.
+
+La evidencia vigente debe consultarse en:
+- CIVICUM_RECOVERY.md
+- resultados validados de lint/build/E2E registrados posteriormente
+- documentación normativa vigente en docs-ui/ y adr-ui/
+
+Motivo:
+evitar presentar evidencia cruda corrupta o mojibake como prueba auditada.
