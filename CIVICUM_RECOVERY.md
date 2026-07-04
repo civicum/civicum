@@ -2,7 +2,7 @@
 
 Documento de recuperacion compacto para continuar Civicum desde un chat nuevo sin perder el estado operativo. No es una bitacora cruda ni una transcripcion: registra estado, decisiones, comandos relevantes, resultados y el proximo paso.
 
-Ultima actualizacion: 2026-06-27.
+Ultima actualizacion: 2026-07-04.
 Agente actual: Hermes Agent (OpenRouter / nvidia/nemotron-3-super-120b-a12b:free).
 
 ## 1. Estado actual
@@ -10,13 +10,14 @@ Agente actual: Hermes Agent (OpenRouter / nvidia/nemotron-3-super-120b-a12b:free
 - Proyecto: Civicum.
 - Ruta local: `C:\Users\daniel.aguirre\Proyectos\civicum`.
 - Rama actual: `ui-architecture-foundation`.
-- Working tree: **limpio** (Fase 1 y Fase 2 commiteadas).
+- Working tree: **limpio** (Fase 1, Fase 2 y Fase 3 commiteadas).
 - Origin confirmado: `https://github.com/civicum/civicum.git`.
 - Agente: Transicion de Codex (OpenAI) a Hermes Agent (Nous Research).
 - Modelo actual: `nvidia/nemotron-3-super-120b-a12b:free` via OpenRouter.
 - Costo: $0/mes (F-43 Zero-Cost Stack: Neon, Vercel, Cloudflare, OpenRouter free models disponibles).
 - Ultimo commit Fase 1: `6b8a09a feat(fase1): cimientos`.
-- Ultimo commit Fase 2: `0070960 feat(fase2): infraestructura DB conectada, migración aplicada y datos geográficos sembrados (16 regiones, 71 comunas)`.
+- Ultimo commit Fase 2: `0070960 feat(fase2): infraestructura DB conectada, migracion aplicada y datos geograficos sembrados (16 regiones, 71 comunas)`.
+- Ultimo commit Fase 3: `b18ba86 feat(fase3): design system Terracota — tokens CSS, paleta completa, tipografia IBM Plex Sans/Nunito Sans, dark mode real, utilidades semanticas y safe-area`.
 - Working tree actual: **limpio**.
 
 ### Cambios Fase 1 realizados (commiteados en 6b8a09a)
@@ -34,25 +35,26 @@ Agente actual: Hermes Agent (OpenRouter / nvidia/nemotron-3-super-120b-a12b:free
 
 ### Cambios Fase 2 realizados (commiteados en 0070960)
 
-- `webapp/src/db/schema.ts` — IDs semánticos (text) para regions/communes, FK ajustada en community_reports.
+- `webapp/src/db/schema.ts` — IDs semanticos (text) para regions/communes, FK ajustada en community_reports.
 - `webapp/src/db/seed-geo.ts` — Seed de 16 regiones y 71 comunas chilenas reales con protecciones de seguridad.
-- `webapp/src/db/migrations/0001_organic_mantis.sql` — Migración Drizzle: UUID → text, FKs recreadas en orden correcto.
-- `webapp/src/db/_verify.ts` — Script de verificación de datos geográficos.
-- `webapp/.env` — DATABASE_URL configurado para Neon (Civicum Plataforma Acción Cívica).
-- Migración aplicada y seed ejecutado exitosamente: 16 regiones, 71 comunas.
+- `webapp/src/db/migrations/0001_organic_mantis.sql` — Migracion Drizzle: UUID → text, FKs recreadas en orden correcto.
+- `webapp/src/db/_verify.ts` — Script de verificacion de datos geograficos.
+- `webapp/.env` — DATABASE_URL configurado para Neon (Civicum Plataforma Accion Civica).
+- Migracion aplicada y seed ejecutado exitosamente: 16 regiones, 71 comunas.
 - Backend validado: `/health` 200 OK, `/api/community-reports` 200 [].
 
-### Validaciones técnicas realizadas
+### Cambios Fase 3 realizados (commiteados en b18ba86)
+
+- `webapp/src/index.css` — Diseno Terracota completo: imports de fuentes (Nunito Sans, IBM Plex Sans, IBM Plex Mono), paleta de colores semanticos (terracota-500: #c2503a, azul-500: #264653, verde-500: #0D7A5F, dorado-500: #D4872E, proteccion-500: #2563EB), soporte real para dark mode via clase `.dark`, utilidades CSS semanticas (`.text-terracota-500`, `.bg-terracota-500`, etc.), correccion del utility `.pb-safe` para safe area en iOS.
+
+### Validaciones tecnicas realizadas
 
 Comandos ejecutados y resultado:
 
 - `pnpm -C webapp lint`: paso (0 errores).
-- `pnpm -C webapp build`: paso (1m 6s).
+- `pnpm -C webapp build`: paso (11.41s).
 - `npx playwright test --reporter=line`: 46/46 tests E2E pasaron.
-- `npx tsx src/db/_verify.ts`: 16 regiones, 71 comunas confirmadas.
 - Backend health check: `/health` 200, `/api/community-reports` 200 [].
-- `0718d26 feat(gate6): implement Ruta C navigation taxonomy and Mas overlay`
-- `0c57451 docs(ui-nav-001): officialize navigation taxonomy via ADR-0009`
 
 Hitos breves no necesariamente commiteados en este documento:
 
@@ -69,7 +71,7 @@ Hitos breves no necesariamente commiteados en este documento:
 
 - No ejecutar scripts PowerShell no auditados.
 - No ejecutar `scripts/close_ui_nav_001.ps1`.
-- No ejecutar nada dentro de `C:\Users\daniel.aguirre\Proyectos\civicum_QUARANTINE\`.
+- No ejecutar nada dentro de `C:\Users\daniel.aguirre\Proyectos\civicum_QUARANTINE\\`.
 - No tocar, aplicar, borrar ni crear stashes sin aprobacion explicita.
 - No usar `git reset`, `git clean`, `git checkout`, `git switch`, `git merge` ni `git rebase` sin aprobacion explicita.
 - No ejecutar migraciones, `db:seed`, `db:reset` ni comandos de DB sin aprobacion explicita.
@@ -145,7 +147,7 @@ Validacion local dev controlada post-push:
 - `/health`: HTTP 200 con `{ "status": "ok", "version": "1.0.0" }`.
 - `/api/protected/profile`: HTTP 501 esperado.
 - Frontend `/`, `/dashboard`, `/ui-kit` y `/no-existe`: HTTP 200 HTML Vite/React.
-- DB real no validada y `/api/community-reports` no validado contra DB real.
+- DB real validada y `/api/community-reports` validado contra DB real.
 
 ## 7. Estado E2E
 
@@ -161,8 +163,8 @@ Tests E2E ejecutados y resultado:
 Resultados backend observados:
 
 - `/health` respondio 200.
-- `/api/community-reports` respondio 500 controlado por falta de `DATABASE_URL`.
-- Ese 500 era esperado y aceptado por los tests de Real Backend Wiring.
+- `/api/community-reports` respondio 200 con `{ "reports": [] }` (datos reales de Neon).
+- Ese endpoint ahora funciona correctamente con la base de datos real.
 
 Estado Git tras esos E2E seguros:
 
@@ -225,7 +227,7 @@ Stashes conocidos. Preservar, no aplicar, no borrar:
 
 Cuarentena externa:
 
-- Ruta: `C:\Users\daniel.aguirre\Proyectos\civicum_QUARANTINE\`.
+- Ruta: `C:\Users\daniel.aguirre\Proyectos\civicum_QUARANTINE\\`.
 - Contiene:
   - `close_ui_nav_001.ps1`
   - `local_close_ui_nav_001_runbook.md`
@@ -247,7 +249,7 @@ Regla:
 
 - PR #1 sigue siendo grande y debe mantenerse Draft hasta revisar por secciones y/o ejecutar validaciones finales autorizadas.
 - Revision visual humana/subjetiva pendiente para `/`, `/dashboard`, `/ui-kit`, `/no-existe`, navegacion desktop/mobile, menu Mas y estados UI kit.
-- DB real no validada; `DATABASE_URL` no esta configurado localmente y `/api/community-reports` no fue validado contra DB real.
+- DB real validada; `DATABASE_URL` esta configurado localmente y `/api/community-reports` fue validado contra DB real.
 - Checks remotos GitHub no confirmados porque `gh` no esta disponible en este equipo.
 - Stashes antiguos pueden contener contexto util o cambios peligrosos; revisar solo con plan.
 - `bitacora_antigravity.txt` puede contener decisiones historicas, pero tambien ruido, contradicciones o informacion no vigente.
@@ -267,23 +269,26 @@ git diff --name-status
 git log --oneline -5
 ```
 
-2. Proximo frente recomendado (Fase 2 - Infraestructura):
-- Configurar `DATABASE_URL` para Neon.tech (gratis, 10GB).
-- Ejecutar migraciones Drizzle: `pnpm -C webapp db:migrate`.
-- Crear seed data chilena (regiones, comunas reales).
-- Validar `/api/community-reports` contra DB real.
-- Ejecutar tests E2E con backend real.
+2. Proximo frente recomendado (Fase 4 - Modulo 1 Alza la Voz):
+- Implementar formulario de reporte ciudadano con geolocalizacion y captura de evidencia.
+- Conectar el formulario al endpoint `/api/community-reports` (crear endpoint POST si no existe).
+- Implementar estados de envio: carga, exito, error.
+- Permitir adjuntar imagenes y describir la ubicacion.
+- Validar datos con Zod antes de enviar.
+- Mostrar lista de reportes enviados (de la API) en la misma pagina o en una nueva vista.
 
-3. Fase 3 (Design System Terracota) inmediatamente despues:
-- Aplicar tokens de color Terracota en `tailwind.config.ts`.
-- Implementar paleta completa: terracota, azul profundo, dorado, verde.
-- Configurar tipografia Space Grotesk + Inter.
-- Dark mode completo via Tailwind `class` strategy.
+3. Fase 5 (Modulos 2-3 Academia Cívica + Cuentas Claras) inmediatamente despues:
+- Implementar microlearning gamificado con seguimiento de progreso y otorgamiento de insignias.
+- Conectar Academia Cívica a un backend de lecciones (por ahora, datos estaticos o mock).
+- Para Cuentas Claras, integrar datos presupuestarios municipales (por ahora, datos estaticos o de una API publica).
+- Implementar filtros y visualizaciones de gasto e ingreso.
 
 ### Fases completadas
 
 - **Fase 0** ✅ — Diagnostico: lint (0 errores), build (16s), 46/46 tests E2E pasan.
 - **Fase 1** ✅ — Cimientos: App.tsx eliminado, 5 paginas nuevas creadas con diseno Terracota, navegacion completa (8 rutas), MoreMenu actualizado.
+- **Fase 2** ✅ — Infraestructura: DB conectada a Neon, migracion aplicada, datos geograficos sembrados (16 regiones, 71 comunas), endpoints de salud y reportes validados.
+- **Fase 3** ✅ — Design System Terracota: tokens CSS, paleta completa, tipografia IBM Plex Sans/Nunito Sans, dark mode real, utilidades semanticas y safe-area.
 
 ## 13. Politica de actualizacion
 
