@@ -1,5 +1,4 @@
 # CIVICUM_RECOVERY.md
-
 Documento de recuperacion compacto para continuar Civicum desde un chat nuevo sin perder el estado operativo. No es una bitacora cruda ni una transcripcion: registra estado, decisiones, comandos relevantes, resultados y el proximo paso.
 
 Ultima actualizacion: 2026-07-04.
@@ -42,7 +41,6 @@ Agente actual: Hermes Agent (OpenRouter / nvidia/nemotron-3-super-120b-a12b:free
 - `webapp/.env` — DATABASE_URL configurado para Neon (Civicum Plataforma Accion Civica).
 - Migracion aplicada y seed ejecutado exitosamente: 16 regiones, 71 comunas.
 - Backend validado: `/health` 200 OK, `/api/community-reports` 200 [].
-
 ### Cambios Fase 3 realizados (commiteados en b18ba86)
 
 - `webapp/src/index.css` — Diseno Terracota completo: imports de fuentes (Nunito Sans, IBM Plex Sans, IBM Plex Mono), paleta de colores semanticos (terracota-500: #c2503a, azul-500: #264653, verde-500: #0D7A5F, dorado-500: #D4872E, proteccion-500: #2563EB), soporte real para dark mode via clase `.dark`, utilidades CSS semanticas (`.text-terracota-500`, `.bg-terracota-500`, etc.), correccion del utility `.pb-safe` para safe area en iOS.
@@ -121,7 +119,7 @@ Estado documental relevante:
   - `adr-ui/README.md` indexa ADR-0008 y ADR-0009.
   - `docs-ui/traceability_matrix.md` usa `Hash de hito/verificacion` cuando corresponde.
   - `docs-ui/_reentry/UI_NAV_001_RECONCILIATION_MEMO.md` queda historico/no normativo.
-- La referencia documental de "Hash pendiente" en `docs-ui/traceability_matrix.md` fue reemplazada por:
+- La referencia documental de \"Hash pendiente\" en `docs-ui/traceability_matrix.md` fue reemplazada por:
   - ADR-0009: `0c57451`
   - implementacion Ruta C: `0718d26`
 - `docs-ui/non_conformities_backlog.md` fue alineado para no mantener UI-NAV-001 como PARTIAL.
@@ -144,7 +142,7 @@ Validacion local dev controlada post-push:
 
 - `pnpm -C webapp dev:server`: backend levanto en `http://localhost:3001`.
 - `pnpm -C webapp dev`: frontend levanto en `http://localhost:5173`.
-- `/health`: HTTP 200 con `{ "status": "ok", "version": "1.0.0" }`.
+- `/health`: HTTP 200 con `{ \"status\": \"ok\", \"version\": \"1.0.0\" }`.
 - `/api/protected/profile`: HTTP 501 esperado.
 - Frontend `/`, `/dashboard`, `/ui-kit` y `/no-existe`: HTTP 200 HTML Vite/React.
 - DB real validada y `/api/community-reports` validado contra DB real.
@@ -157,13 +155,13 @@ Tests E2E ejecutados y resultado:
 - `pnpm -C webapp exec playwright test tests/e2e/smoke.home.spec.ts`: paso; 4 tests.
 - `pnpm -C webapp exec playwright test tests/e2e/smoke.breakpoints.spec.ts`: paso; 10 tests.
 - `pnpm -C webapp exec playwright test tests/e2e/integration.5state.spec.ts`: paso; 4 tests.
-- `pnpm -C webapp exec playwright test tests/e2e/integration.reports.spec.ts -g "Community Reports"`: paso; 10 tests interceptados.
-- `pnpm -C webapp exec playwright test tests/e2e/integration.reports.spec.ts -g "Real Backend Wiring"`: paso; 6 tests.
+- `pnpm -C webapp exec playwright test tests/e2e/integration.reports.spec.ts -g \"Community Reports\"`: paso; 10 tests interceptados.
+- `pnpm -C webapp exec playwright test tests/e2e/integration.reports.spec.ts -g \"Real Backend Wiring\"`: paso; 6 tests.
 
 Resultados backend observados:
 
 - `/health` respondio 200.
-- `/api/community-reports` respondio 200 con `{ "reports": [] }` (datos reales de Neon).
+- `/api/community-reports` respondio 200 con `{ \"reports\": [] }` (datos reales de Neon).
 - Ese endpoint ahora funciona correctamente con la base de datos real.
 
 Estado Git tras esos E2E seguros:
@@ -176,7 +174,7 @@ Estado Git tras esos E2E seguros:
 Se ejecuto inicialmente un unico test visual acotado:
 
 ```powershell
-pnpm -C webapp exec playwright test tests/e2e/ui-kit.states.spec.ts --project=desktop-chromium -g "captures loading state"
+pnpm -C webapp exec playwright test tests/e2e/ui-kit.states.spec.ts --project=desktop-chromium -g \"captures loading state\"
 ```
 
 Resultado:
@@ -312,3 +310,17 @@ Reglas para actualizar este documento:
 - Registrar solo estado, decisiones, comandos relevantes, resultados y proximo paso.
 - Mantenerlo como documento de recuperacion, no como bitacora exhaustiva.
 - Si el working tree esta sucio, actualizarlo solo con aprobacion explicita y cuidando no mezclar cambios no relacionados.
+
+## 14. Fase 4 - Módulo Alza la Voz (Formulario de reportes)
+
+- **Objetivo**: Implementar formulario de reporte ciudadano con geolocalizacion, captura de evidencia y envío al backend.
+- **Cambios realizados**:
+  - Frontend: `webapp/src/pages/alza-la-voz/AlzaLaVozPage.tsx` - formulario con título, descripción, 6 categorías, geolocalización, subida de imagen, envío POST a `/api/community-reports`.
+  - Backend: `webapp/src/server/index.ts` - endpoints GET y POST `/api/community-reports` usando Drizzle ORM con Neon PostgreSQL.
+  - Servidor: `webapp/src/server/serve.ts` - servidor Hono independiente.
+- **Validaciones técnicas realizadas**:
+  - `pnpm lint`: 0 errores, 0 warnings.
+  - `pnpm build`: exitoso (warning de chunk size > 500 KB, informativo).
+  - Backend health check: `{"status":"ok","version":"1.0.0"}`.
+  - Pruebas end-to-end (Playwright): 46 pruebas pasaron en 49.7 s.
+- **Próximos pasos**: Considerar geocodificación automática para `communeId`, mejorar manejo de errores, añadir pruebas de unidad.

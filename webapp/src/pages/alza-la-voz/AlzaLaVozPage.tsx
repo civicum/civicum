@@ -1,17 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import {
-  Megaphone,
-  Camera,
-  MapPin,
-  Users,
-  MessageSquare,
-  ArrowRight,
-  ChevronRight,
-  AlertTriangle,
-  CheckCircle2,
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Megaphone, Camera, MapPin, Users, MessageSquare, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const CATEGORIAS_REPORTE = [
   { icon: <AlertTriangle className="w-5 h-5" />, label: 'Inseguridad / Delitos', color: 'text-red-600 bg-red-50 border-red-200' },
@@ -22,28 +10,130 @@ const CATEGORIAS_REPORTE = [
   { icon: <CheckCircle2 className="w-5 h-5" />, label: 'Salud Pública', color: 'text-azul-600 bg-azul-50 border-azul-200' },
 ];
 
-const MESAS_DELIBERACION = [
-  {
-    titulo: 'Ordenanza de Ruidos Molestos',
-    comuna: 'Santiago',
-    participantes: 47,
-    estado: 'Activa',
-  },
-  {
-    titulo: 'Presupuesto Participativo 2026',
-    comuna: 'Providencia',
-    participantes: 128,
-    estado: 'En Votación',
-  },
-  {
-    titulo: 'Plan Regulador Comunal',
-    comuna: 'Ñuñoa',
-    participantes: 89,
-    estado: 'Deliberando',
-  },
-];
-
 export default function AlzaLaVozPage() {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState<string | null>(null);
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [images, setImages] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  // Get user location on mount
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setError(null);
+      },
+      (error) => {
+        setError(`Error getting location: ${error.message}`);
+        setLocation(null);
+      }
+    );
+  }, []);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setImages(files);
+    const previews = files.map(file => URL.createObjectURL(file));
+    setPreviewUrls(previews);
+  };
+
+  const removeImage = (index: number) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    setImages(newImages);
+
+    const newPreviews = [...previewUrls];
+    URL.revokeObjectURL(previewUrls[index]);
+    newPreviews.splice(index, 1);
+    setPreviewUrls(newPreviews);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !description.trim() || !category) {
+      setError('Please fill in all fields and select a category');
+      return;
+    }
+    if (!location) {
+      setError('Unable to determine your location. Please try again.');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      // Prepare description with category and location
+      const formattedDescription = `CATEGORY: ${category}\nLAT: ${location.lat}, LNG: ${location.lng}\n${description}`;
+
+      // Convert images to base64
+      const imagePromises = images.map((file) => {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64 = reader.result as string;
+            // Remove the data URL prefix if present (e.g., "data:image/jpeg;base64,")
+            const base64Data = base64.split(',')[1];
+            resolve(base64Data);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      });
+
+      const imageBase64Array = await Promise.all(imagePromises);
+
+      // Send request to backend
+      const response = await fetch('/api/community-reports', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: title.trim(),
+          description: formattedDescription,
+          evidenceUrls: imageBase64Array,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit report');
+      }
+
+      // We don't need the result, just know it succeeded
+      await response.json();
+      setSuccess(true);
+      // Reset form
+      setTitle('');
+      setDescription('');
+      setCategory(null);
+      setImages([]);
+      setPreviewUrls([]);
+      // Keep location for next report? Optional: we can clear it or keep it.
+      // setLocation(null);
+    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const message = (err as any).message || 'An unknown error occurred';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col gap-1">
@@ -55,102 +145,174 @@ export default function AlzaLaVozPage() {
         </p>
       </div>
 
-      {/* Crear Reporte */}
-      <Card className="border-0 bg-gradient-to-r from-terracota-600 to-terracota-500 text-white shadow-lg">
-        <CardContent className="p-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Megaphone className="w-5 h-5" />
-                <h2 className="text-lg font-bold">Nuevo Reporte Comunitario</h2>
-              </div>
-              <p className="text-white/80 text-sm">
-                Reúne evidencia, geolocaliza y envía tu reporte a la autoridad correcta.
-              </p>
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Title */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">
+            Title
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Brief title for your report"
+            className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-terracota-500"
+            disabled={loading}
+          />
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">
+            Description
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Describe what happened in detail"
+            className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-terracota-500 h-32"
+            disabled={loading}
+          />
+        </div>
+
+        {/* Category */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">
+            Category
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {CATEGORIAS_REPORTE.map((cat) => (
+              <button
+                key={cat.label}
+                onClick={() => setCategory(category === cat.label ? null : cat.label)}
+                disabled={loading}
+                className={`flex flex-col items-center gap-2 p-3 rounded-xl border text-center transition-colors ${
+                  category === cat.label
+                    ? 'bg-terracota-500 text-white'
+                    : cat.color
+                } ${category === cat.label ? 'border-terracota-500' : 'border-transparent'}`}
+              >
+                {cat.icon}
+                <span className="text-xs font-semibold leading-tight">{cat.label}</span>
+              </button>
+            ))}
+          </div>
+          {category && (
+            <p className="mt-2 text-sm text-terracota-600">
+              Selected: {CATEGORIAS_REPORTE.find((c) => c.label === category)?.label}
+            </p>
+          )}
+        </div>
+
+        {/* Location */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-slate-700">
+            Location
+          </label>
+          {location ? (
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-terracota-500" />
+              <span className="text-sm">
+                Lat: {location.lat.toFixed(4)}, Lng: {location.lng.toFixed(4)}
+              </span>
+              <button
+                onClick={() => {
+                  navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                      setLocation({
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude,
+                      });
+                    },
+                    (err) => {
+                      setError(`Error updating location: ${err.message}`);
+                    }
+                  );
+                }}
+                className="text-xs text-terracota-600 hover:underline"
+              >
+                Refresh
+              </button>
             </div>
-            <Button className="bg-white text-terracota-700 hover:bg-terracota-50 font-bold shadow-lg" disabled>
-              Crear Reporte <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Categorías de Reporte */}
-      <div className="space-y-3">
-        <h2 className="text-lg font-bold tracking-tight">Categorías de Reporte</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {CATEGORIAS_REPORTE.map((cat) => (
-            <button
-              key={cat.label}
-              disabled
-              className={`flex flex-col items-center gap-2 p-4 rounded-xl border text-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${cat.color}`}
-            >
-              {cat.icon}
-              <span className="text-xs font-semibold leading-tight">{cat.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Mesas de Deliberación */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold tracking-tight flex items-center gap-2">
-            <Users className="w-5 h-5 text-azul-600" />
-            Mesas de Deliberación
-          </h2>
-          <Link
-            to="/circulos"
-            className="text-sm text-terracota-600 font-medium hover:underline flex items-center gap-1"
-          >
-            Ver todas <ChevronRight className="w-4 h-4" />
-          </Link>
+          ) : (
+            <p className="text-sm text-terracota-500">
+              Waiting for location... <span className="animate-pulse">•••</span>
+            </p>
+          )}
+          {error && (
+            <p className="text-sm text-red-500">
+              {error.replace('Error getting location:', '').trim()}
+            </p>
+          )}
         </div>
 
-        <div className="grid gap-3 md:grid-cols-3">
-          {MESAS_DELIBERACION.map((mesa) => (
-            <Card key={mesa.titulo} className="border-slate-200 hover:border-terracota-200 transition-colors">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400">{mesa.comuna}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    mesa.estado === 'En Votación'
-                      ? 'bg-green-100 text-green-700'
-                      : mesa.estado === 'Deliberando'
-                        ? 'bg-amber-100 text-amber-700'
-                        : 'bg-azul-100 text-azul-700'
-                  }`}>
-                    {mesa.estado}
-                  </span>
+        {/* Images */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-slate-700 mb-1">
+            Upload Evidence (Images)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageChange}
+            className="mb-2"
+          />
+          {previewUrls.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {previewUrls.map((url, index) => (
+                <div key={index} className="relative inline-block mr-2">
+                  <img src={url} alt="preview" className="h-16 w-16 object-cover rounded" />
+                  <button
+                    onClick={() => removeImage(index)}
+                    className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white hover:bg-red-600"
+                    aria-label="Remove image"
+                  >
+                    ×
+                  </button>
                 </div>
-                <CardTitle className="text-base mt-1">{mesa.titulo}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-1 text-xs text-slate-500">
-                  <Users className="w-3 h-3" /> {mesa.participantes} participantes
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-
-      {/* CTA Crear Mesa */}
-      <Card className="border-dashed border-2 border-slate-300 bg-transparent">
-        <CardContent className="p-6 text-center space-y-3">
-          <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
-            <Users className="w-7 h-7 text-slate-400" />
-          </div>
-          <h3 className="font-bold text-slate-700">¿Quieres crear una Mesa de Deliberación?</h3>
-          <p className="text-sm text-slate-500 max-w-md mx-auto">
-            Organiza a tu comunidad alrededor de un tema específico. Votaciones
-            simbólicas, evidencia compartida y escalamiento documentado.
+              ))}
+            </div>
+          ) : null}
+          <p className="text-xs text-slate-500">
+            Max 5 images recommended. Supported formats: JPG, PNG.
           </p>
-          <Button variant="outline" disabled>
-            Crear Mesa
-          </Button>
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* Submit Button */}
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            disabled={loading || !title.trim() || !description.trim() || !category || !location}
+            className={`flex items-center gap-2 px-4 py-2 bg-terracota-500 text-white font-medium rounded-md hover:bg-terracota-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {loading ? (
+              <>
+                <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                <span className="ml-2">Submitting...</span>
+              </>
+            ) : (
+              <>
+                <Megaphone className="w-4 h-4" />
+                <span>Submit Report</span>
+              </>
+            )}
+          </button>
+        </div>
+      </form>
+
+      {/* Status Messages */}
+      {error && (
+        <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="p-4 bg-green-50 border-l-4 border-green-500 text-green-700">
+          Report submitted successfully! Thank you for contributing to your community.
+        </div>
+      )}
     </div>
   );
 }
