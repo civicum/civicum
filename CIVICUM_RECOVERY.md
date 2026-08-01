@@ -72,17 +72,27 @@ Agente actual: Hermes Agent (nvidia/nemotron-3-super-120b-a12b via nvidia).
     - Sistema de insignias basado en modulos completados.
     - Interfaz responsiva que se adapta a diferentes tamaños de pantalla.
     - Diseño consistente con el sistema Terracota existente.
-  - Cuentas Claras: No se han realizado cambios todavía (pendiente de inicio).
-- **Validaciones tecnicas realizadas hasta ahora**:
-  - `pnpm lint`: 0 errores, 0 warnings.
-  - `pnpm build`: pendiente de ejecutar (se ejecutara despues de completar los cambios basicos).
-- **Proximos pasos**: 
-  - Para Academia Civica: conectar a un backend de lecciones (datos estaticos o mock) y mejorar la experiencia de aprendizaje con contenido real.
-  - Para Cuentas Claras: integrar datos presupuestarios municipales (estaticos o de una API publica) e implementar filtros y visualizaciones de gasto e ingreso.
-  - Ejecutar validaciones rigurosas (lint, build, health check) antes de continuar.
-  - Actualizar documentacion con avances completos.
+  - Cuentas Claras: No se han realizados cambios todavía (pendiente de inicio).
+  - **Validaciones tecnicas realizadas hasta ahora**:
+    - `pnpm lint`: 0 errores, 0 warnings.
+    - `pnpm build`: pendiente de ejecutar (se ejecutara despues de completar los cambios basicos).
+  - **Proximos pasos**: 
+    - Para Academia Civica: conectar a un backend de lecciones (datos estaticos o mock) y mejorar la experiencia de aprendizaje con contenido real.
+    - Para Cuentas Claras: integrar datos presupuestarios municipales (estaticos o de una API publica) e implementar filtros y visualizaciones de gasto e ingreso.
+    - Ejecutar validaciones rigurosas (lint, build, health check) antes de continuar.
+    - Actualizar documentacion con avances completos.
 
 ## 7. Validaciones tecnicas realizadas (Estado General)
+   - Cuentas Claras (`webapp/src/pages/cuentas-claras/CuentasClarasPage.tsx`):
+       - Implementado cargador de datos presupuestarios municipales estáticos para años 2022 y 2023.
+       - Creado sistema de categorización de ingresos (tributarios, patrimoniales, de operación, transferencias, otros) y gastos (educación, salud, seguridad pública, desarrollo urbano, medio ambiente, cultura y deporte, administración, otros).
+       - Implementado visualizaciones básicas de gasto e ingreso mediante gráficos de barras simplificados.
+       - Implementado filtros interactivos para año fiscal y categoría de gasto/ingreso.
+       - Agregado cálculo de porcentajes y visualización destacada de la participación de cada categoría.
+       - Incluido historial de evolución año a año cuando hay datos de múltiples años.
+       - Diseño responsivo con componentes shadcn/ui (Card, CardContent) e íconos de lucide-react.
+       - Formateo de números como moneda chilena (CLP) usando Intl.NumberFormat.
+       - Nota explicativa sobre la naturaleza de los datos (ejemplo basado en información pública).
 
 Comandos ejecutados y resultado:
 - `pnpm -C webapp lint`: paso (0 errores).
