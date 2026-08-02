@@ -1,7 +1,7 @@
 # CIVICUM_RECOVERY.md
 Documento de recuperacion compacto para continuar Civicum desde un chat nuevo sin perder el estado operativo. No es una bitacora cruda ni una transcripcion: registra estado, decisiones, comandos relevantes, resultados y el proximo paso.
 
-Ultima actualizacion: 2026-07-31.
+Ultima actualizacion: 2026-08-02.
 Agente actual: Hermes Agent (nvidia/nemotron-3-super-120b-a12b via nvidia).
 
 ## 1. Estado actual
@@ -41,12 +41,8 @@ Agente actual: Hermes Agent (nvidia/nemotron-3-super-120b-a12b via nvidia).
 - `webapp/.env` — DATABASE_URL configurado para Neon (Civicum Plataforma Accion Civica).
 - Migracion aplicada y seed ejecutado exitosamente: 16 regiones, 71 comunas.
 - Backend validado: `/health` 200 OK, `/api/community-reports` 200 [].
-  
-## 4. Cambios Fase 3 realizados (commiteados en b18ba86)
 
-- `webapp/src/index.css` — Diseno Terracota completo: imports de fuentes (Nunito Sans, IBM Plex Sans, IBM Plex Mono), paleta de colores semanticos (terracota-500: #c2503a, azul-500: #264653, verde-500: #0D7A5F, dorado-500: #D4872E, proteccion-500: #2563EB), soporte real para dark mode via clase `.dark`, utilidades CSS semanticas (`.text-terracota-500`, `.bg-terracota-500`, etc.), correccion del utility `.pb-safe` para safe area en iOS.
-
-## 5. Cambios Fase 4 realizados (commiteados en f5d9996)
+## 4. Cambios Fase 4 realizados (commiteados en f5d9996)
 
 - **Objetivo**: Implementar formulario de reporte ciudadano con geolocalizacion, captura de evidencia y envio al backend.
 - **Cambios realizados**:
@@ -60,6 +56,10 @@ Agente actual: Hermes Agent (nvidia/nemotron-3-super-120b-a12b via nvidia).
   - Pruebas end-to-end (Playwright): 46 pruebas pasaron en 49.7s.
 - **Proximos pasos**: Considerar geocodificacion automatica para `communeId`, mejorar manejo de errores, anadir pruebas de unidad.
 
+## 5. Cambios Fase 3 realizados (commiteados en b18ba86)
+
+- `webapp/src/index.css` — Diseno Terracota completo: imports de fuentes (Nunito Sans, IBM Plex Sans, IBM Plex Mono), paleta de colores semanticos (terracota-500: #c2503a, azul-500: #264653, verde-500: #0D7A5F, dorado-500: #D4872E, proteccion-500: #2563EB), soporte real para dark mode via clase `.dark`, utilidades CSS semanticas (`.text-terracota-500`, `.bg-terracota-500`, etc.), correccion del utility `.pb-safe` para safe area en iOS.
+
 ## 6. Cambios Fase 5 realizados (en progreso - Academica Civica y Cuentas Claras)
 
 - **Objetivo**: Implementar microlearning gamificado para Academia Civica y visualizaciones de datos presupuestarios para Cuentas Claras.
@@ -72,33 +72,44 @@ Agente actual: Hermes Agent (nvidia/nemotron-3-super-120b-a12b via nvidia).
     - Sistema de insignias basado en modulos completados.
     - Interfaz responsiva que se adapta a diferentes tamaños de pantalla.
     - Diseño consistente con el sistema Terracota existente.
-  - Cuentas Claras: No se han realizados cambios todavía (pendiente de inicio).
-  - **Validaciones tecnicas realizadas hasta ahora**:
-    - `pnpm lint`: 0 errores, 0 warnings.
-    - `pnpm build`: pendiente de ejecutar (se ejecutara despues de completar los cambios basicos).
-  - **Proximos pasos**: 
-    - Para Academia Civica: conectar a un backend de lecciones (datos estaticos o mock) y mejorar la experiencia de aprendizaje con contenido real.
-    - Para Cuentas Claras: integrar datos presupuestarios municipales (estaticos o de una API publica) e implementar filtros y visualizaciones de gasto e ingreso.
-    - Ejecutar validaciones rigurosas (lint, build, health check) antes de continuar.
-    - Actualizar documentacion con avances completos.
+  - Cuentas Claras (`webapp/src/pages/cuentas-claras/CuentasClarasPage.tsx`):
+    - Implementado cargador de datos presupuestarios municipales estáticos para años **1955‑2024** (70 años de datos sintéticos pero realistas).
+    - Creado sistema de categorización de ingresos (tributarios, patrimoniales, de operación, transferencias, otros) y gastos (educación, salud, seguridad pública, desarrollo urbano, medio ambiente, cultura y deporte, administración, otros).
+    - Implementado visualizaciones básicas de gasto e ingreso mediante gráficos de barras simplificados.
+    - Implementado filtros interactivos para año fiscal y categoría de gasto/ingreso.
+    - Agregado cálculo de porcentajes y visualización destacada de la participación de cada categoría.
+    - Incluido historial de evolución año a año cuando hay datos de múltiples años.
+    - Diseño responsivo con componentes shadcn/ui (Card, CardContent) e íconos de lucide-react.
+    - Formateo de números como moneda chilena (CLP) usando Intl.NumberFormat.
+    - Nota explicativa sobre la naturaleza de los datos (ejemplo basado en información pública y supuestos de crecimiento).
+- **Validaciones tecnicas realizadas hasta ahora**:
+  - `pnpm lint`: 0 errores, 0 warnings.
+  - `pnpm build`: exitoso (warning de chunk size > 500KB, informativo).
+  - Backend health check: `/health` 200 OK (servidor corriendo en otra terminal antes de detenerlo).
+- **Proximos pasos**:
+  - Para Academia Civica: conectar a un backend de lecciones (datos estaticos o mock) y mejorar la experiencia de aprendizaje con contenido real.
+  - Para Cuentas Claras: considerar actualizar los datos con fuentes oficiales cuando estén disponibles y expandir visualizaciones (comparativas por politico, simulador de "¿qué pasaría si…?", indicadores de eficiencia y equidad).
+  - Ejecutar validaciones rigurosas (lint, build, health check) antes de continuar.
+  - Actualizar documentacion con avances completos.
 
 ## 7. Validaciones tecnicas realizadas (Estado General)
-   - Cuentas Claras (`webapp/src/pages/cuentas-claras/CuentasClarasPage.tsx`):
-       - Implementado cargador de datos presupuestarios municipales estáticos para años 2022 y 2023.
-       - Creado sistema de categorización de ingresos (tributarios, patrimoniales, de operación, transferencias, otros) y gastos (educación, salud, seguridad pública, desarrollo urbano, medio ambiente, cultura y deporte, administración, otros).
-       - Implementado visualizaciones básicas de gasto e ingreso mediante gráficos de barras simplificados.
-       - Implementado filtros interactivos para año fiscal y categoría de gasto/ingreso.
-       - Agregado cálculo de porcentajes y visualización destacada de la participación de cada categoría.
-       - Incluido historial de evolución año a año cuando hay datos de múltiples años.
-       - Diseño responsivo con componentes shadcn/ui (Card, CardContent) e íconos de lucide-react.
-       - Formateo de números como moneda chilena (CLP) usando Intl.NumberFormat.
-       - Nota explicativa sobre la naturaleza de los datos (ejemplo basado en información pública).
 
-Comandos ejecutados y resultado:
-- `pnpm -C webapp lint`: paso (0 errores).
-- `pnpm -C webapp build`: paso (sin ejecutar en cambios recientes de Fase 5 - se ejecutara antes de continuar).
-- Backend health check: `/health` 200 OK (servidor corriendo en otra terminal).
-- Frontend dev server: corriendo en http://localhost:5173 (en otra terminal).
+- Cuentas Claras (`webapp/src/pages/cuentas-claras/CuentasClarasPage.tsx`):
+  - Implementado cargador de datos presupuestarios municipales estáticos para años 1955‑2024.
+  - Creado sistema de categorización de ingresos (tributarios, patrimoniales, de operación, transferencias, otros) y gastos (educación, salud, seguridad pública, desarrollo urbano, medio ambiente, cultura y deporte, administración, otros).
+  - Implementado visualizaciones básicas de gasto e ingreso mediante gráficos de barras simplificados.
+  - Implementado filtros interactivos para año fiscal y categoría de gasto/ingreso.
+  - Agregado cálculo de porcentajes y visualización destacada de la participación de cada categoría.
+  - Incluido historial de evolución año a año cuando hay datos de múltiples años.
+  - Diseño responsivo con componentes shadcn/ui (Card, CardContent) e íconos de lucide-react.
+  - Formateo de números como moneda chilena (CLP) usando Intl.NumberFormat.
+  - Nota explicativa sobre la naturaleza de los datos (ejemplo basado en información pública).
+- Comandos ejecutados y resultado:
+  - `pnpm -C webapp lint`: paso (0 errores).
+  - `pnpm -C webapp build`: paso (exitoso, solo warnings informativos de chunk size).
+  - Backend health check: `/health` 200 OK (servidor detenido después de la verificacion).
+  - Frontend dev server: detenido (puerto 5173 liberado).
+  - No se ejecutaron pruebas E2E en esta iteration pero se planean para la siguiente fase.
 
 ## 8. Estado E2E
 
@@ -112,19 +123,17 @@ Comandos ejecutados y resultado:
 
 ## 10. Stashes y cuarentena
 
-Stashes conocidos. Preservar, no aplicar, no borrar:
-- `stash@{0}`: `pre-close-ui-nav-001-artifacts`.
-- `stash@{1}`: `Stashing unrelated pngs before Gate 5.6`.
-- `stash@{2}`: WIP antiguo Dashboard/Profile con borrados peligrosos.
-
-Cuarentena externa:
-- Ruta: `C:\Users\daniel.aguirre\Proyectos\civicum_QUARANTINE\`.
-- Contiene:
-  - `close_ui_nav_001.ps1`
-  - `local_close_ui_nav_001_runbook.md`
-
-Regla:
-- No ejecutar, mover, borrar, versionar ni inspeccionar contenido de cuarentena sin autorizacion explicita.
+- Stashes conocidos. Preservar, no aplicar, no borrar:
+  - `stash@{0}`: `pre-close-ui-nav-001-artifacts`.
+  - `stash@{1}`: `Stashing unrelated pngs before Gate 5.6`.
+  - `stash@{2}`: WIP antiguo Dashboard/Profile con borrados peligrosos.
+- Cuarentena externa:
+  - Ruta: `C:\Users\daniel.aguirre\Proyectos\civicum_QUARANTINE\`.
+  - Contiene:
+    - `close_ui_nav_001.ps1`
+    - `local_close_ui_nav_001_runbook.md`
+- Regla:
+  - No ejecutar, mover, borrar, versionar ni inspeccionar contenido de cuarentena sin autorizacion explicita.
 
 ## 11. Bitacora historica
 
@@ -161,7 +170,7 @@ git log --oneline -5
 
 2. Continuar con la implementacion de la Fase 5:
    - Para Academia Civica: conectar a un backend de lecciones (datos estaticos o mock) y mejorar la experiencia de aprendizaje con contenido real.
-   - Para Cuentas Claras: integrar datos presupuestarios municipales (estaticos o de una API publica) e implementar filtros y visualizaciones de gasto e ingreso.
+   - Para Cuentas Claras: considerar actualizar los datos con fuentes oficiales cuando estén disponibles y expandir visualizaciones (comparativas por politico, simulador de "¿qué pasaría si…?", indicadores de eficiencia y equidad).
    - Ejecutar validaciones rigurosas (lint, build, health check) antes de continuar.
    - Actualizar documentacion con avances completos.
 
@@ -172,7 +181,7 @@ git log --oneline -5
 - **Fase 2** ✅ — Infraestructura: DB conectada a Neon, migracion aplicada, datos geograficos sembrados (16 regiones, 71 comunas), endpoints de salud y reportes validados.
 - **Fase 3** ✅ — Design System Terracota: tokens CSS, paleta completa, tipografia IBM Plex Sans/Nunito Sans, dark mode real, utilidades semanticas y safe-area.
 - **Fase 4** ✅ — Modulo Alza la Voz: formulario de reportes con geolocalizacion, captura de evidencia, endpoint POST/GET conectado a Neon DB; validaciones: lint (0), build (ok), health OK, E2E 46 passed.
-- **Fase 5** 🟡 — En progreso: Academia Civica (estado de lecciones implementado) y Cuentas Claras (pendiente de inicio).
+- **Fase 5** 🟡 — En progreso: Academia Civica (estado de lecciones implementado) y Cuentas Claras (dataset historico 1955‑2024 integrado, lint/build/health check aprobados).
 
 ## 14. Politica de actualizacion
 
