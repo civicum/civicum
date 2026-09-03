@@ -4,13 +4,36 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { SmartDock } from "./SmartDock";
 import { SideRail } from "./SideRail";
 import OfflineBanner from "../feedback/OfflineBanner";
+import { AccessibilityOverlay } from "../ui/accessibility-overlay";
 import { useNetworkStatus } from "@/lib/useNetworkStatus";
+import { useState } from "react";
+
+// Estado global de accesibilidad — Sprint 2
+const defaultA11y = {
+    enabled: false,
+    fontSize: 'normal' as const,
+    highContrast: false,
+    oneStepFlow: false,
+    showHelpButton: false,
+};
+
+function useAccessibility() {
+    const [settings, setSettings] = useState(defaultA11y);
+    const toggle = (key: keyof typeof defaultA11y, value: string | boolean) => {
+        setSettings(s => ({ ...s, [key]: value }));
+    };
+    return { settings, toggle };
+}
 
 export default function AppLayout() {
     const { isOnline } = useNetworkStatus();
+    const a11y = useAccessibility();
 
     return (
         <div className="flex min-h-screen flex-col bg-slate-50">
+            {/* Sprint 2: Accessibility Overlay — transversal a toda la app */}
+            <AccessibilityOverlay settings={a11y.settings} />
+
             {/* 
         TOP NAVBAR
         Sticky top nav with brand and profile access.

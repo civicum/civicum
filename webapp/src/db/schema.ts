@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, integer, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, integer, jsonb, serial, boolean } from 'drizzle-orm/pg-core';
 
 export const profiles = pgTable('profiles', {
     id: uuid('id').primaryKey().defaultRandom(),
@@ -35,4 +35,36 @@ export const communityReports = pgTable('community_reports', {
     evidenceUrls: jsonb('evidence_urls').default('[]'),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Sprint 2 — Canal Universal de Acceso
+export const smsInteractions = pgTable('sms_interactions', {
+    id: serial('id').primaryKey(),
+    phone: text('phone').notNull(),
+    message: text('message'),
+    action: text('action'), // 'confirm', 'vote', 'report', 'info'
+    referenceId: text('reference_id'), // proposal_id / case_id
+    response: text('response'), // 'YES', 'NO', 'MAYBE'
+    status: text('status').default('received'),
+    createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const ivrCalls = pgTable('ivr_calls', {
+    id: serial('id').primaryKey(),
+    phone: text('phone'),
+    menuSelection: text('menu_selection'),
+    transcript: text('transcript'),
+    action: text('action'),
+    referenceId: text('reference_id'),
+    status: text('status').default('active'),
+    createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const kiosks = pgTable('kiosks', {
+    id: serial('id').primaryKey(),
+    location: text('location').notNull(),
+    communeId: text('commune_id').references(() => communes.id),
+    active: boolean('active').default(true),
+    verifiedByUserId: uuid('verified_by_user_id').references(() => profiles.id),
+    createdAt: timestamp('created_at').defaultNow(),
 });
