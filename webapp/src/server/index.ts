@@ -233,4 +233,35 @@ app.post('/api/ivr/option', async (c) => {
   return c.text(response, 200, { 'Content-Type': 'text/xml' });
 });
 
+// Sprint 2: Kiosco presencial (registro sin email/password)
+app.post('/api/kiosk/register', async (c) => {
+  const db = getDb();
+  try {
+    const body = await c.req.json();
+    const { nombre, comuna, telefono } = body;
+
+    if (!nombre || !comuna) {
+      return c.json({ error: 'Nombre y comuna son obligatorios' }, 400);
+    }
+
+    // Crear perfil anónimo (sin email — se asigna después si el usuario quiere)
+    const profileId = crypto.randomUUID();
+    await db.insert(profiles).values({
+      id: profileId,
+      email: `kiosk_${profileId.slice(0, 8)}@civicum.cl`,
+      fullName: nombre,
+      // TODO: validar communeId contra tabla communes
+    });
+
+    return c.json({
+      success: true,
+      profileId,
+      message: `Cuenta creada para ${nombre}. ${telefono ? 'SMS de bienvenida a ' + telefono : 'Registro completado'}.`,
+    });
+  } catch (error) {
+    console.error('[kiosk-register]', error);
+    return c.json({ error: 'Error al registrar' }, 500);
+  }
+});
+
 export default app;
