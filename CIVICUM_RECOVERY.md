@@ -145,9 +145,13 @@ Daniel: Principal Software Architect / Data Architect / Security Engineer / Tech
 - Mapeo de API /api/community-reports → feed culturalmente apropiado
 - Validación: lint 0, build 568KB, 46/46 tests
 
-## PRÓXIMO PASO (Sprint 4 — opcional)
-1. Twilio real: contratar cuenta + número chileno + webhook público (ngrok o deploy)
-2. Verificación telefónica de operadores de kiosko (roles y permisos)
-3. Conectar kiosko con comunas reales (dropdown de 345 comunas)
-4. Notificaciones SMS reales cuando el vecino tiene respuesta del municipio
-5. Presupuesto participativo vinculante (voto con peso legal)
+### Sprint 4 — Kiosco + Comunas Reales ✅ COMPLETADO
+- KioskoPage: ComunaSelector (345 comunas SINIM) en lugar de Input de texto
+- comunaId = código SINIM (ej: '13101' = Santiago)
+- Endpoint /api/kiosk/register: guarda profileId + log a smsInteractions si hay teléfono
+- Validación: lint 0, build 576KB, 46/46 tests
+
+## PRÓXIMO PASO (Sprint 5 — Twilio real, opcional)
+1. Cuenta Twilio + número chileno + webhook público (ngrok)
+2. Verificación de operador de kiosco (rol + teléfono de operador)
+3. Notificaciones automáticas al vecino cuando el municipio responde
