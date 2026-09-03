@@ -124,12 +124,19 @@ Daniel: Principal Software Architect / Data Architect / Security Engineer / Tech
 - **Validación**: lint 0 errores, build 848KB, tests 46/46
 - **Commit**: pendiente (modificaciones a archivos existentes — requiere autorización)
 
+### Optimización chunk SINIM ✅ COMPLETADO
+- Archivo: webapp/src/pages/cuentas-claras/useSinimData.ts
+- React 19 use() + Suspense para lazy-load de 345 comunas
+- Chunk separado: sinimDataComunal-284KB (cargado solo al abrir "Mi Comuna")
+- Chunk principal: 848KB → 565KB (33% reducción)
+- Tests: 46/46 pasan, comportamiento idéntico
+
 ## PRÓXIMO PASO
 1. ~~SINIM descarga completa~~ → ✅
 2. ~~SINIM integración Cuentas Claras~~ → ✅
 3. ~~Landing inmersiva~~ → ✅
 4. ~~Asistente Cívico~~ → ✅
-5. ~~Sprint 2 (SMS/IVR + A11y)~~ → ✅ completado, pendiente commit
-6. **Commit Sprint 2** (autorización pendiente)
-7. **Optimización chunk** (code-split, 848KB → <500KB)
+5. ~~Sprint 2 (SMS/IVR + A11y)~~ → ✅ commit d238ea1
+6. ~~Optimización chunk~~ → ✅ commit 2eaf9fd
+7. **Radar Vecinal** (feed comunal en Mi CIVICUM) — última pieza Sprint 2/3
 8. **Kioscos presenciales** (UI para registro presencial en JJVV)
