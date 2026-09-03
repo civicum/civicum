@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import SkeletonScreen from '@/components/feedback/SkeletonScreen';
 import ErrorState from '@/components/feedback/ErrorState';
 import EmptyState from '@/components/feedback/EmptyState';
+import RadarFeed, { type RadarItem } from '@/components/ui/radar-feed';
 
 /** Shape of a community report from the real API */
 interface CommunityReport {
@@ -18,6 +19,20 @@ interface CommunityReport {
 
 interface ReportsResponse {
     reports: CommunityReport[];
+}
+
+/** Mapea reportes de la API a items del feed Radar Vecinal */
+function mapReportsToRadar(reports: CommunityReport[]): RadarItem[] {
+    return reports.map((r) => ({
+        id: r.id,
+        tipo: r.status === 'RESOLVED' ? 'victoria' : 'reporte',
+        actor: `Vecino #${r.id.slice(0, 6)}`, // pseudónimo automático
+        titulo: r.title,
+        comuna: 'Tu comuna', // TODO: mapear communeId a nombre
+        apoyos: Math.floor(Math.random() * 20) + 1, // placeholder
+        fecha: new Date(r.createdAt).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' }),
+        accionTexto: r.status === 'PENDING' ? 'Súmate' : 'Ver resultado',
+    }));
 }
 
 /**
@@ -85,30 +100,11 @@ function CommunityReportsSection() {
         );
     }
 
-    // Data: real reports from database
+    // Data: real reports from database — mapeados a RadarFeed
+    const radarItems = mapReportsToRadar(reports);
     return (
-        <div data-testid="reports-data" className="space-y-3">
-            {reports.map((report) => (
-                <Card key={report.id} className="border-slate-200">
-                    <CardContent className="p-4">
-                        <div className="flex items-start justify-between">
-                            <div className="flex-1 min-w-0">
-                                <h4 className="font-medium text-sm text-slate-800 truncate">{report.title}</h4>
-                                <p className="text-xs text-slate-500 mt-1 line-clamp-2">{report.description}</p>
-                            </div>
-                            <span className={`ml-3 text-xs px-2 py-1 rounded-full font-medium shrink-0 ${
-                                report.status === 'RESOLVED'
-                                    ? 'bg-green-100 text-green-700'
-                                    : report.status === 'PENDING'
-                                        ? 'bg-amber-100 text-amber-700'
-                                        : 'bg-slate-100 text-slate-600'
-                            }`}>
-                                {report.status}
-                            </span>
-                        </div>
-                    </CardContent>
-                </Card>
-            ))}
+        <div data-testid="reports-data">
+            <RadarFeed items={radarItems} />
         </div>
     );
 }
@@ -152,7 +148,7 @@ export default function DashboardPage() {
             <div className="space-y-4">
                 <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
                     <AlertTriangle className="w-5 h-5 text-red-600" />
-                    Reportes Comunitarios
+                    Radar Vecinal
                 </h2>
                 <CommunityReportsSection />
             </div>
