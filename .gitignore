@@ -1,27 +1,43 @@
-# Local historical/private context
-/bitacora_antigravity.txt
+# Dependencias
+node_modules/
+pnpm-debug.log*
+npm-debug.log*
 
-# Local run outputs
-/e2e_ui_nav_001_output.txt
+# Datos raw (3GB+)
+webapp/src/data/raw/
+webapp/src/data/interim/
+webapp/src/data/official/worldbank/
+webapp/src/data/official/dipres/
 
-# Playwright transient outputs
-/test-results/
-/playwright-report/
-/webapp/test-results/
-/webapp/playwright-report/
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Vite build
+webapp/dist/
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+webapp/playwright/.cache/
+webapp/tests/visual/ui-kit/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# OS
+Thumbs.db
+Desktop
+
+# IDE
+.vscode/
+.idea/
 
 # Logs
-/logs/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Environment files
-.env
-.env.*
-!.env.example
-!.env.template
-!.env.sample
+nul

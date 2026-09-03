@@ -14,6 +14,7 @@ import CiviaPage from './pages/civia/CiviaPage'
 import AlzaLaVozPage from './pages/alza-la-voz/AlzaLaVozPage'
 import CuentasClarasPage from './pages/cuentas-claras/CuentasClarasPage'
 import VotoCiudadanoPage from './pages/voto-ciudadano/VotoCiudadanoPage'
+import LandingPage from './pages/landing/LandingPage'
 import ProtectedRoute from './components/routing/ProtectedRoute'
 import './index.css'
 
@@ -22,6 +23,7 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
+          <Route path="/landing" element={<LandingPage />} />
           <Route path="/onboarding" element={<OnboardingFlow />} />
 
           <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>

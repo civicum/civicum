@@ -5,16 +5,34 @@ import {
   BarChart3,
   Building2,
   DollarSign,
-  GraduationCap,
+  MapPin,
 } from 'lucide-react';
+import type { Enriquecido } from './presupuestoDataEnriquecido';
 import { useState, useMemo } from 'react';
-import { 
-  PRESUPUESTO_MUNICIPAL_EJEMPLO, 
-  getTotalIngresos, 
-  getTotalGastos, 
-  getPorcentajePartida, 
-  getYears 
-} from './presupuestoData';
+import {
+  PRESUPUESTO_MUNICIPAL_ENRIQUECIDO,
+  getTotalIngresosEnriquecido,
+  getTotalGastosEnriquecido,
+  getPorcentajePartida,
+  getYears,
+  getGastoEducacionPorEstudiante,
+  getGastoSaludPerCapita,
+  getProporcionDeudaIngresos,
+  getGastoRealAjustadoInflacion,
+  getAccesoAguaPotable,
+  getTasaAlfabetizacion,
+  getGastoInfraestructuraPerCapita,
+  getGastoViviendaPerCapita,
+  getGastoTransportePublicoPerCapita,
+} from './presupuestoDataEnriquecido';
+import PoliticalPeriodSelector from '@/components/cuentas-claras/PoliticalPeriodSelector';
+import ComparativeChart from '@/components/cuentas-claras/ComparativeChart';
+import SimuladorPanel from '@/components/cuentas-claras/SimuladorPanel';
+import ComunaSelector from '@/components/cuentas-claras/ComunaSelector';
+import StaleDataBadge from '@/components/ui/stale-data-badge';
+import { SINIM_COMUNAS, type PresupuestoMunicipalComunal } from './sinimDataComunal';
+
+type CategoriaClave = keyof Enriquecido['ingresos'] | keyof Enriquecido['gastos'];
 
 const CATEGORIAS_INGRESOS = [
   { key: 'tributarios', nombre: 'Ingresos Tributarios', icon: DollarSign, color: 'text-blue-600' },
@@ -40,72 +58,125 @@ export default function CuentasClarasPage() {
     const años = getYears();
     return años.length > 0 ? años[0] : new Date().getFullYear();
   });
-  
+
   const [tipoVista, setTipoVista] = useState<'ingresos' | 'gastos'>('gastos');
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>('educacion');
-  
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<CategoriaClave>('educacion');
+  const [periodoPolitico, setPeriodoPolitico] = useState<string>('2022-2025');
+  const [simulacionActiva, setSimulacionActiva] = useState<boolean>(false);
+  const [montosSimulados, setMontosSimulados] = useState<Record<string, number>>({});
+
+  // SINIM: vista nacional vs vista por comuna
+  const [vistaModo, setVistaModo] = useState<'nacional' | 'comunal'>('nacional');
+  const [comunaSel, setComunaSel] = useState<string>('13101'); // Santiago por defecto
+  const datosComunal: PresupuestoMunicipalComunal | undefined = SINIM_COMUNAS[comunaSel];
+
   const añosDisponibles = useMemo(() => getYears(), []);
-  
-  // Datos para el año seleccionado
-  const datosAño = PRESUPUESTO_MUNICIPAL_EJEMPLO[añoSeleccionado] || {};
-  const totalIngresos = getTotalIngresos(añoSeleccionado);
-  const totalGastos = getTotalGastos(añoSeleccionado);
-  
+
+  // Datos para el año seleccionado (usando dataset enriquecido)
+  const datosAño = PRESUPUESTO_MUNICIPAL_ENRIQUECIDO[añoSeleccionado]!;
+  const totalIngresos = getTotalIngresosEnriquecido(añoSeleccionado);
+  const totalGastos = getTotalGastosEnriquecido(añoSeleccionado);
+
   // Porcentaje de la categoría seleccionada
-  const porcentaje = tipoVista === 'ingresos' 
-    ? getPorcentajePartida(añoSeleccionado, categoriaSeleccionada as keyof typeof datosAño.ingresos, 'ingresos')
-    : getPorcentajePartida(añoSeleccionado, categoriaSeleccionada as keyof typeof datosAño.gastos, 'gastos');
-  
+  const porcentaje = tipoVista === 'ingresos'
+    ? getPorcentajePartida(añoSeleccionado, categoriaSeleccionada, 'ingresos')
+    : getPorcentajePartida(añoSeleccionado, categoriaSeleccionada, 'gastos');
+
   const categorias = tipoVista === 'ingresos' ? CATEGORIAS_INGRESOS : CATEGORIAS_GASTOS;
   const categoriaObj = categorias.find(c => c.key === categoriaSeleccionada);
-  
+
+  // Datos para gráfico de barras (simplificado)
+  const datosGrafico = tipoVista === 'ingresos'
+    ? CATEGORIAS_INGRESOS.map(cat => ({
+        name: cat.nombre,
+        value: (datosAño.ingresos as Record<string, number>)[cat.key] ?? 0,
+        color: cat.color,
+      }))
+    : CATEGORIAS_GASTOS.map(cat => ({
+        name: cat.nombre,
+        value: (datosAño.gastos as Record<string, number>)[cat.key] ?? 0,
+        color: cat.color,
+      }));
+
+  // Ordenar de mayor a menor para el gráfico
+  datosGrafico.sort((a, b) => b.value - a.value);
+
+  // Datos para comparación (ejemplo: comparar con año anterior)
+  const añoAnterior = añosDisponibles.find(a => a < añoSeleccionado);
+  const datosAñoAnterior = añoAnterior ? PRESUPUESTO_MUNICIPAL_ENRIQUECIDO[añoAnterior]! : {} as Enriquecido;
+  const datosComparacion = añoAnterior
+    ? tipoVista === 'ingresos'
+      ? CATEGORIAS_INGRESOS.map(cat => ({
+          name: cat.nombre,
+          value: (datosAñoAnterior.ingresos as Record<string, number>)[cat.key] ?? 0,
+          color: cat.color,
+        }))
+      : CATEGORIAS_GASTOS.map(cat => ({
+          name: cat.nombre,
+          value: (datosAñoAnterior.gastos as Record<string, number>)[cat.key] ?? 0,
+          color: cat.color,
+        }))
+    : [];
+
   // Manejar cambio de año
-  const manejarCambioAño = (nuevoAño: number) => {
-    setAñoSeleccionado(nuevoAño);
-    // Resetear categoría al cambiar año para evitar inconsistencias
-    setCategoriaSeleccionada(tipoVista === 'ingresos' ? 'tributarios' : 'educacion');
-  };
-  
+    const manejarCambioAño = (nuevoAño: number) => {
+      setAñoSeleccionado(nuevoAño);
+      // Resetear categoría al cambiar año para evitar inconsistencias
+      setCategoriaSeleccionada(tipoVista === 'ingresos' ? 'tributarios' as CategoriaClave : 'educacion' as CategoriaClave);
+      setSimulacionActiva(false);
+      setMontosSimulados({});
+    };
+
   // Manejar cambio de tipo (ingresos/gastos)
   const manejarCambioTipo = (nuevoTipo: 'ingresos' | 'gastos') => {
     setTipoVista(nuevoTipo);
     // Resetear categoría apropiada
     setCategoriaSeleccionada(nuevoTipo === 'ingresos' ? 'tributarios' : 'educacion');
+    setSimulacionActiva(false);
+    setMontosSimulados({});
   };
-  
+
   // Manejar cambio de categoría
-  const manejarCambioCategoria = (nuevaCategoria: string) => {
+  const manejarCambioCategoria = (nuevaCategoria: CategoriaClave) => {
     setCategoriaSeleccionada(nuevaCategoria);
+    setSimulacionActiva(false);
+    setMontosSimulados({});
   };
-  
+
+  // Manejar cambio de periodo político
+  const manejarCambioPeriodo = (nuevoPeriodo: string) => {
+    setPeriodoPolitico(nuevoPeriodo);
+  };
+
+  // Manejar activación/desactivación de simulación
+  const toggleSimulacion = () => {
+    setSimulacionActiva(prev => {
+      const next = !prev;
+      if (!prev) {
+        // We are turning on, so copy the current values
+        const valoresActuales: Record<string, number> = {};
+        categorias.forEach(cat => {
+          const valor = tipoVista === 'ingresos'
+            ? (datosAño.ingresos as Record<string, number>)[cat.key] ?? 0
+            : (datosAño.gastos as Record<string, number>)[cat.key] ?? 0;
+          valoresActuales[cat.key] = valor;
+        });
+        setMontosSimulados(valoresActuales);
+      }
+      return next;
+    });
+  };
+
   // Formatear número como moneda chilena
   const formatoCLP = (valor: number) => {
     return new Intl.NumberFormat('es-CL', {
       style: 'currency',
       currency: 'CLP',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(valor);
   };
-  
-  // Crear datos para gráfico de barras (simplificado)
-  const datosGrafico = tipoVista === 'ingresos' 
-    ? CATEGORIAS_INGRESOS.map(cat => ({
-        nombre: cat.nombre,
-        valor: datosAño.ingresos?.[cat.key as keyof typeof datosAño.ingresos] || 0,
-        color: cat.color
-      }))
-    : CATEGORIAS_GASTOS.map(cat => ({
-        nombre: cat.nombre,
-        valor: datosAño.gastos?.[cat.key as keyof typeof datosAño.gastos] || 0,
-        color: cat.color
-      }));
-  
-  // Ordenar de mayor a menor para el gráfico
-  datosGrafico.sort((a, b) => b.valor - a.valor);
-  
-  const maxValor = Math.max(...datosGrafico.map(d => d.valor), 1); // Evitar división por cero
-  
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col gap-1">
@@ -115,7 +186,51 @@ export default function CuentasClarasPage() {
         <p className="text-slate-500">
           Transparencia presupuestaria sin tecnicismos. La plata de todos, explicada para todos.
         </p>
+        <p className="text-sm text-slate-500">
+          Periodo político: {periodoPolitico}
+        </p>
       </div>
+
+      {/* Panel SINIM — Vista por Comuna */}
+      <Card className="border-azul-200 bg-azul-50/30">
+        <CardContent className="p-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-azul-600" />
+              <span className="font-semibold text-sm">Vista por comuna (SINIM)</span>
+            </div>
+            <div className="flex rounded-lg border border-border overflow-hidden">
+              <button
+                onClick={() => setVistaModo('nacional')}
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${vistaModo === 'nacional' ? 'bg-azul-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}
+              >
+                Nacional
+              </button>
+              <button
+                onClick={() => setVistaModo('comunal')}
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${vistaModo === 'comunal' ? 'bg-azul-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}
+              >
+                Mi Comuna
+              </button>
+            </div>
+            {vistaModo === 'comunal' && (
+              <>
+                <ComunaSelector value={comunaSel} onChange={setComunaSel} />
+                {datosComunal && (
+                  <StaleDataBadge lastUpdated="2024-12-31" notifyOnChange={false} />
+                )}
+                {datosComunal && (
+                  <div className="ml-auto text-sm text-slate-600">
+                    <span className="font-medium">{datosComunal.comuna}</span>
+                    <span className="mx-2">·</span>
+                    <span>Población: {datosComunal.poblacion.toLocaleString('es-CL')}</span>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Header con información general y controles */}
       <Card className="bg-gradient-to-br from-azul-700 via-azul-600 to-azul-500 text-white border-0 shadow-xl overflow-hidden relative">
@@ -129,26 +244,36 @@ export default function CuentasClarasPage() {
                 <h2 className="text-xl font-bold">Presupuestos, sin letra chica</h2>
               </div>
               <p className="text-azul-100 text-sm max-w-md">
-                Visualiza en lenguaje ciudadano cómo se gasta el dinero público en\n
+                Visualiza en lenguaje ciudadano cómo se gasta el dinero público en<br />
                 tu comuna. Promesas vs presupuesto, eficiencia vs relato.
               </p>
             </div>
-            
+
             {/* Selector de año */}
             <div className="space-y-2">
               <p className="text-azul-100 text-sm font-medium">Año Fiscal</p>
               <div className="relative">
                 <button
-                  onClick={() => manejarCambioAño(añoSeleccionado === añosDisponibles[0] ? añosDisponibles[añosDisponibles.length - 1] : añosDisponibles[0])}
+                  onClick={() =>
+                    manejarCambioAño(
+                      añoSeleccionado === añosDisponibles[0]
+                        ? añosDisponibles[añosDisponibles.length - 1]
+                        : añosDisponibles[0]
+                    )
+                  }
                   className="w-full flex items-center justify-between px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-all text-left"
                 >
                   <span>{añoSeleccionado}</span>
                 </button>
-                {/* Para simplificar, usamos solo los dos años más recientes en el toggle */}
-                {/* En una implementación completa, sería un desplegable completo */}
               </div>
             </div>
-            
+
+            {/* Selector de periodo político */}
+            <div className="space-y-2">
+              <p className="text-azul-100 text-sm font-medium">Periodo Político</p>
+              <PoliticalPeriodSelector onChange={manejarCambioPeriodo} />
+            </div>
+
             {/* Indicador de saldo */}
             <div className="space-y-2">
               <p className="text-azul-100 text-sm font-medium">Balance Anual</p>
@@ -189,7 +314,7 @@ export default function CuentasClarasPage() {
             </div>
           </CardContent>
         </Card>
-        
+
         {/* Total Gastos */}
         <Card className="border shadow-sm">
           <CardContent className="p-5 space-y-3">
@@ -217,32 +342,30 @@ export default function CuentasClarasPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => manejarCambioTipo('ingresos')}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium 
+                className={`px-3 py-1.5 rounded-md text-sm font-medium
                   ${tipoVista === 'ingresos' ? 'bg-terracota-600 text-white' : 'border border-gray-300 bg-white'}`}
               >
                 Ingresos
               </button>
               <button
                 onClick={() => manejarCambioTipo('gastos')}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium 
+                className={`px-3 py-1.5 rounded-md text-sm font-medium
                   ${tipoVista === 'gastos' ? 'bg-terracota-600 text-white' : 'border border-gray-300 bg-white'}`}
               >
                 Gastos
               </button>
             </div>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <p className="text-sm font-medium">Categoría:</p>
             <div className="relative w-48">
               <button
-                onClick={() => {
-                  // Placeholder for dropdown - in real implementation would open a select
-                  // For now, we'll cycle through categories
-                  const currentIndex = categorias.findIndex(c => c.key === categoriaSeleccionada);
-                  const nextIndex = (currentIndex + 1) % categorias.length;
-                  manejarCambioCategoria(categorias[nextIndex].key);
-                }}
+                            onClick={() => {
+                              const currentIndex = categorias.findIndex(c => c.key === categoriaSeleccionada);
+                              const nextIndex = (currentIndex + 1) % categorias.length;
+                              manejarCambioCategoria(categorias[nextIndex].key as CategoriaClave);
+                            }}
                 className="w-full flex items-center justify-between px-3 py-2 bg-white border border-gray-300 rounded-md text-left hover:bg-gray-50"
               >
                 <span>{categoriaObj?.nombre || 'Seleccionar categoría'}</span>
@@ -250,13 +373,15 @@ export default function CuentasClarasPage() {
             </div>
           </div>
         </div>
-        
+
         {/* Destacado: porcentaje de la categoría seleccionada */}
         <Card className="w-full sm:w-auto bg-gradient-to-r from-terracota-600 to-terracota-500 text-white border-0 shadow-lg">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-white text-sm font-medium opacity-90">Participación de {categoriaObj?.nombre.toLowerCase() || 'categoría'}</p>
+                <p className="text-white text-sm font-medium opacity-90">
+                  Participación de {categoriaObj?.nombre.toLowerCase() || 'categoría'}
+                </p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl font-black">{Math.round(porcentaje)}%</span>
                   <span className="text-white text-sm">del total {tipoVista === 'ingresos' ? 'de ingresos' : 'de gastos'}</span>
@@ -274,7 +399,7 @@ export default function CuentasClarasPage() {
         </Card>
       </div>
 
-      {/* Gráfico de barras simplificado */}
+      {/* Gráfico de barras simplificado con comparación */}
       <Card className="border shadow-sm">
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
@@ -293,135 +418,199 @@ export default function CuentasClarasPage() {
             </h3>
             <p className="text-sm text-slate-500">{añoSeleccionado}</p>
           </div>
-          
-          <div className="space-y-4">
-            {datosGrafico.map((item, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <div className="w-8 h-8 flex items-center justify-center rounded-full">
-                  <div className="w-4 h-4 rounded-full" style={{ backgroundColor: Object.values(categoriaObj?.color || {})[0] || '#6B7280' }}></div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-sm font-medium">{item.nombre}</span>
-                    <span className="text-sm font-mono">{formatoCLP(item.valor)}</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div 
-                      className={`h-2.5 rounded-full bg-terracota-600 transition-all duration-750`}
-                      style={{ width: `${(item.valor / maxValor) * 100}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+
+          <ComparativeChart
+            currentData={datosGrafico}
+            compareData={datosComparacion.length > 0 ? datosComparacion : null}
+            title={tipoVista === 'ingresos' ? 'Comparativa de Ingresos' : 'Comparativa de Gastos'}
+          />
         </CardContent>
       </Card>
 
-      {/* Información detallada de la categoría seleccionada */}
+      {/* Simulador "¿qué pasaría si...?" */}
+      {simulacionActiva && (
+        <Card className="border shadow-sm">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-lg flex items-center gap-2 text-terracota-600">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m2 0a2 2 0 100-4 2 2 0 000 4z"
+                  />
+                </svg>
+                Simulador de Presupuesto
+              </h3>
+              <button
+                onClick={toggleSimulacion}
+                className="px-3 py-1.5 rounded-md text-sm font-medium border border-gray-300 bg-white hover:bg-gray-50"
+              >
+                Desactivar Simulador
+              </button>
+            </div>
+
+            <SimuladorPanel
+              tipo={tipoVista}
+              categorias={categorias}
+              currentAmounts={
+                tipoVista === 'ingresos'
+                  ? datosAño.ingresos
+                  : datosAño.gastos
+              }
+              onChange={(amounts) => {
+                setMontosSimulados(amounts);
+              }}
+            />
+            {/* Mostrar total simulado si está activo */}
+            <div className="pt-4 border-t">
+              <p className="text-sm font-medium text-slate-600">
+                Total actual:{' '}
+                <span className="font-mono">
+                  {Object.values(
+                    tipoVista === 'ingresos' ? datosAño.ingresos : datosAño.gastos
+                  ).reduce((a, b) => a + b, 0).toLocaleString('es-CL')}
+                </span>
+              </p>
+              <p className="text-sm font-medium text-slate-600">
+                Total simulado:{' '}
+                <span className="font-mono">
+                  {Object.values(montosSimulados).reduce((a, b) => a + b, 0).toLocaleString(
+                    'es-CL'
+                  )}
+                </span>
+              </p>
+              {Math.abs(
+                Object.values(montosSimulados).reduce((a, b) => a + b, 0) -
+                  Object.values(
+                    tipoVista === 'ingresos' ? datosAño.ingresos : datosAño.gastos
+                  ).reduce((a, b) => a + b, 0)
+              ) > 1 && (
+                <p className="text-sm text-red-600">
+                  Advertencia: El total simulado difiere del total original.
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Indicadores de eficiencia y equidad (usando datos enriquecidos) */}
       <Card className="border shadow-sm">
         <CardContent className="p-6">
-          <h3 className="font-bold text-lg flex items-center gap-2 mb-4">
-            {tipoVista === 'ingresos' ? (
-              <>
-                <DollarSign className="w-5 h-5 text-terracota-600" />
-                Detalle de Ingresos
-              </>
-            ) : (
-              <>
-                <Building2 className="w-5 h-5 text-terracota-600" />
-                Detalle de Gastos
-              </>
-            )}
-          </h3>
-          
-          <div className="space-y-4">
-            {/* Información general de la categoría */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 flex items-center justify-center" 
-                     style={{ backgroundColor: Object.values(categoriaObj?.color || {})[0] || '#6B7280', 
-                             color: 'white' }}>
-                  {categoriaObj?.icon ? (
-                    <categoriaObj.icon className="w-4 h-4" />
-                  ) : (
-                    <div className="flex items-center justify-center">•</div>
-                  )}
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm">{categoriaObj?.nombre || 'Categoría no disponible'}</h4>
-                  <p className="text-sm text-gray-500">Partida presupuestaria</p>
-                </div>
-              </div>
-              
-              <div className="grid gap-2 md:grid-cols-2">
-                <div className="text-center p-3 bg-white rounded-lg">
-                  <p className="text-sm font-medium text-gray-600">Monto Anual</p>
-                  <p className="text-2xl font-bold">{formatoCLP(
-                    tipoVista === 'ingresos' 
-                      ? datosAño.ingresos?.[categoriaSeleccionada as keyof typeof datosAño.ingresos] || 0
-                      : datosAño.gastos?.[categoriaSeleccionada as keyof typeof datosAño.gastos] || 0
-                  )}</p>
-                </div>
-                <div className="text-center p-3 bg-white rounded-lg">
-                  <p className="text-sm font-medium text-gray-600">% del Total {tipoVista === 'ingresos' ? 'de Ingresos' : 'de Gastos'}</p>
-                  <p className="text-2xl font-bold">{Math.round(porcentaje)}%</p>
-                </div>
-              </div>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-lg flex items-center gap-2 text-terracota-600">
+              <Building2 className="w-5 h-5 text-terracota-600" />
+              Indicadores de Eficiencia y Equidad
+            </h3>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {/* Gasto en educación por estudiante */}
+            <div className="border p-4 rounded-lg">
+              <h4 className="font-bold text-sm mb-2">Gasto en Educación por Estudiante</h4>
+              <p className="text-2xl font-bold">
+                {formatoCLP(getGastoEducacionPorEstudiante(añoSeleccionado))}
+              </p>
+              <p className="text-xs text-slate-500">
+                Promedio anual por estudiante matriculado
+              </p>
             </div>
-            
-            {/* Comparación año a año (si hay datos de múltiples años) */}
-            {añosDisponibles.length > 1 && (
-              <div className="mt-4 pt-3 border-t">
-                <p className="font-bold text-lg mb-3">Evolución Histórica</p>
-                <div className="space-y-3">
-                  {añosDisponibles.map((año) => {
-                    const datosAñoHist = PRESUPUESTO_MUNICIPAL_EJEMPLO[año] || {};
-                    const valorHistorico = tipoVista === 'ingresos'
-                      ? datosAñoHist.ingresos?.[categoriaSeleccionada as keyof typeof datosAñoHist.ingresos] || 0
-                      : datosAñoHist.gastos?.[categoriaSeleccionada as keyof typeof datosAñoHist.gastos] || 0;
-                    
-                    return (
-                      <div key={año} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                        <div className="flex items-center gap-2">
-                          <span className="w-8 text-center font-mono">{año}</span>
-                          <div className="w-2 h-2 rounded-full" 
-                               style={{ backgroundColor: año === añoSeleccionado ? '#D97706' : '#6B7280' }}></div>
-                        </div>
-                        <p className="text-lg font-mono text-right">{formatoCLP(valorHistorico)}</p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-            
-            {/* Nota explicativa */}
-            <div className="mt-4 pt-3 border-t">
-              <p className="text-sm text-gray-600 italic">
-                Los datos mostrados son ejemplos basados en información pública de comunas chilenas. 
-                En una implementación real, estos provendrían de fuentes oficiales como el Ministerio 
-                de Hacienda, portales de transparencia municipal y reportes de la Contraloría General 
-                de la República.
+
+            {/* Gasto en salud per cápita */}
+            <div className="border p-4 rounded-lg">
+              <h4 className="font-bold text-sm mb-2">Gasto en Salud per Cápita</h4>
+              <p className="text-2xl font-bold">
+                {formatoCLP(getGastoSaludPerCapita(añoSeleccionado))}
+              </p>
+              <p className="text-xs text-slate-500">
+                Promedio anual por habitante
+              </p>
+            </div>
+
+            {/* Proporción de deuda sobre ingresos */}
+            <div className="border p-4 rounded-lg">
+              <h4 className="font-bold text-sm mb-2">Proporción Deuda / Ingresos</h4>
+              <p className="text-2xl font-bold">
+                {getProporcionDeudaIngresos(añoSeleccionado).toFixed(1)}%
+              </p>
+              <p className="text-xs text-slate-500">
+                Porcentaje de los ingresos destinados al servicio de la deuda
+              </p>
+            </div>
+
+            {/* Gasto real ajustado por inflación */}
+            <div className="border p-4 rounded-lg">
+              <h4 className="font-bold text-sm mb-2">Gasto Real (ajustado por inflación)</h4>
+              <p className="text-2xl font-bold">
+                {formatoCLP(getGastoRealAjustadoInflacion(añoSeleccionado))}
+              </p>
+              <p className="text-xs text-slate-500">
+                En pesos de {new Date().getFullYear()} (base 2020)
+              </p>
+            </div>
+
+            {/* Acceso a agua potable */}
+            <div className="border p-4 rounded-lg">
+              <h4 className="font-bold text-sm mb-2">Acceso a Agua Potable</h4>
+              <p className="text-2xl font-bold">
+                {getAccesoAguaPotable(añoSeleccionado).toFixed(1)}%
+              </p>
+              <p className="text-xs text-slate-500">
+                Porcentaje de la población con acceso a agua potable
+              </p>
+            </div>
+
+            {/* Tasa de alfabetización */}
+            <div className="border p-4 rounded-lg">
+              <h4 className="font-bold text-sm mb-2">Tasa de Alfabetización</h4>
+              <p className="text-2xl font-bold">
+                {getTasaAlfabetizacion(añoSeleccionado).toFixed(1)}%
+              </p>
+              <p className="text-xs text-slate-500">
+                Porcentaje de la población que sabe leer y escribir
+              </p>
+            </div>
+
+            {/* Gasto en infraestructura per cápita */}
+            <div className="border p-4 rounded-lg">
+              <h4 className="font-bold text-sm mb-2">Gasto en Infraestructura per Cápita</h4>
+              <p className="text-2xl font-bold">
+                {formatoCLP(getGastoInfraestructuraPerCapita(añoSeleccionado))}
+              </p>
+              <p className="text-xs text-slate-500">
+                Gasto en desarrollo urbano dividido por población
+              </p>
+            </div>
+
+            {/* Gasto en vivienda per cápita */}
+            <div className="border p-4 rounded-lg">
+              <h4 className="font-bold text-sm mb-2">Gasto en Vivienda per Cápita</h4>
+              <p className="text-2xl font-bold">
+                {formatoCLP(getGastoViviendaPerCapita(añoSeleccionado))}
+              </p>
+              <p className="text-xs text-slate-500">
+                Gasto estimado en vivienda dividido por población
+              </p>
+            </div>
+
+            {/* Gasto en transporte público per cápita */}
+            <div className="border p-4 rounded-lg">
+              <h4 className="font-bold text-sm mb-2">Gasto en Transporte Público per Cápita</h4>
+              <p className="text-2xl font-bold">
+                {formatoCLP(getGastoTransportePublicoPerCapita(añoSeleccionado))}
+              </p>
+              <p className="text-xs text-slate-500">
+                Gasto estimado en transporte público dividido por población
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Footer con información adicional */}
-      <Card className="border-dashed border-2 border-slate-300 bg-transparent">
-        <CardContent className="p-8 text-center space-y-3">
-          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
-            <GraduationCap className="w-8 h-8 text-slate-400" />
-          </div>
-          <h3 className="text-lg font-bold text-slate-700">
-            Transparencia activa para una ciudadanía empoderada
-          </h3>
-          <p className="text-sm text-slate-500 max-w-md mx-auto">
-            Conocer cómo se gasta el dinero público es el primer paso para\n
-            participar activamente en la vida democrática de tu comunidad.
-          </p>
         </CardContent>
       </Card>
     </div>

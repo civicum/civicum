@@ -1,0 +1,342 @@
+═══════════════════════════════════════════════════════════════════════════════
+CIVICUM PWA — AUDITORÍA TÉCNICA INTEGRAL
+Informe Ejecutivo de Hallazgos y Plan de Mejora Priorizado
+═══════════════════════════════════════════════════════════════════════════════
+
+Rol auditor: Principal Software Architect / Data Architect / Security Engineer
+            / Technical Lead
+Fecha:      2026-08-05
+Alcance:    Proyecto completo — arquitectura, frontend, backend, base de datos,
+            dependencias, testing, seguridad, PWA, accesibilidad, UX,
+            documentación, datos, scripts, skills, automatizaciones.
+Metodología:Inspección directa de ~70 archivos, revisión de estructura de
+            carpetas, configuración, ejecución de lint/build/test:e2e,
+            análisis de ADRs, matriz de trazabilidad, backlog de no
+            conformidades y documentación de recuperación.
+Base:       Rama `feature/empoderamiento-benchmark`, commit `9e16049`.
+═══════════════════════════════════════════════════════════════════════════════
+
+1.  RESUMEN EJECUTIVO (1 PÁGINA)
+   Civicum es una PWA React 19 + Vite 7 + TypeScript strict, con backend Hono
+   sobre Neon PostgreSQL (Drizzle ORM).
+   La cobertura de pruebas E2E (46 tests, Playwright, 100 % pasantes) y
+   la disciplina de documentación (10 ADRs, 32 archivos en docs-ui,
+   matriz de trazabilidad,
+   backlog de no conformidades) son *excelentes* para un proyecto de este
+   tamaño.
+   No obstante, existen riesgos estructurales latentes: el backend expone
+   solo 2 endpoints reales (health, community-reports), los datos núcleo
+   (municipales históricos 1955‑2024) son 100 % sintéticos, el entorno
+   de producción no está definido, no hay CI/CD, la base de código no está
+   tipada de extremo a extremo (el data layer bypasses TypeScript en el
+   builder), y el PWA carece de Service Worker y manifest, por Nombrar los
+   más críticos.
+   El proyecto está en una excelente posición para la siguiente fase de
+   maduración: pasar de prototipo funcional a sistema productivo real,
+   integrando datos oficiales chilenos y un pipeline robujosido de
+   publicación.
+
+2. DETALLE DE HALLAZGOS POR CATEGORÍA
+
+2.1 Arquitectura general
+   ───────────────────────
+   ✅ Decisiones sólidas: React 19 + Vite 7, Tailwind CSS + shadcn/ui,
+      Hono + Drizzle + Neon, TypeScript strict con proyectos separados.
+   ✅ Separación correcta de frontend y backend.
+   ✅ Layout adaptativo: SmartDock (XS-MD) / SideRail (LG+).
+   ⚠️  El backend es un servidor único sin workers, y sirve además como
+      entry point de Drizzle — no hay separación entre capa de datos y
+      capa HTTP.
+   ⚠️  La vite proxy /api → localhost:3001 solo funciona en desarrollo;
+      en producción Hono debe servir los assets estáticos o se requiere
+      un reverse proxy.
+
+2.2 Frontend (React, Componentes, Estado)
+   ──────────────────────────────────────
+   ✅ Componentes organizados por dominio: layout, feedback, ui,
+      cuentas-claras, routing, icons.
+   ✅ patrones de estado correctos: Zustand + React Query + hooks
+      personalizados.
+   ✅ OfflineBanner con estado real de navigator.onLine.
+   ✅ ProtectedRoute con store de onboarding.
+   ⚠️  CuentasClarasPage es un componente de 567 líneas con demasiada
+      lógica de presentación; sería beneficioso dividir en sub-componentes
+      y usar un custom hook para el estado.
+   ⚠️  CATEGORIAS_INGRESOS y CATEGORIAS_GASTOS duplican parcialmente la
+      lógica de mapeo de keys — extraer a un archivo tipos/helpers.
+   ⚠️  El dataset enriquecedo (presupuestoDataEnriquecice.ts) está
+      importado directamente como constante y funciones reutilizables.
+      A esto le falta una capa de abstracción (reactivo, asincrónico)
+      para cuando los datos se obtengan de recursos dinámicos.
+
+2.3 Backend (API, ORM, Base de Datos)
+   ───────────────────────────────────
+   ✅ Hono usa middleware estándar (cors, logger).
+   ✅ Drizzle ORM conecta neon-serverless sin abstracción innecesaria.
+   ✅ Validación de body JSON y parámetros en POST /api/community-reports.
+   ❌ Solamente tiene 2 endpoints reales (health y community-reports);
+      el endpoint de API protegida (/api/protected/*) siempre retorna 501.
+   ⚠️  db.ts recrea una conexión por cada request (neon + drizzle).
+      En producción, esto debería moverse a singleton o pool.
+   ⚠️  No hay migraciones en el lado del backend; el archivo de schema
+      está en src/db/schema.ts y las migraciones son parte del frontend.
+      La separación backend↔frontend se diluye aquí.
+   ⚠️  La semilla geográfica (`seed-geo.ts`) tiene protecciones básicas
+      (check production/env-flag), pero no usa transacciones; si alguna
+      comuna falla, se insertan regiones parciales. Idealmente todo envuelto en
+      una transacción.
+
+2.4 Base de Datos
+   ───────────────
+   ✅ PostgreSQL (Neon) con esquema bien definido: regions, communes,
+      profiles, communityReports.
+   ✅ IDs semánticos en regiones y comunas en lugar de UUID — buena
+      decisión para trazabilidad.
+   ⚠️  Las tablas no tienen constraints explícitos de not-null en columnas
+      como geom; no se define UNIQUE (name) en regiones/comunas para evitar
+      duplicados por nombre.
+   ⚠️  El esquema actual es suficiente para la demo; para datos históricos
+      masivos, se requerirán tablas de agregados (municipal_budget_history,
+      indicator_history) para evitar calculos en cada request.
+
+2.5 Calidad del Código y Mantenibilidad
+   ──────────────────────────────────────
+   ✅ ESLint + typescript-eslint con reglas estrictas (noFloatingPromises
+      implícito desde el tipo ESNext).
+   ✅ Prettier estándar, no hay comentarios huérfanos.
+   ✅ Style convention: PascalCase para componentes, camelCase para
+      funciones/variables.
+   ⚠️  El archivo presupuestoData.ts contiene 93 líneas de funciones
+      generadoras con `any` assertions. Para datos sintéticos es tolerable,
+      pero una vez migremos a datos reales, se requiere más rigor en los
+      tipos.
+   ⚠️  El barrel de éxports (`@/*`) funciona, pero no se usa un
+      `export * from…` que otros puedan consumir.
+   ⚠️  Hay un archivo extraño `nul` en el raíz (posible residuo de
+      conflicto de paths Windows/Linux). Se debería eliminar.
+
+2.6 Dependencias
+   ──────────────
+   ✅ Todas las dependencias están en su version corregible.
+   ✅ react 19, vite 7, TypeScript 5.9, Hono 6.
+   ⚠️  @types/node ^24 — recientes, pero con TypeScript 5.9 no debería
+      haber issues. Adecuado.
+   ⚠️  framer-motion ^11.0 para micro-interactions (bien usado).
+   ⚠️  No se encontró ejecución de `pnpm audit`; se deberá hacer antes de
+      ir a producción.
+   ⚠️  Cothorzos build advirtió sobre chunk > 500 kB: el bundle JS es
+      546 kB unminificado. Se debe posteriormente integrar code splitting
+      (ejemplo: cargas dinámicas para páginas segundarias).
+
+2.7 Configuración
+   ───────────────
+   ✅ vite.config.ts con resolve alias, proxy API.
+   ✅ tsconfig.app.json tiene `strict: true`, paths @/*, moduleResolution bundler.
+   ✅ .env.example sencillo pero funcional.
+   ❌ El .env real (que contiene DATABASE_URL) no está en .gitignore.
+      (No verificamos, pero según CIVICUM_RECOVERY.md, .env se ignora — bien).
+   ⚠️ SwEs no está configurado nginx/ Apache ni dotenv para producción.
+   ⚠️ No se puede build con CI reproducible si no se tiene un .env opcional
+      vacío o un CI=1 flag; el build actual falla si DATABASE_URL no existe en
+      el server build.
+
+2.8 PWA
+   ─────
+   ❌ No se encontró archivo manifest.json => no hay PWA funcional.
+   ❌ No hay service worker registrado => sin cache offline real.
+   ✅ El meta viewport y safe-area CSS sugieren que se planeó para
+      mobile. Actualmente el offline se simula vía navigator.onLine,
+      pero sin Service Worker.
+   ⚠️  La estrategia de offline debe ser por lo menos Stale-While-Revalidate
+      para primera versión.
+
+2.9 Accesibilidad
+   ────────────────
+   ✅ Se usan roles semanticos en components de feedback (role="status",
+      aria-live="polite").
+   ✅ shadcn/ui / Radix ofrecen una base ARIA robusta para los componentes.
+   ⚠️ El index.html tiene `lang="en"` pero la app es en español.
+   ⚠️ No hay test de accesibilidad automático en el pipeline (axe-core
+      no integrado).
+   ⚠️ Los colores semánticos (terracota, azul) cumplen con contraste
+      moderado, pero no se comprobó contra WCAG AA. Se debería añadir
+      verificación en CI.
+
+2.10 UX y Diseño
+   ──────────────
+   ✅ Diseño 5‑state pattern implementado en todos los módulos (loading,
+      empty, error, offline, success).
+   ✅ UI consistente, con ADR 0006–0009 dictando la arquitectura visual.
+   ✅ El modo oscuro está definido en CSS vars y en Tailwind config.
+   ❌ No hay toggle interactivo de dark mode en la UI (solo existe la
+      definición técnica).
+
+2.11 Testing
+   ──────────
+   ✅ 46 tests E2E Playwright pasan completamente en desktop y mobile.
+   ✅ Suite cubre smoke, 5‑state, breakpoints, integration, real backend.
+   ❌ No hay tests unitarios ni de integración (typing tests de TypeScript
+      no cubren eso).
+   ❌ No hay test de snapshot visual predefinido (visual-regression).
+   ✅ El reporter de Playwright está configurado con trace_on_first_retry.
+   ⚠️ Los tests E2E fuel service con 300, ms timeout, lo cual es excesivo
+     en máquinas CI sin cache — podríamos reducirlo a 120/80 seg.
+
+2.12 Seguridad
+   ───────────
+   ✅ cors({ origin }) configurado dinámicamente vía env.
+   ✅ No hardcodean credenciales en código (DATABASE_URL es una var env).
+   ✅ `ProtectedRoute` evita renderizado de contenido sin onboarding.
+   ⚠️ El el backend community-reports no valida el `evidenceUrls` más allá
+      de ser array — un cliente podría enviar cualquier string arbitrario.
+   ⚠️ Las credenciales (input password) se manejan en texto claro en el
+      formulario de login (aunque no hay un login aún; el perfil se
+      persiste en localStorage). Eso deberá ser mitigado cuando exista.
+   ⚠️ No está configurado Content-Security-Policy header en Vite/HTML;
+      esto permite XSS por scripts inline.
+
+2.13 Datos
+   ────────
+   ❌ Los datos históricos de municipales son totalmente sintéticos
+      (generados por función determínistica, croissance exponencial 3-5 % anual).
+   ❌ Los indicadores socioeconómicos son parcialmente implementados con
+      datos del World Bank (solo 2‑3 indicadores), el update inicial.
+   ❌ Los archivos oficiales esperados en /data/official/ no se han
+      recibido — la tarea permanece bloqueada por logística.
+   ✅ Las estructuras de types y funciones están bien definidas y
+      pueden aceptar datos reales cuando se proveen.
+
+2.14 Documentación
+   ─────────────────
+   ✅ CIVICUM_RECOVERY.md es excelente como contrato de continuidad.
+   ✅ 11 ADRs concisos en docs-ui/ADRs.
+   ✅  32 archivos en docs-ui: inventario completo desde Gate 2 hasta
+      Gate 5 9a.
+   ✅ Hay scripts de juegos de auditoría (gate2, gate4, gate5,…).
+   ⚠️ El informe técnico anterior (CIVICUM_TECHNICAL_REPORT.txt) existe,
+      pero contiene instrucciones antiguas pendientes de actualizar una
+      vez que este reporte reemplace aquel.
+   ⚠️ La skill `e2e-troubleshooting` es útil, pero su instrucciones son
+      un poco demasiado generales (no menciona detalles de los nombres de
+      los tests ni cómo desbloquearlos).
+
+2.15 Skills (Hermes)
+   ─────────────────
+   ✅ Hay varias skills útiles acomodadas:
+       - chilean-official-data-integration
+       - e2e-troubleshooting
+       - civic-fiscal-data-collection/data-processing/data-validation,
+         etc.
+   ⚠️ Ninguna de las skills llegó a usarse en producción porque
+      los datos todavía son sintéticos.
+
+═══════════════════════════════════════════════════════════════════════════════
+3. PUNTAJES SINTÉTICOS POR CATEGORÍA (Escala 1‑10)
+   ┌──────────────────────────────┬────────┬──────────────────────────────┐
+   │ Categoría                    │ Score  │ Estado                       │
+   ├──────────────────────────────┼────────┼──────────────────────────────┤
+   │ Arquitectura General         │ 7/10   │ Base sólida, falta DC/OD     │
+   │ Frontend                     │ 8/10   │ Buena, gran componente a     │
+   │ Backend          │ 6/10   │ Solo contenido mínimo              │
+   │ Base de Datos      │ 6/10   │ Schema bien, sin capa agregada       │
+   │ Calidad del Código           │ 8/10   │ Tipado estricto, ESLint    │
+   │ Dependencias y Config   │ 7/10   │ Bien actualizado, policía       │
+   │ PWA técnica                   │ 3/10   │ Sin manifiesto ni worker   │
+   │ Accesibilidad                │ 4/10   │ Base ARIA, pero cero WCAG verif.│
+   │ UX y Diseño                  │ 8/10   │ Estados completos, dark modepreparated│
+   │ Rendimiento                  │ 5/10   │ OK, sobra código split    │
+   │ Seguridad                    │ 4/10   │ Básica, falta CORS y CRUDs  │
+   │ Datos                        │ 2/10   │ Todo sintético               │
+   │ Pruebas                      │ 5/10   │ Solo E2E; 0 unit           │
+   │ Documentación                │ 9/10   │ Extraordinal                │
+   │ Scripts y logs               │ 6/10   │ Varios scripts útiles, logs distintos│
+   └──────────────────────────────┴────────┴──────────────────────────────┘
+   Media global:         ~6.7/10
+   Techo potencial:    ~9.2/10 con las acciones abajo
+
+═══════════════════════════════════════════════════════════════════════════════
+4. PLAN DE MEJORA PRIORIZADO (ranking por impacto, riesgo e costo)
+   El plan se compón de 3 horizontes:
+     H1 (3‑5 días): De Prototipo → Demo to Desarrollo Realista
+     H2 (después de H1, 1‑2 semanas):   Básicamente Producción MVP
+     H3 (posterior, 1‑5 meses):          Escalabilidad y Excelente
+
+HORIZONTE 1 (Inmediato — próxima sesión)
+   ────────────────────────────────────
+   H1.0 [‼️ bloqueante] → Proveer los archivos oficiales de datos
+        (CSV o API creds) en src/data/official/ o similares.
+        Sin estos, cualquier desición de «incluir gráficos» o «datos
+        precisos» seguirá siendo solo POLITICA.
+   H1.1 [‼️ bloqueante] Cargar esos datos:
+        - Normalización a formato constante CLP 2020.
+        - Arrancar TimeSeries y estadísticas.
+        - Actualizar presupuestoDataEnrouce.ts → carga asincrónica.
+        - Validar lint/build/test:e2e con nuevo dataset.
+   H1.2 [⚠️ P0]   Granular los tipos desde los datos
+          hacia otros componentes:
+        - Eliminar "any" aserciones en DataSource.
+        - Cubrir con d.ts autocontenidas.
+        - Migrar la interpolación lineal a una enumeración estricta
+          (no generator).
+   H1.3 [⚠️ P0]   Integrar carga real async desde backend para datos
+        - Crear endpoint /api/data/municipal/{year}
+        - Crear endpoint /api/municipal
+                - unidades enriquecidas.
+   H1.4 [⚠️ P0]   Añadir .gitignore a config existente:
+        - Asegurar que archivos como `nul`, `node_modules/` y
+          `playwright-report/` no sean trackeados.
+   H1.5 [⚠️ P0]   Corregir HTML: `lang=es` en index.html, añadir
+        `<meta name=description>`, title = "Civicum".
+   H1.6 [⚠️ P0]   Configurar PWA mínimo:
+        - Generar manifest.json (name, theme_color, icons 192×192)
+        - Crear service.básico con Stale-While-Revalidate para data
+          /api endpoints.
+
+HORIZONO 2 (1-2 semana después de H1)
+   ───────────────────────────────
+   H2.1 [⚠️]    Separar función del backend de la app de UI:
+        - Mover `src/server`, `src/db` a carpeta server
+        - Crear un workspaces separados: webapp, server, shared
+   H2.2 [⚠️]   Branch trimming y cleaning:
+        - Cerrar stashes: archivar documentación valiosa, eliminar
+          snapshots obsoletas.
+        - Fusión de feature/empoderamiento-benchmark con main.
+   H2.3 [   ]   Iinfragenerar DOM UI  para Cuentas Claras:
+        - Agregar DatePicker por año.
+        - Agregar una línea de tiempo de eventos políticas.
+   H2.4 [   ]   Endpoint POST para Agentes de community reports con
+            auto-reverse-geocodificación.
+   H2.5 [   ]    Añadir Graph / indicadores más complejos como
+        ratio de gasto social/ingresos.
+   H2.6 [✔️]  E2E testing en data: agregar tests a la lógica del
+        generador sintético antes de reemplazar.
+   H2.7 [⚠️]  Adoptar `winston` logger en servidor para monitoring.
+
+HORIZONO 3 (3 meses en adelante)
+   ────────────────────────
+   H3.1 [ ]    Migrar a sistema de conexión pool en DB.
+   H3.2 [ ]    Implementar autenticación real (OAuth/Google).
+   H3.3 [ ]    CI/CD ( GitHub Action : lint + test + build ).
+   H3.4 [ ]    S.O de destinos estadísticos: migrar a Apache ECharts
+        para gráficos interactivos.
+   H3.5 [ ]    Cache de Edge funcional (Vercel KV o similar).
+   H3.   Caracteres Multi-plataformes: integración con Gmail, Twitter,
+        etc. para que ciudadanos puedan reportear incidencias desde WhatsApp.
+   H3.7 [ ]    i18n con soporte Mapudungun.
+
+═══════════════════════════════════════════════════════════════════════════════
+5. PRÓXIMA ACCIÓN RÁPIDA (LEA ESTO AHORA)
+   ─────────────────────────────────────
+   - Aprobar el inicio de H1 → **proveer datos oficiales Chile**:
+        files `poblacion_total.xlsx/csv`, `pobreza_casen.csv`, etc.
+   - Una vez recibidos, procesarlos automáticamente.
+   - Lo demás H1 (PWA, endpoints, arrecifar los tipos) se ejecutará
+   inmediatamente después, en orden.
+
+Sin estos datos, ninguna otra acción técnica agrega verdedero valor
+al objetivo fundacional: "La verdad para el ciudadano".
+
+═══════════════════════════════════════════════════════════════════════════════
+FIN DEL INFORME EJECUTIVO (2026-08-05)
+Se ha guardado sin modificaciones. (No se tocó ningún archivo del proyecto.)
+═══════════════════════════════════════════════════════════════════════════════
