@@ -131,12 +131,23 @@ Daniel: Principal Software Architect / Data Architect / Security Engineer / Tech
 - Chunk principal: 848KB → 565KB (33% reducción)
 - Tests: 46/46 pasan, comportamiento idéntico
 
-## PRÓXIMO PASO
-1. ~~SINIM descarga completa~~ → ✅
-2. ~~SINIM integración Cuentas Claras~~ → ✅
-3. ~~Landing inmersiva~~ → ✅
-4. ~~Asistente Cívico~~ → ✅
-5. ~~Sprint 2 (SMS/IVR + A11y)~~ → ✅ commit d238ea1
-6. ~~Optimización chunk~~ → ✅ commit 2eaf9fd
-7. **Radar Vecinal** (feed comunal en Mi CIVICUM) — última pieza Sprint 2/3
-8. **Kioscos presenciales** (UI para registro presencial en JJVV)
+### Kioscos Presenciales ✅ COMPLETADO
+- KioskoPage: wizard 4 pasos (inicio → datos → confirmar → éxito)
+- Framer Motion, botones 56px, lenguaje simple sin jerga
+- Endpoint POST /api/kiosk/register: registro sin email/password
+- Ruta pública /kiosko (sin auth) — operador JJVV registra al vecino
+- Validación: lint 0, build 576KB, 46/46 tests
+
+### Radar Vecinal ✅ COMPLETADO
+- Componente RadarFeed: feed comunitario con 4 tipos (reporte, apoyo, victoria, propuesta)
+- Dashboard: sección "Radar Vecinal" reemplaza reportes estáticos
+- Pseudonimato automático "Vecino #ID", anti-rankings
+- Mapeo de API /api/community-reports → feed culturalmente apropiado
+- Validación: lint 0, build 568KB, 46/46 tests
+
+## PRÓXIMO PASO (Sprint 4 — opcional)
+1. Twilio real: contratar cuenta + número chileno + webhook público (ngrok o deploy)
+2. Verificación telefónica de operadores de kiosko (roles y permisos)
+3. Conectar kiosko con comunas reales (dropdown de 345 comunas)
+4. Notificaciones SMS reales cuando el vecino tiene respuesta del municipio
+5. Presupuesto participativo vinculante (voto con peso legal)
