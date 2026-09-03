@@ -6,9 +6,10 @@ import {
   Building2,
   DollarSign,
   MapPin,
+  Loader2,
 } from 'lucide-react';
 import type { Enriquecido } from './presupuestoDataEnriquecido';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import {
   PRESUPUESTO_MUNICIPAL_ENRIQUECIDO,
   getTotalIngresosEnriquecido,
@@ -30,7 +31,7 @@ import ComparativeChart from '@/components/cuentas-claras/ComparativeChart';
 import SimuladorPanel from '@/components/cuentas-claras/SimuladorPanel';
 import ComunaSelector from '@/components/cuentas-claras/ComunaSelector';
 import StaleDataBadge from '@/components/ui/stale-data-badge';
-import { SINIM_COMUNAS, type PresupuestoMunicipalComunal } from './sinimDataComunal';
+import { useSinimData } from './useSinimData';
 
 type CategoriaClave = keyof Enriquecido['ingresos'] | keyof Enriquecido['gastos'];
 
@@ -53,6 +54,30 @@ const CATEGORIAS_GASTOS = [
   { key: 'otros', nombre: 'Otros Gastos', icon: Building2, color: 'text-gray-600' },
 ];
 
+// Sub-componente que carga SINIM bajo demanda vía Suspense
+function ComunaPanelSuspense({ comunaSel, onChange }: { comunaSel: string; onChange: (id: string) => void }) {
+  const data = useSinimData() as Record<string, {
+    comuna: string;
+    poblacion: number;
+  }> | undefined;
+  const comunal = data?.[comunaSel];
+  return (
+    <>
+      <ComunaSelector value={comunaSel} onChange={onChange} />
+      {comunal && (
+        <StaleDataBadge lastUpdated="2024-12-31" notifyOnChange={false} />
+      )}
+      {comunal && (
+        <div className="ml-auto text-sm text-slate-600">
+          <span className="font-medium">{comunal.comuna}</span>
+          <span className="mx-2">·</span>
+          <span>Población: {comunal.poblacion.toLocaleString('es-CL')}</span>
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function CuentasClarasPage() {
   const [añoSeleccionado, setAñoSeleccionado] = useState(() => {
     const años = getYears();
@@ -68,7 +93,6 @@ export default function CuentasClarasPage() {
   // SINIM: vista nacional vs vista por comuna
   const [vistaModo, setVistaModo] = useState<'nacional' | 'comunal'>('nacional');
   const [comunaSel, setComunaSel] = useState<string>('13101'); // Santiago por defecto
-  const datosComunal: PresupuestoMunicipalComunal | undefined = SINIM_COMUNAS[comunaSel];
 
   const añosDisponibles = useMemo(() => getYears(), []);
 
@@ -214,19 +238,14 @@ export default function CuentasClarasPage() {
               </button>
             </div>
             {vistaModo === 'comunal' && (
-              <>
-                <ComunaSelector value={comunaSel} onChange={setComunaSel} />
-                {datosComunal && (
-                  <StaleDataBadge lastUpdated="2024-12-31" notifyOnChange={false} />
-                )}
-                {datosComunal && (
-                  <div className="ml-auto text-sm text-slate-600">
-                    <span className="font-medium">{datosComunal.comuna}</span>
-                    <span className="mx-2">·</span>
-                    <span>Población: {datosComunal.poblacion.toLocaleString('es-CL')}</span>
-                  </div>
-                )}
-              </>
+              <Suspense fallback={
+                <div className="flex items-center gap-2 text-sm text-slate-500">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Cargando comunas...
+                </div>
+              }>
+                <ComunaPanelSuspense comunaSel={comunaSel} onChange={setComunaSel} />
+              </Suspense>
             )}
           </div>
         </CardContent>

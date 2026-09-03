@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Search, ChevronDown } from 'lucide-react';
-import { SINIM_COMUNAS } from '@/pages/cuentas-claras/sinimDataComunal';
+import { useSinimData } from '@/pages/cuentas-claras/useSinimData';
 
 /**
  * ComunaSelector — Dropdown de selección de comuna con búsqueda.
@@ -17,6 +17,11 @@ export function ComunaSelector({ value, onChange, className }: ComunaSelectorPro
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const ref = useRef<HTMLDivElement>(null);
+  const sinimData = useSinimData() as Record<string, {
+    comuna: string;
+    comunaId: string;
+    poblacion: number;
+  }> | undefined;
 
   // Cerrar al clickear afuera
   useEffect(() => {
@@ -29,14 +34,14 @@ export function ComunaSelector({ value, onChange, className }: ComunaSelectorPro
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  const comunas = Object.values(SINIM_COMUNAS)
+  const comunas = Object.values(sinimData || {})
     .sort((a, b) => a.comuna.localeCompare(b.comuna, 'es'))
     .filter(c =>
       search === '' ||
       c.comuna.toLowerCase().includes(search.toLowerCase())
     );
 
-  const selected = SINIM_COMUNAS[value];
+  const selected = sinimData?.[value];
 
   return (
     <div ref={ref} className={`relative ${className || ''}`}>
@@ -48,7 +53,7 @@ export function ComunaSelector({ value, onChange, className }: ComunaSelectorPro
         aria-expanded={open}
       >
         <span className="truncate flex-1 text-left">
-          {selected ? selected.comuna : 'Selecciona comuna'}
+          {!sinimData ? 'Cargando comunas...' : selected ? selected.comuna : 'Selecciona comuna'}
         </span>
         <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
       </button>
