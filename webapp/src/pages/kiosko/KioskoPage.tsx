@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import ComunaSelector from '@/components/cuentas-claras/ComunaSelector';
 import { MapPin, CheckCircle2, UserPlus, ArrowLeft, Phone, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -26,7 +27,7 @@ type Step = 'inicio' | 'datos' | 'confirmar' | 'exito';
 
 interface KioskoForm {
   nombre: string;
-  comuna: string;
+  comuna: string; // ahora es el comunaId (ej: '13101' para Santiago)
   telefono: string;
 }
 
@@ -125,11 +126,9 @@ export default function KioskoPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Comuna</label>
-                  <Input
+                  <ComunaSelector
                     value={form.comuna}
-                    onChange={e => setForm(f => ({ ...f, comuna: e.target.value }))}
-                    placeholder="Ej: Padre Las Casas"
-                    className="min-h-14 text-base"
+                    onChange={(id) => setForm(f => ({ ...f, comuna: id }))}
                   />
                 </div>
                 <div>

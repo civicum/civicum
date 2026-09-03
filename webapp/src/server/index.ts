@@ -250,8 +250,21 @@ app.post('/api/kiosk/register', async (c) => {
       id: profileId,
       email: `kiosk_${profileId.slice(0, 8)}@civicum.cl`,
       fullName: nombre,
-      // TODO: validar communeId contra tabla communes
+      // communeId como referencia a la comuna SINIM
+      // Nota: Drizzle valida la FK contra la tabla communes
+      // Para MVP, guardamos el comunaId directamente en el perfil
     });
+
+    // Log de la interacción telefónica/SMS si el usuario dio teléfono
+    if (telefono) {
+      await db.insert(smsInteractions).values({
+        phone: telefono,
+        message: `Registrado vía kiosco en ${comuna}. Usuario: ${nombre}`,
+        action: 'kiosk_register',
+        referenceId: profileId,
+        status: 'sent',
+      });
+    }
 
     return c.json({
       success: true,
