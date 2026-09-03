@@ -116,11 +116,20 @@ Daniel: Principal Software Architect / Data Architect / Security Engineer / Tech
 - WCAG: disabled states, aria-labels, keyboard Enter to send
 - Lint: 0 errores | Build: 846KB | Tests: 46/46
 
+### Sprint 2 — Canal Universal de Acceso ✅ COMPLETADO
+- **Schema DB**: 3 tablas nuevas (smsInteractions, ivrCalls, kiosks)
+- **Endpoints SMS/IVR**: Twilio webhook con validación +56, menú IVR en español
+- **A11y Overlay**: Modo Accesibilidad Total transversal (font size, alto contraste, botón ayuda)
+- **Endpoints**: `POST /api/sms/webhook`, `GET /api/ivr/menu`, `POST /api/ivr/option`
+- **Validación**: lint 0 errores, build 848KB, tests 46/46
+- **Commit**: pendiente (modificaciones a archivos existentes — requiere autorización)
+
 ## PRÓXIMO PASO
-1. ~~Normalizar datos SINIM~~ → ✅ Completado
-2. ~~Integrar datos SINIM en Cuentas Claras~~ → ✅ Completado
-3. ~~Landing page inmersiva~~ → ✅ Completado (/landing)
-4. ~~Asistente Cívico mejorado~~ → ✅ Completado (/civia)
-5. **Optimización chunk >500KB** (code-splitting de datos SINIM)
-6. **Sprint 2**: Canal Universal de Acceso (SMS bidireccional + IVR) + Radar Vecinal
-7. **Commit del Sprint 1** (pending autorización)
+1. ~~SINIM descarga completa~~ → ✅
+2. ~~SINIM integración Cuentas Claras~~ → ✅
+3. ~~Landing inmersiva~~ → ✅
+4. ~~Asistente Cívico~~ → ✅
+5. ~~Sprint 2 (SMS/IVR + A11y)~~ → ✅ completado, pendiente commit
+6. **Commit Sprint 2** (autorización pendiente)
+7. **Optimización chunk** (code-split, 848KB → <500KB)
+8. **Kioscos presenciales** (UI para registro presencial en JJVV)
