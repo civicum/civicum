@@ -4,9 +4,61 @@ import { logger } from 'hono/logger'
 import { desc, eq } from 'drizzle-orm'
 import { getDb } from './db'
 import { communityReports, profiles, smsInteractions, ivrCalls } from '../db/schema'
+import { createHmac } from 'crypto'
+
+// Rate limiter simple en memoria (MVP — migrar a Redis en producción)
+const rateLimiter = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 horas
+const RATE_LIMIT_MAX_PER_PHONE = 5; // máximo 5 SMS/día por número
+
+function checkRateLimit(key: string): { allowed: boolean; remaining: number } {
+  const now = Date.now();
+  const record = rateLimiter.get(key);
+  
+  if (!record || now > record.resetAt) {
+    rateLimiter.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return { allowed: true, remaining: RATE_LIMIT_MAX_PER_PHONE - 1 };
+  }
+  
+  if (record.count >= RATE_LIMIT_MAX_PER_PHONE) {
+    return { allowed: false, remaining: 0 };
+  }
+  
+  record.count++;
+  return { allowed: true, remaining: RATE_LIMIT_MAX_PER_PHONE - record.count };
+}
+
+/**
+ * Verifica firma Twilio para webhooks.
+ * Fuente: https://www.twilio.com/docs/usage/security#validating-requests
+ */
+function verifyTwilioSignature(
+  authToken: string,
+  url: string,
+  params: Record<string, string>,
+  signature: string | null
+): boolean {
+  if (!signature) return false;
+  
+  // Construir string de validación
+  const data = url + Object.keys(params).sort().reduce(
+    (acc, key) => acc + key + params[key],
+    ''
+  );
+  
+  // Calcular HMAC con auth_token
+  const expectedSignature = createHmac('sha1', authToken)
+    .update(Buffer.from(data, 'utf-8'))
+    .digest('base64');
+  
+  return signature === expectedSignature;
+}
+
+// CORS: producción restrictiva, desarrollo abierto
+const corsOrigin = process.env.CIVICUM_CORS_ORIGIN || 
+  (process.env.NODE_ENV === 'production' ? ['https://civicum.app', 'https://m.civicum.app'] : '*');
 
 const app = new Hono()
-const corsOrigin = process.env.CIVICUM_CORS_ORIGIN ?? 'http://localhost:5173'
 
 app.use('*', logger())
 app.use('*', cors({ origin: corsOrigin }))
@@ -129,13 +181,48 @@ app.get('/api/protected/profile', (c) => {
     return c.json({ error: 'Not implemented yet' }, 501);
 });
 
-// Sprint 2: SMS Bidireccional (Twilio webhook)
+// Sprint 2 y 5: SMS Bidireccional (Twilio webhook) — CON VALIDACIÓN DE SEGURIDAD
 app.post('/api/sms/webhook', async (c) => {
   const db = getDb();
+  const url = c.req.url;
+  const signature = c.req.header('x-twilio-signature') || null;
+  
+  // Parsear body temprano para obtener parámetros
+  const body = await c.req.parseBody();
+  const phone = String(body.From || '');
+  const message = String(body.Body || '').trim().toUpperCase();
+
+  // ============ SEGURIDAD 1: Verificar firma Twilio (crítico para producción) ============
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  if (isProduction && authToken) {
+    const params: Record<string, string> = {};
+    for (const [key, value] of Object.entries(body)) {
+      params[key] = String(value);
+    }
+    
+    if (!verifyTwilioSignature(authToken, url, params, signature)) {
+      console.warn('[SMS-WEBHOOK] Firma Twilio inválida para:', url.slice(0, 50));
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+  }
+
+  // ============ SEGURIDAD 2: Rate limit por teléfono ============
+  const rateCheck = checkRateLimit(phone);
+  if (!rateCheck.allowed) {
+    // Registrar intento de abuso
+    await db.insert(smsInteractions).values({
+      phone,
+      message: 'RATE_LIMIT_EXCEEDED',
+      action: 'rate_limit_blocked',
+      status: 'rejected',
+      referenceId: `rate_limit_${Date.now()}`,
+    });
+    return c.text('<Response><Message>Límite diario alcanzado. Intenta mañana.</Message></Response>');
+  }
+
   try {
-    const body = await c.req.parseBody();
-    const phone = String(body.From || '');
-    const message = String(body.Body || '').trim().toUpperCase();
 
     // Validar número de teléfono
     if (!phone.startsWith('+56')) {
@@ -233,18 +320,44 @@ app.post('/api/ivr/option', async (c) => {
   return c.text(response, 200, { 'Content-Type': 'text/xml' });
 });
 
-// Sprint 2: Kiosco presencial (registro sin email/password)
+// Sprint 2 y 5: Kiosco presencial (registro sin email/password) — CON VALIDACIÓN Y RATE LIMIT
+import { z } from 'zod';
+
+const kioskSchema = z.object({
+  nombre: z.string().min(2, 'Nombre requerido').max(100, 'Nombre demasiado largo'),
+  comuna: z.string().min(1, 'Comuna requerida').regex(/^\d{5}$/, 'Comuna inválida'),
+  telefono: z.string().regex(/^\+?56[0-9]{9}$/, 'Teléfono inválido').optional().or(z.literal('')),
+});
+
 app.post('/api/kiosk/register', async (c) => {
   const db = getDb();
+  
+  // ============ SEGURIDAD: Validación Zod para input ============
+  let body;
   try {
-    const body = await c.req.json();
-    const { nombre, comuna, telefono } = body;
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'JSON inválido' }, 400);
+  }
 
-    if (!nombre || !comuna) {
-      return c.json({ error: 'Nombre y comuna son obligatorios' }, 400);
-    }
+  const parsed = kioskSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json({ 
+      error: 'Datos inválidos', 
+      details: parsed.error.issues.map(e => ({ field: e.path.join('.'), message: e.message }))
+    }, 400);
+  }
 
-    // Crear perfil anónimo (sin email — se asigna después si el usuario quiere)
+  const { nombre, comuna, telefono } = parsed.data;
+
+  // ============ SEGURIDAD: Rate limit por IP (kiosco) ============
+  const clientIp = c.req.header('cf-connecting-ip') || c.req.header('x-forwarded-for') || 'unknown';
+  const rateCheck = checkRateLimit(`kiosk_${clientIp}`);
+  if (!rateCheck.allowed) {
+    return c.json({ error: 'Demasiados registros desde esta ubicación. Intenta más tarde.' }, 429);
+  }
+
+  try {
     const profileId = crypto.randomUUID();
     await db.insert(profiles).values({
       id: profileId,
