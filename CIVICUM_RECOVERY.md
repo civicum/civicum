@@ -151,7 +151,15 @@ Daniel: Principal Software Architect / Data Architect / Security Engineer / Tech
 - Endpoint /api/kiosk/register: guarda profileId + log a smsInteractions si hay teléfono
 - Validación: lint 0, build 576KB, 46/46 tests
 
-## PRÓXIMO PASO (Sprint 5 — Twilio real, opcional)
-1. Cuenta Twilio + número chileno + webhook público (ngrok)
-2. Verificación de operador de kiosco (rol + teléfono de operador)
-3. Notificaciones automáticas al vecino cuando el municipio responde
+### Sprint 6 — Formulario Alza la Voz Mejorado ✅ COMPLETADO
+- Formulario completo: título, descripción, categoría, fotos, geolocalización
+- TimelineGestiones: usuario ve su reporte en "En revisión" inmediato
+- Mensaje de éxito con ID del reporte + información de anonimato
+- Pseudonimato activado por defecto (entiende qué contenido se ve públicamente)
+- Validación: lint 0, build 580KB, 46/46 tests
+
+## PRÓXIMO PASO (Sprint 6 — continuación)
+1. Moderación de reportes (approve/reject/escalate — acceso admin)
+2. Verificación nivles L0-L4 (registro → phone → doc → org)
+3. Estados avanzados en timeline (esperando promedio, última respuesta)
+4. Push notifications nativas cuando cambia el estado del reporte
