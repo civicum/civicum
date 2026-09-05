@@ -68,33 +68,81 @@ export default function ProfilePage() {
                     <Card>
                         <CardHeader>
                             <CardTitle>Niveles de Identidad (Poder Cívico)</CardTitle>
-                            <CardDescription>Mientras más proteges a la red del fraude de bots, más poder consigues.</CardDescription>
+                            <CardDescription>Cada nivel desbloquea más poder real. Mientras más demuestras que eres real, más pesas en las decisiones.</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-3">
+                            {/* L0 */}
                             <div className="flex justify-between items-center p-3 border rounded-lg bg-slate-50">
                                 <div className="flex items-center gap-3">
                                     <div className="bg-green-100 p-2 rounded-full">
                                         <Shield className="w-4 h-4 text-green-600" />
                                     </div>
                                     <div>
-                                        <p className="font-medium text-sm">L0 - Lector Base</p>
-                                        <p className="text-xs text-slate-500">Puedes leer todo anonimamente. Reportes bloqueados o prioridad mínima.</p>
+                                        <p className="font-medium text-sm">L0 — Explorador Anónimo</p>
+                                        <p className="text-xs text-slate-500">Leer, reportar, votar. Sin peso en decisiones.</p>
                                     </div>
                                 </div>
                                 <Badge variant="outline" className="text-green-600 border-green-200">Activo</Badge>
                             </div>
 
+                            {/* L1 */}
                             <div className="flex justify-between items-center p-3 border rounded-lg">
                                 <div className="flex items-center gap-3 opacity-60">
                                     <div className="bg-slate-100 p-2 rounded-full">
                                         <Key className="w-4 h-4 text-slate-400" />
                                     </div>
                                     <div>
-                                        <p className="font-medium text-sm">L1 - Correo Validado</p>
-                                        <p className="text-xs text-slate-500">Permite firmar peticiones de apoyo. Reportes locales con prioridad normal.</p>
+                                        <p className="font-medium text-sm">L1 — Correo Verificado</p>
+                                        <p className="text-xs text-slate-500">Permite firmar peticiones. Reportes con prioridad normal.</p>
                                     </div>
                                 </div>
                                 <button className="text-sm text-terracota-600 font-medium hover:underline">Verificar correo</button>
+                            </div>
+
+                            {/* L2 */}
+                            <div className="flex justify-between items-center p-3 border rounded-lg">
+                                <div className="flex items-center gap-3 opacity-60">
+                                    <div className="bg-slate-100 p-2 rounded-full">
+                                        <Key className="w-4 h-4 text-slate-400" />
+                                    </div>
+                                    <div>
+                                        <p className="font-medium text-sm">L2 — Teléfono Verificado (SMS)</p>
+                                        <p className="text-xs text-slate-500">Recibes notificaciones directas. Puedes votar en propuestas vinculantes.</p>
+                                    </div>
+                                </div>
+                                <button className="text-sm text-terracota-600 font-medium hover:underline">Verificar teléfono</button>
+                            </div>
+
+                            {/* L3 */}
+                            <div className="flex justify-between items-center p-3 border rounded-lg">
+                                <div className="flex items-center gap-3 opacity-60">
+                                    <div className="bg-slate-100 p-2 rounded-full">
+                                        <Shield className="w-4 h-4 text-slate-400" />
+                                    </div>
+                                    <div>
+                                        <p className="font-medium text-sm">L3 — Identidad Confirmada (RUT + Selfie)</p>
+                                        <p className="text-xs text-slate-500">Acceso a moderación. Creas mesas. Eres "Vecino Verificado" con insignia.</p>
+                                    </div>
+                                </div>
+                                <button className="text-sm text-slate-400 font-medium cursor-not-allowed">Próximamente</button>
+                            </div>
+
+                            {/* L4 */}
+                            <div className="flex justify-between items-center p-3 border rounded-lg">
+                                <div className="flex items-center gap-3 opacity-60">
+                                    <div className="bg-slate-100 p-2 rounded-full">
+                                        <Trophy className="w-4 h-4 text-slate-400" />
+                                    </div>
+                                    <div>
+                                        <p className="font-medium text-sm">L4 — Organizador Verificado</p>
+                                        <p className="text-xs text-slate-500">Acceso a panel Círculos. Puedes dirigir mesas y votar con peso mayor.</p>
+                                    </div>
+                                </div>
+                                <button className="text-sm text-slate-400 font-medium cursor-not-allowed">Próximamente</button>
+                            </div>
+
+                            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+                                <strong>¿Por qué estos niveles?</strong> Evitamos bots y personas que votan más de una vez. Cada nivel protege tu voto y tu voz.
                             </div>
                         </CardContent>
                     </Card>
