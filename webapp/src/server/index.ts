@@ -390,4 +390,44 @@ app.post('/api/kiosk/register', async (c) => {
   }
 });
 
+// Sprint 6: Moderación de reportes (aprobar/rechazar/escalar)
+app.patch('/api/community-reports', async (c) => {
+    const db = getDb()
+    
+    let body;
+    try {
+        body = await c.req.json()
+    } catch {
+        return c.json({ error: 'JSON inválido' }, 400)
+    }
+
+    const { id, status } = body
+    
+    if (!id || !status) {
+        return c.json({ error: 'id y status son obligatorios' }, 400)
+    }
+
+    const validStatuses = ['APPROVED', 'REJECTED', 'ESCALATED', 'RESOLVED']
+    if (!validStatuses.includes(status)) {
+        return c.json({ error: 'Status inválido. Usar: ' + validStatuses.join(', ') }, 400)
+    }
+
+    try {
+        const [updated] = await db
+            .update(communityReports)
+            .set({ status, updatedAt: new Date() })
+            .where(eq(communityReports.id, id))
+            .returning()
+
+        if (!updated) {
+            return c.json({ error: 'Reporte no encontrado' }, 404)
+        }
+
+        return c.json({ success: true, report: updated })
+    } catch (error) {
+        console.error('[moderation] Error updating report:', error)
+        return c.json({ error: 'Error al actualizar' }, 500)
+    }
+})
+
 export default app;

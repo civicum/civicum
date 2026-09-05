@@ -12,6 +12,7 @@ import OnboardingFlow from './pages/onboarding/OnboardingFlow'
 import AcademiaPage from './pages/academia/AcademiaPage'
 import CiviaPage from './pages/civia/CiviaPage'
 import AlzaLaVozPage from './pages/alza-la-voz/AlzaLaVozPage'
+import ModerarPage from './pages/alza-la-voz/ModerarPage'
 import CuentasClarasPage from './pages/cuentas-claras/CuentasClarasPage'
 import VotoCiudadanoPage from './pages/voto-ciudadano/VotoCiudadanoPage'
 import LandingPage from './pages/landing/LandingPage'
@@ -33,6 +34,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/academia" element={<AcademiaPage />} />
             <Route path="/civia" element={<CiviaPage />} />
             <Route path="/alza-la-voz" element={<AlzaLaVozPage />} />
+            <Route path="/alza-la-voz/moderar" element={<ModerarPage />} />
             <Route path="/cuentas-claras" element={<CuentasClarasPage />} />
             <Route path="/voto-ciudadano" element={<VotoCiudadanoPage />} />
             <Route path="/circulos" element={<Navigate to="/alza-la-voz" replace />} />
