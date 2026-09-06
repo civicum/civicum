@@ -159,9 +159,21 @@ Daniel: Principal Software Architect / Data Architect / Security Engineer / Tech
 - Validación: lint 0, build 588KB, 46/46 tests en todos los sprints
 - Próximo: push notifications, estados dinámicos en timeline
 
+### Sprint 7 — PWA Completo ✅ COMPLETADO
+- index.html: PWA meta tags (theme-color Terracota, manifest, OpenGraph, es-CL)
+- manifest.json: app CIVICUM, icons 72-512px, shortcuts directos a módulos
+- Service Worker (sw.js): CacheFirst assets, NetworkFirst API, offline fallback
+- offline.html: página de fallback cuando no hay conexión (no "dinosaurio Chrome")
+- Registro SW en main.tsx con window.addEventListener('load')
+- Compatible con F-07 (Dignidad Offline): datos seguros sin internet
+- Build: 590KB principal, 284KB chunk SINIM separado
+- Tests: 46/46 pasan
+
 ## PRÓXIMO PASO (post auditoría)
 1. ✅ Formulario Alza la Voz (c24cd7d)
 2. ✅ Moderación de reportes (89d896d)
 3. ✅ Verificación L0-L4 (06136f2)
-4. ✅ Auditoría completa (CIVICUM_AUDIT_S1-A4.md)
-5. **Sprint 7 — Push Notifications + Service Worker offline + CI/CD**
+4. ✅ PWA offline completo (f1c910a)
+5. ✅ Auditoría S1-S7 (CIVICUM_AUDIT_S1-A4.md)
+6. **CI/CD Pipeline** (GitHub Actions: lint+build+tests auto en cada PR)
+7. **Deployment production** (Vercel + Neon + Twilio WEBHOOK real)
