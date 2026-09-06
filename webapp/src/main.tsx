@@ -20,6 +20,16 @@ import KioskoPage from './pages/kiosko/KioskoPage'
 import ProtectedRoute from './components/routing/ProtectedRoute'
 import './index.css'
 
+// Sprint 7: Service Worker para PWA offline
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(
+      (registration) => console.log('[SW] Registered:', registration.scope),
+      (err) => console.warn('[SW] Registration failed:', err)
+    );
+  });
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
