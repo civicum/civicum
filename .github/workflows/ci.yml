@@ -1,0 +1,58 @@
+name: Civicum CI Pipeline
+
+on:
+  push:
+    branches: [main, feature/*]
+  pull_request:
+    branches: [main, feature/*]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: webapp/pnpm-lock.yaml
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm -C webapp install --frozen-lockfile
+
+      - name: Lint (ESLint)
+        run: pnpm -C webapp lint
+        timeout-minutes: 5
+
+      - name: TypeScript Check (tsc --noEmit)
+        run: pnpm -C webapp exec tsc -b --noEmit
+        timeout-minutes: 5
+
+      - name: Build
+        run: pnpm -C webapp build
+        timeout-minutes: 5
+
+      - name: Run E2E Tests (Playwright)
+        run: pnpm -C webapp exec playwright test
+        timeout-minutes: 10
+
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Audit dependencies (npm audit)
+        run: pnpm -C webapp audit --audit-level=high || true
