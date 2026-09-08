@@ -1,0 +1,20 @@
+{
+  "buildCommand": "pnpm -C webapp build",
+  "outputDirectory": "webapp/dist",
+  "installCommand": "pnpm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/:path*",
+      "methods": ["GET", "POST", "PATCH", "DELETE"]
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "buildCache": true,
+  "crons": [],
+  "regions": ["sfo1"]
+}
